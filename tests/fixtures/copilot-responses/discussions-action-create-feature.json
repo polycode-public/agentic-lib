@@ -1,0 +1,10 @@
+{
+  "data": {
+    "content": "Great idea! I'll create a new feature for HTTP server support. This aligns well with the mission to provide a web interface.\n\n[ACTION:create-feature] HTTP_SERVER",
+    "usage": {
+      "totalTokens": 180,
+      "promptTokens": 150,
+      "completionTokens": 30
+    }
+  }
+}

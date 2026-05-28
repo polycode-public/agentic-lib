@@ -1,0 +1,134 @@
+# SPDX-License-Identifier: MIT
+# Copyright (C) 2025-2026 Polycode Limited
+# .github/agentic-lib/actions/commit-if-changed/action.yml
+#
+# Composite action: Commit and push if there are staged changes.
+# Replaces the 8-line block repeated across 6 agent workflows.
+
+name: "Commit if changed"
+description: "Stage all changes, commit if any exist, and push"
+
+inputs:
+  commit-message:
+    description: "Commit message"
+    required: true
+  push-ref:
+    description: "Branch ref to push to (default: current ref_name)"
+    required: false
+    default: ""
+  fail-on-conflict:
+    description: "Fail the step if push conflicts cannot be resolved (default: true)"
+    required: false
+    default: "true"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Commit and push if changed
+      shell: bash
+      run: |
+        git config --local user.email 'action@github.com'
+        git config --local user.name 'GitHub Actions[bot]'
+        git add -A
+        # Unstage workflow files — GITHUB_TOKEN cannot push workflow changes
+        git reset HEAD -- '.github/workflows/' 2>/dev/null || true
+        # Unstage log/screenshot/state files — these live on the agentic-lib-logs branch
+        git reset HEAD -- 'intentïon.md' 'SCREENSHOT_INDEX.png' 2>/dev/null || true
+        git reset HEAD -- agent-log-*.md 2>/dev/null || true
+        git reset HEAD -- agentic-lib-state.toml 2>/dev/null || true
+        # W1: Validate test files — reject empty test suites that break vitest
+        for f in $(git diff --cached --name-only --diff-filter=ACM -- '*.test.js' '*.test.ts' '*.test.mjs'); do
+          if [ -f "$f" ] && ! grep -qE '(describe|test|it)\s*\(' "$f"; then
+            echo "::warning::${f} has no test suite (no describe/test/it blocks) — removing from commit"
+            git reset HEAD -- "$f"
+          fi
+        done
+        if git diff --cached --quiet; then
+          echo "No changes to commit"
+        fi
+        if ! git diff --cached --quiet; then
+          git commit -m "${{ inputs.commit-message }}"
+          # Stash any unstaged changes (e.g. log/screenshot files we just unstaged)
+          # so that git pull --rebase can work cleanly
+          git stash 2>/dev/null || true
+          REF="${{ inputs.push-ref }}"
+          MAX_RETRIES=3
+          PUSH_SUCCESS=""
+          REMOTE_REF_EXISTS=""
+          if [ -n "$REF" ]; then
+            git ls-remote --exit-code origin "$REF" > /dev/null 2>&1 && REMOTE_REF_EXISTS="true"
+          else
+            REMOTE_REF_EXISTS="true"
+          fi
+          # Determine push command based on ref
+          if [ -n "$REF" ]; then
+            PUSH_CMD="git push origin HEAD:refs/heads/$REF"
+          else
+            PUSH_CMD="git push"
+          fi
+          PULL_TARGET="${REF:+origin $REF}"
+          for attempt in $(seq 1 $MAX_RETRIES); do
+            # New branch — no pull needed, just push
+            if [ -n "$REF" ] && [ "$REMOTE_REF_EXISTS" != "true" ]; then
+              $PUSH_CMD && { REMOTE_REF_EXISTS="true"; PUSH_SUCCESS="true"; break; } || true
+              sleep $((attempt * 10 + RANDOM % 10))
+              continue
+            fi
+            # Tiered conflict resolution (mirrors fix-stuck strategy)
+            case $attempt in
+              1)
+                echo "=== Attempt 1: rebase (cleanest) ==="
+                git pull --rebase $PULL_TARGET || {
+                  echo "Rebase conflict on attempt 1 — aborting rebase"
+                  git rebase --abort 2>/dev/null || true
+                  sleep $((10 + RANDOM % 10))
+                  continue
+                }
+                ;;
+              2)
+                echo "=== Attempt 2: merge (handles non-overlapping changes) ==="
+                git pull --no-rebase $PULL_TARGET || {
+                  echo "Merge conflict on attempt 2 — aborting merge"
+                  git merge --abort 2>/dev/null || true
+                  sleep $((20 + RANDOM % 10))
+                  continue
+                }
+                ;;
+              3)
+                echo "=== Attempt 3: merge -X theirs (accept remote on conflict) ==="
+                git pull -X theirs --no-rebase $PULL_TARGET || {
+                  echo "Merge -X theirs failed on attempt 3"
+                  git merge --abort 2>/dev/null || true
+                  sleep $((30 + RANDOM % 10))
+                  continue
+                }
+                ;;
+            esac
+            # Check if rebase/merge dropped our commit (already on remote)
+            if [ -n "$REF" ]; then
+              LOCAL_SHA=$(git rev-parse HEAD)
+              REMOTE_SHA=$(git rev-parse "origin/$REF" 2>/dev/null || echo "")
+              if [ "$LOCAL_SHA" = "$REMOTE_SHA" ]; then
+                echo "Rebase/merge dropped local commit (already on remote) — nothing to push"
+                PUSH_SUCCESS="true"
+                break
+              fi
+            fi
+            $PUSH_CMD && { REMOTE_REF_EXISTS="true"; PUSH_SUCCESS="true"; break; }
+            echo "Push failed on attempt $attempt"
+            sleep $((attempt * 10 + RANDOM % 10))
+          done
+          # Restore stashed unstaged changes
+          git stash pop 2>/dev/null || true
+          if [ "$PUSH_SUCCESS" != "true" ]; then
+            FAIL_ON_CONFLICT="${{ inputs.fail-on-conflict }}"
+            if [ "$FAIL_ON_CONFLICT" = "false" ]; then
+              echo "::warning::Failed to push after $MAX_RETRIES attempts — skipping (fail-on-conflict=false)"
+              git rebase --abort 2>/dev/null || true
+              git merge --abort 2>/dev/null || true
+            else
+              echo "::error::Failed to push after $MAX_RETRIES attempts"
+              exit 1
+            fi
+          fi
+        fi

@@ -1,0 +1,10 @@
+{
+  "data": {
+    "content": "RESOLVED: The issue requested a hello function that returns 'Hello, World!'. The current source at src/lib/main.js exports exactly this function, and the test at tests/unit/main.test.js verifies the return value.",
+    "usage": {
+      "totalTokens": 150,
+      "promptTokens": 120,
+      "completionTokens": 30
+    }
+  }
+}

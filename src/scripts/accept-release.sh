@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+# Copyright (C) 2025-2026 Polycode Limited
+# scripts/accept-release.sh
+# Usage: ./scripts/accept-release.sh
+#
+# This file is part of the Example Suite for `agentic-lib` see: https://github.com/xn-intenton-z2a/agentic-lib
+# This file is licensed under the MIT License. For details, see LICENSE-MIT
+
+# Check for the required tag version argument
+if [ -z "$1" ]; then
+  echo "Usage: $0 <tag-version>"
+  exit 1
+fi
+
+schedule=$(grep '^supervisor' agentic-lib.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+if [ -z "${schedule}" ]; then
+  echo "No schedule found in agentic-lib.toml [schedule] section, using schedule-1"
+  schedule=1
+fi
+echo "Workflow schedule: ${schedule?}"
+./scripts/activate-schedule.sh "${schedule?}"
+git add .github/agents/*
+git add .github/agentic-lib/actions/*
+git add .github/workflows/*
+git add scripts/*
+git commit -m "Update agentic-lib to @${1?}"
+git pull
+git push

@@ -1,0 +1,4 @@
+node_modules/
+_developers/_archive/
+coverage/
+package-lock.json

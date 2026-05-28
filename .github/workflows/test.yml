@@ -1,0 +1,748 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025-2026 Polycode Limited
+# .github/workflows/test.yml
+#
+# All testing for agentic-lib in one workflow.
+# 
+# Every push/PR runs up to 23 concurrent jobs:
+#
+#   CI (4 jobs — each fails independently for maximum signal):
+#     lint               — ESLint
+#     lint-workflows     — Validate all workflow YAML files
+#     security           — npm audit
+#     unit-tests         — Vitest suite
+#   CLI transforms (3 jobs — real Copilot SDK round-trips via CLI):
+#     test-cli-transform          — CLI transform
+#     test-cli-maintain-features  — CLI maintain-features
+#     test-cli-maintain-library   — CLI maintain-library
+#   Init pipeline (9 jobs — deterministic, no Copilot token needed):
+#     test-init-idempotency      — init --purge twice produces no diff
+#     test-seeded                — system-test.sh --init-only --behaviour (unit + Playwright, in Playwright container)
+#     test-dist-yaml-validity    — #@dist transform produces valid YAML
+#     test-init-update-mode      — update mode preserves user content
+#     test-stale-workflow-cleanup — stale workflows are removed
+#     test-all-missions-seed     — all 14 mission seeds work
+#     test-copilot-symlink       — copilot/ distribution + node_modules symlink + smol-toml import
+
+#   Workflow dry-runs (7 jobs — call distributable workflows in inert mode):
+#     test-workflow-maintain  — agentic-lib-workflow maintain-only
+#     test-workflow-review   — agentic-lib-workflow review-only
+#     test-workflow-dev      — agentic-lib-workflow dev-only
+#     test-workflow-bot      — agentic-lib-bot (test discussion)
+#     test-workflow-schedule — agentic-lib-schedule (dry-run)
+#     test-workflow-update   — agentic-lib-update (dry-run)
+#     test-workflow-init     — agentic-lib-init reseed (dry-run)
+#     test-workflow-test     — agentic-lib-test (npm test)
+#
+# COPILOT_GITHUB_TOKEN is required for all transform jobs.
+# Transform jobs are skipped when the token is unavailable (e.g. Dependabot PRs).
+#
+# Use workflow_dispatch to override the model.
+
+name: test
+run-name: "test [${{ github.ref_name }}]"
+
+on:
+  schedule:
+    - cron: "17 5,17 * * *"
+  push:
+    branches:
+      - main
+      - claude/*
+    paths:
+      - "**/*.html"
+      - "**/*.js"
+      - "**/*.json"
+      - "**/*.sh"
+      - "**/*.yml"
+      - ".github/agents/*.md"
+      - "!_developers/**"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**/*.js"
+      - "**/*.json"
+      - "**/*.html"
+      - "**/*.sh"
+      - "**/*.yml"
+      - ".github/agents/*.md"
+      - "!_developers/**"
+  workflow_dispatch:
+    inputs:
+      skipLinter:
+        description: "Skip the ESLint linting job"
+        type: boolean
+        required: false
+        default: true
+      model:
+        description: "Copilot SDK model for action smoke tests (empty = read from agentic-lib.toml)"
+        type: choice
+        required: false
+        default: ""
+        options:
+          - ""
+          - gpt-5-mini
+          - gpt-4.1
+
+concurrency:
+  group: test-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  npmAuthOrganisation: "@xn-intenton-z2a"
+
+jobs:
+  # ─── Params: normalise inputs across all trigger types ─────────────
+
+  params:
+    runs-on: ubuntu-latest
+    outputs:
+      skipLinter: ${{ steps.resolve.outputs.skipLinter }}
+      model: ${{ steps.resolve.outputs.model }}
+      hasCopilotToken: ${{ steps.secrets.outputs.hasCopilotToken }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout: agentic-lib.toml
+          sparse-checkout-cone-mode: false
+      - id: resolve
+        uses: actions/github-script@v8
+        env:
+          INPUT_SKIP_LINTER: ${{ inputs.skipLinter }}
+          INPUT_MODEL: ${{ inputs.model }}
+        with:
+          script: |
+            const fs = require('fs');
+            const configPath = 'agentic-lib.toml';
+            let toml = '';
+            if (fs.existsSync(configPath)) toml = fs.readFileSync(configPath, 'utf8');
+            const readToml = (key) => {
+              const m = toml.match(new RegExp(`^\\s*${key}\\s*=\\s*"([^"]*)"`, 'm'));
+              return m ? m[1] : '';
+            };
+            const resolve = (name, input, configKey, defaultValue) => {
+              let value = input || '';
+              let source = 'input';
+              if (!value && configKey) {
+                value = readToml(configKey);
+                source = value ? 'config' : '';
+              }
+              if (!value) {
+                value = defaultValue;
+                source = 'default';
+              }
+              const configVal = configKey ? readToml(configKey) : 'N/A';
+              core.info(`param ${name}: input='${input}' config='${configVal}' default='${defaultValue}' → '${value}' (source: ${source})`);
+              core.setOutput(name, value);
+              return value;
+            };
+            resolve('skipLinter', process.env.INPUT_SKIP_LINTER, null, 'true');
+            resolve('model', process.env.INPUT_MODEL, 'model', 'gpt-5-mini');
+      - name: Check COPILOT_GITHUB_TOKEN availability
+        id: secrets
+        shell: bash
+        env:
+          HAS_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN != '' }}
+        run: echo "hasCopilotToken=${HAS_TOKEN}" >> $GITHUB_OUTPUT
+
+  # ─── CI: each check as its own job ─────────────────────────────────
+
+  lint:
+    needs: params
+    if: needs.params.outputs.skipLinter != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - name: Set up ~/.npmrc
+        run: |
+          echo "${{ env.npmAuthOrganisation }}:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "always-auth=true" >> ~/.npmrc
+      - run: npm ci
+      - run: npm run linting
+
+  lint-workflows:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - name: Set up ~/.npmrc
+        run: |
+          echo "${{ env.npmAuthOrganisation }}:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "always-auth=true" >> ~/.npmrc
+      - run: npm ci
+      - run: npm run lint:workflows
+
+  security:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - name: Set up ~/.npmrc
+        run: |
+          echo "${{ env.npmAuthOrganisation }}:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "always-auth=true" >> ~/.npmrc
+      - run: npm ci
+      - run: npm run security
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - name: Set up ~/.npmrc
+        run: |
+          echo "${{ env.npmAuthOrganisation }}:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "always-auth=true" >> ~/.npmrc
+      - run: npm ci
+      - name: Install sub-project dependencies
+        run: cd src/actions/agentic-step && npm ci
+      - run: npm test
+
+  # ─── CLI transforms: real Copilot SDK round-trips via CLI ──────────
+
+  test-cli-transform:
+    needs: params
+    if: needs.params.outputs.hasCopilotToken == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+      issues: write
+      packages: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - name: Set up ~/.npmrc
+        run: |
+          echo "${{ env.npmAuthOrganisation }}:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "always-auth=true" >> ~/.npmrc
+      - run: npm ci
+      - name: Install sub-project dependencies
+        run: cd src/actions/agentic-step && npm ci
+
+      - name: Seed workspace via init --purge
+        run: |
+          mkdir -p /tmp/test-workspace
+          node bin/agentic-lib.js init --purge --mission 7-kyu-understand-fizz-buzz --target /tmp/test-workspace
+          cd /tmp/test-workspace
+          node -e "const p=JSON.parse(require('fs').readFileSync('package.json','utf8')); delete p.dependencies; require('fs').writeFileSync('package.json',JSON.stringify(p,null,2)+'\n')"
+          npm install
+
+      - name: Snapshot post-seed
+        run: rsync -a --exclude=.git --exclude=node_modules /tmp/test-workspace/ /tmp/post-seed/
+
+      - name: "CLI: transform"
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
+        run: node bin/agentic-lib.js transform --model ${{ needs.params.outputs.model }} --timeout 60000 --target /tmp/test-workspace 2>&1 | tee /tmp/cli-output.log
+
+      - name: Verify tests pass after transform
+        working-directory: /tmp/test-workspace
+        run: npm test
+
+      - name: Show agent changes
+        run: |
+          echo "--- CLI log markers ---"
+          grep -E '^\[(context|copilot|agentic-lib|config|prompt|tool|tokens)\]' /tmp/cli-output.log || true
+          if ! grep -qE '\[(copilot|agentic-lib)\]' /tmp/cli-output.log; then
+            echo "ERROR: No [copilot] or [agentic-lib] log lines — LLM was not called"
+            exit 1
+          fi
+          echo "--- File changes ---"
+          diff -rN --exclude=.git --exclude=node_modules /tmp/post-seed /tmp/test-workspace || true
+
+      - name: Re-seed workspace
+        run: node bin/agentic-lib.js init --purge --mission 7-kyu-understand-fizz-buzz --target /tmp/test-workspace
+
+      - name: Show re-seed changes
+        run: diff -rN --exclude=.git --exclude=node_modules /tmp/post-seed /tmp/test-workspace || true
+
+  test-cli-maintain-features:
+    needs: params
+    if: needs.params.outputs.hasCopilotToken == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+      issues: write
+      packages: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - name: Set up ~/.npmrc
+        run: |
+          echo "${{ env.npmAuthOrganisation }}:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "always-auth=true" >> ~/.npmrc
+      - run: npm ci
+      - name: Install sub-project dependencies
+        run: cd src/actions/agentic-step && npm ci
+
+      - name: Seed workspace via init --purge
+        run: |
+          mkdir -p /tmp/test-workspace
+          node bin/agentic-lib.js init --purge --mission 7-kyu-understand-fizz-buzz --target /tmp/test-workspace
+
+      - name: Snapshot post-seed
+        run: rsync -a --exclude=.git --exclude=node_modules /tmp/test-workspace/ /tmp/post-seed/
+
+      - name: "CLI: maintain-features"
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
+        run: node bin/agentic-lib.js maintain-features --model ${{ needs.params.outputs.model }} --timeout 60000 --target /tmp/test-workspace 2>&1 | tee /tmp/cli-output.log
+
+      - name: Show agent changes
+        run: |
+          echo "--- CLI log markers ---"
+          grep -E '^\[(context|copilot|agentic-lib|config|prompt|tool|tokens)\]' /tmp/cli-output.log || true
+          if ! grep -qE '\[(copilot|agentic-lib)\]' /tmp/cli-output.log; then
+            echo "ERROR: No [copilot] or [agentic-lib] log lines — LLM was not called"
+            exit 1
+          fi
+          echo "--- File changes ---"
+          diff -rN --exclude=.git --exclude=node_modules /tmp/post-seed /tmp/test-workspace || true
+
+      - name: Re-seed workspace
+        run: node bin/agentic-lib.js init --purge --mission 7-kyu-understand-fizz-buzz --target /tmp/test-workspace
+
+      - name: Show re-seed changes
+        run: diff -rN --exclude=.git --exclude=node_modules /tmp/post-seed /tmp/test-workspace || true
+
+  test-cli-maintain-library:
+    needs: params
+    if: needs.params.outputs.hasCopilotToken == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+      issues: write
+      packages: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - name: Set up ~/.npmrc
+        run: |
+          echo "${{ env.npmAuthOrganisation }}:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "always-auth=true" >> ~/.npmrc
+      - run: npm ci
+      - name: Install sub-project dependencies
+        run: cd src/actions/agentic-step && npm ci
+
+      - name: Seed workspace via init --purge
+        run: |
+          mkdir -p /tmp/test-workspace
+          node bin/agentic-lib.js init --purge --mission 7-kyu-understand-fizz-buzz --target /tmp/test-workspace
+
+      - name: Snapshot post-seed
+        run: rsync -a --exclude=.git --exclude=node_modules /tmp/test-workspace/ /tmp/post-seed/
+
+      - name: "CLI: maintain-library"
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
+        run: node bin/agentic-lib.js maintain-library --model ${{ needs.params.outputs.model }} --timeout 60000 --target /tmp/test-workspace 2>&1 | tee /tmp/cli-output.log
+
+      - name: Show agent changes
+        run: |
+          echo "--- CLI log markers ---"
+          grep -E '^\[(context|copilot|agentic-lib|config|prompt|tool|tokens)\]' /tmp/cli-output.log || true
+          if ! grep -qE '\[(copilot|agentic-lib)\]' /tmp/cli-output.log; then
+            echo "ERROR: No [copilot] or [agentic-lib] log lines — LLM was not called"
+            exit 1
+          fi
+          echo "--- File changes ---"
+          diff -rN --exclude=.git --exclude=node_modules /tmp/post-seed /tmp/test-workspace || true
+
+      - name: Re-seed workspace
+        run: node bin/agentic-lib.js init --purge --mission 7-kyu-understand-fizz-buzz --target /tmp/test-workspace
+
+      - name: Show re-seed changes
+        run: diff -rN --exclude=.git --exclude=node_modules /tmp/post-seed /tmp/test-workspace || true
+
+  # ─── Init pipeline tests: deterministic, no Copilot token needed ──
+
+  test-init-idempotency:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - run: npm ci
+
+      - name: First init --purge
+        run: |
+          mkdir -p /tmp/test-workspace
+          node bin/agentic-lib.js init --purge --mission 7-kyu-understand-fizz-buzz --target /tmp/test-workspace
+
+      - name: Snapshot after first init
+        run: rsync -a --exclude=.git --exclude=node_modules /tmp/test-workspace/ /tmp/after-first/
+
+      - name: Second init --purge (should be idempotent)
+        run: node bin/agentic-lib.js init --purge --mission 7-kyu-understand-fizz-buzz --target /tmp/test-workspace
+
+      - name: Verify no diff
+        run: |
+          # Compare all files except timestamp-bearing ones
+          # agentic-lib.toml has [init].timestamp, intentïon.md has init timestamp
+          DIFF=$(diff -rN --exclude=.git --exclude=node_modules /tmp/after-first /tmp/test-workspace || true)
+          # Filter out lines that are purely timestamp differences
+          SIGNIFICANT=$(echo "$DIFF" | grep -v 'timestamp\|init purge.*at 20' || true)
+          # Check if any non-header diff lines remain (exclude diff file headers and range markers)
+          NON_TS=$(echo "$SIGNIFICANT" | grep '^[<>]' || true)
+          if [ -n "$NON_TS" ]; then
+            echo "ERROR: init --purge is not idempotent (non-timestamp differences)"
+            echo "$NON_TS"
+            exit 1
+          fi
+          echo "init --purge is idempotent"
+
+  test-seeded:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.58.2-noble
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: npm ci
+
+      - name: System test (init + unit + behaviour)
+        run: bash scripts/system-test.sh --init-only --behaviour --workspace /tmp/test-workspace
+
+      - name: Verify screenshot was created
+        run: |
+          if [ ! -f /tmp/test-workspace/SCREENSHOT_INDEX.png ]; then
+            echo "ERROR: SCREENSHOT_INDEX.png not created"
+            exit 1
+          fi
+
+      - name: Upload screenshot
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: seeded-screenshot
+          path: /tmp/test-workspace/SCREENSHOT_INDEX.png
+          if-no-files-found: ignore
+
+  test-dist-yaml-validity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - run: npm ci
+
+      - name: Transform and validate all distributable workflows
+        run: node scripts/validate-dist-transform.js validate
+
+  test-init-update-mode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - run: npm ci
+
+      - name: Purge-seed a workspace
+        run: |
+          mkdir -p /tmp/test-workspace
+          node bin/agentic-lib.js init --purge --mission 7-kyu-understand-fizz-buzz --target /tmp/test-workspace
+
+      - name: Add user content (simulates repository0 work)
+        run: |
+          echo 'export function hello() { return "custom"; }' > /tmp/test-workspace/src/lib/main.js
+          mkdir -p /tmp/test-workspace/features
+          echo '# Custom Feature' > /tmp/test-workspace/features/custom.md
+          echo '# My Mission' > /tmp/test-workspace/MISSION.md
+
+      - name: Snapshot user content
+        run: |
+          cp /tmp/test-workspace/src/lib/main.js /tmp/user-main.js
+          cp /tmp/test-workspace/features/custom.md /tmp/user-feature.md
+          cp /tmp/test-workspace/MISSION.md /tmp/user-mission.md
+
+      - name: Run init in update mode (should preserve user content)
+        run: node bin/agentic-lib.js init --target /tmp/test-workspace
+
+      - name: Verify user content preserved
+        run: |
+          diff /tmp/user-main.js /tmp/test-workspace/src/lib/main.js || { echo "ERROR: update mode clobbered src/lib/main.js"; exit 1; }
+          diff /tmp/user-feature.md /tmp/test-workspace/features/custom.md || { echo "ERROR: update mode clobbered features/custom.md"; exit 1; }
+          diff /tmp/user-mission.md /tmp/test-workspace/MISSION.md || { echo "ERROR: update mode clobbered MISSION.md"; exit 1; }
+          echo "User content preserved after init update"
+
+      - name: Verify infrastructure was updated
+        run: |
+          # Workflows should exist and be transformed (no #@dist markers)
+          for f in /tmp/test-workspace/.github/workflows/agentic-lib-*.yml; do
+            if grep -q '#@dist' "$f"; then
+              echo "ERROR: $f still contains #@dist markers"
+              exit 1
+            fi
+            echo "OK: $(basename $f)"
+          done
+          # Actions should exist
+          test -f /tmp/test-workspace/.github/agentic-lib/actions/agentic-step/action.yml || { echo "ERROR: agentic-step action missing"; exit 1; }
+          echo "Infrastructure updated correctly"
+
+      - name: Verify distributed toml matches source defaults
+        run: node scripts/validate-dist-transform.js compare /tmp/test-workspace/agentic-lib.toml
+
+  test-stale-workflow-cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - run: npm ci
+
+      - name: Seed workspace with a stale workflow
+        run: |
+          mkdir -p /tmp/test-workspace/.github/workflows
+          echo "name: stale" > /tmp/test-workspace/.github/workflows/agentic-lib-old-stale.yml
+          node bin/agentic-lib.js init --purge --mission 7-kyu-understand-fizz-buzz --target /tmp/test-workspace
+
+      - name: Verify stale workflow was removed
+        run: |
+          if [ -f /tmp/test-workspace/.github/workflows/agentic-lib-old-stale.yml ]; then
+            echo "ERROR: stale workflow was not cleaned up"
+            exit 1
+          fi
+          echo "Stale workflow correctly removed"
+
+  test-all-missions-seed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - run: npm ci
+
+      - name: Verify all missions seed and pass tests
+        run: |
+          FAILURES=0
+          for mission in $(ls src/seeds/missions/*.md | xargs -I{} basename {} .md); do
+            mkdir -p /tmp/mission-test
+            if node bin/agentic-lib.js init --purge --mission "$mission" --target /tmp/mission-test 2>&1; then
+              # Verify key files exist
+              if [ -f /tmp/mission-test/MISSION.md ] && [ -f /tmp/mission-test/src/lib/main.js ]; then
+                # Install deps and run tests — seed code must pass seed tests
+                cd /tmp/mission-test
+                node -e "const p=JSON.parse(require('fs').readFileSync('package.json','utf8')); delete p.dependencies; require('fs').writeFileSync('package.json',JSON.stringify(p,null,2)+'\n')"
+                if npm install --ignore-scripts 2>&1 && npm test 2>&1; then
+                  echo "OK: $mission (seed + tests pass)"
+                else
+                  echo "ERROR: $mission — npm test failed"
+                  FAILURES=$((FAILURES + 1))
+                fi
+                cd -
+              else
+                echo "ERROR: $mission — missing key files"
+                FAILURES=$((FAILURES + 1))
+              fi
+            else
+              echo "ERROR: $mission — init failed"
+              FAILURES=$((FAILURES + 1))
+            fi
+            rm -rf /tmp/mission-test
+          done
+          if [ "$FAILURES" -gt 0 ]; then
+            echo "ERROR: $FAILURES mission(s) failed"
+            exit 1
+          fi
+          echo "All missions seed and pass tests successfully"
+
+  test-copilot-symlink:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - run: npm ci
+
+      - name: Init workspace with --purge
+        run: |
+          mkdir -p /tmp/test-workspace
+          node bin/agentic-lib.js init --purge --mission 7-kyu-understand-fizz-buzz --target /tmp/test-workspace
+
+      - name: Verify copilot/ directory was distributed
+        run: |
+          test -d /tmp/test-workspace/.github/agentic-lib/copilot || { echo "ERROR: copilot/ not distributed"; exit 1; }
+          test -f /tmp/test-workspace/.github/agentic-lib/copilot/config.js || { echo "ERROR: copilot/config.js missing"; exit 1; }
+          test -f /tmp/test-workspace/.github/agentic-lib/copilot/session.js || { echo "ERROR: copilot/session.js missing"; exit 1; }
+          echo "OK: copilot/ directory distributed"
+
+      - name: Install agentic-step deps and create symlink
+        run: |
+          cd /tmp/test-workspace/.github/agentic-lib/actions/agentic-step
+          npm ci
+          # Replicate the symlink step from self-init.sh
+          ln -sf "$(pwd)/node_modules" /tmp/test-workspace/.github/agentic-lib/copilot/node_modules
+
+      - name: Verify node_modules symlink resolves
+        run: |
+          LINK_TARGET=$(readlink /tmp/test-workspace/.github/agentic-lib/copilot/node_modules 2>/dev/null || echo "NOT_A_SYMLINK")
+          echo "Symlink target: $LINK_TARGET"
+          test -d /tmp/test-workspace/.github/agentic-lib/copilot/node_modules || { echo "ERROR: copilot/node_modules does not resolve"; exit 1; }
+          echo "OK: copilot/node_modules symlink resolves"
+
+      - name: Verify smol-toml is importable via symlink
+        run: |
+          cd /tmp/test-workspace/.github/agentic-lib/copilot
+          node -e "require('smol-toml')" || node -e "import('smol-toml').then(() => console.log('OK')).catch(e => { console.error(e); process.exit(1); })"
+          echo "OK: smol-toml importable through symlinked node_modules"
+
+      - name: Verify config.js loads through symlink
+        run: |
+          cd /tmp/test-workspace
+          node -e "
+            import('./.github/agentic-lib/copilot/config.js')
+              .then(m => {
+                const c = m.loadConfig('agentic-lib.toml');
+                console.log('Config loaded: model=' + c.model);
+                console.log('OK: config.js works through symlinked deps');
+              })
+              .catch(e => { console.error(e); process.exit(1); });
+          "
+
+
+  # ─── Workflow dry-run tests: call distributable workflows ──────────
+  #
+  # These exercise the 5 distributable workflows in inert mode:
+  #   - agentic-lib-workflow: 3 concurrent modes (maintain, review, dev)
+  #   - agentic-lib-bot: responds to a test discussion
+  #   - agentic-lib-schedule: edits files but skips push
+  #   - agentic-lib-init: runs init --dry-run, skips push
+  #   - agentic-lib-test: runs npm test on the checkout
+
+  test-workflow-maintain:
+    needs: params
+    if: needs.params.outputs.hasCopilotToken == 'true'
+    uses: ./.github/workflows/agentic-lib-workflow.yml
+    with:
+      dry-run: "true"
+      config-path: "agentic-lib.toml"
+      model: ${{ needs.params.outputs.model }}
+      mode: "maintain-only"
+    secrets: inherit
+
+  test-workflow-review:
+    needs: params
+    if: needs.params.outputs.hasCopilotToken == 'true'
+    uses: ./.github/workflows/agentic-lib-workflow.yml
+    with:
+      dry-run: "true"
+      config-path: "agentic-lib.toml"
+      model: ${{ needs.params.outputs.model }}
+      mode: "review-only"
+    secrets: inherit
+
+  test-workflow-dev:
+    needs: params
+    if: needs.params.outputs.hasCopilotToken == 'true'
+    uses: ./.github/workflows/agentic-lib-workflow.yml
+    with:
+      dry-run: "true"
+      config-path: "agentic-lib.toml"
+      model: ${{ needs.params.outputs.model }}
+      mode: "dev-only"
+    secrets: inherit
+
+  test-workflow-bot:
+    needs: params
+    if: needs.params.outputs.hasCopilotToken == 'true'
+    uses: ./.github/workflows/agentic-lib-bot.yml
+    with:
+      discussion-url: "https://github.com/xn-intenton-z2a/agentic-lib/discussions/1840"
+      model: ${{ needs.params.outputs.model }}
+    secrets: inherit
+
+  test-workflow-schedule:
+    uses: ./.github/workflows/agentic-lib-schedule.yml
+    with:
+      frequency: "daily"
+      dry-run: "true"
+    secrets: inherit
+
+  test-workflow-update:
+    uses: ./.github/workflows/agentic-lib-update.yml
+    with:
+      dry-run: "true"
+    secrets: inherit
+
+  test-workflow-init:
+    uses: ./.github/workflows/agentic-lib-init.yml
+    with:
+      mode: "reseed"
+      dry-run: "true"
+    secrets: inherit
+
+  test-workflow-test:
+    uses: ./.github/workflows/agentic-lib-test.yml
+    secrets: inherit

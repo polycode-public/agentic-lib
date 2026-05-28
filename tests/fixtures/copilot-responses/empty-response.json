@@ -1,0 +1,10 @@
+{
+  "data": {
+    "content": "",
+    "usage": {
+      "totalTokens": 50,
+      "promptTokens": 50,
+      "completionTokens": 0
+    }
+  }
+}

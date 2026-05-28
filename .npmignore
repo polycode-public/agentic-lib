@@ -1,0 +1,8 @@
+**/node_modules/
+tests/
+scripts/
+_developers/
+_archive/
+coverage/
+.github/
+*.test.js

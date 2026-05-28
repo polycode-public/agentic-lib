@@ -1,0 +1,219 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2025-2026 Polycode Limited
+# .github/workflows/release.yml
+#
+# All publishing for agentic-lib in one workflow.
+#
+# Auto-publish: push to main with src/bin/package.json changes → patch bump → npm publish.
+# Manual release: workflow_dispatch with major/minor/prerelease choice.
+
+name: release
+concurrency:
+  group: agentic-lib-release
+  cancel-in-progress: false
+run-name: "release [${{ github.ref_name }}] ${{ inputs.versionIncrement || 'patch (auto)' }}"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**/*.js"
+      - "**/*.json"
+      - "**/*.html"
+      - "**/*.sh"
+      - "**/*.yml"
+      - ".github/agents/*.md"
+      - "src/scripts/*.sh"
+      - "src/seeds/*.md"
+      - "src/seeds/missions/*.md"
+      - "!_developers/**"
+      - "!test/**"
+      - "!tests/**"
+  workflow_dispatch:
+    inputs:
+      versionIncrement:
+        description: "Semantic version increment"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - prerelease
+          - prepatch
+          - preminor
+          - premajor
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  gitUserEmail: "action@github.com"
+  gitUserName: "GitHub Actions[bot]"
+
+jobs:
+  params:
+    runs-on: ubuntu-latest
+    outputs:
+      bump-type: ${{ steps.resolve.outputs.bump-type }}
+    steps:
+      - id: resolve
+        uses: actions/github-script@v8
+        env:
+          INPUT_VERSION_INCREMENT: ${{ inputs.versionIncrement }}
+        with:
+          script: |
+            const resolve = (name, input, configKey, defaultValue) => {
+              let value = input || '';
+              let source = 'input';
+              if (!value && configKey) {
+                source = '';
+              }
+              if (!value) {
+                value = defaultValue;
+                source = 'default';
+              }
+              core.info(`param ${name}: input='${input}' default='${defaultValue}' → '${value}' (source: ${source})`);
+              core.setOutput(name, value);
+              return value;
+            };
+            resolve('bump-type', process.env.INPUT_VERSION_INCREMENT, null, 'patch');
+
+  test:
+    needs: [params]
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.58.2-noble
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - run: npm ci
+
+      - name: Install sub-project dependencies
+        run: cd src/actions/agentic-step && (npm ci)
+
+      - run: npm test
+
+      - name: System test (init + unit + behaviour)
+        run: bash scripts/system-test.sh --init-only --behaviour
+
+      - name: Job Summary
+        if: always()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const summary = `## Job: test\n| Key | Value |\n|-----|-------|\n| Status | ${context.job.status || 'completed'} |`;
+            core.summary.addRaw(summary).write();
+
+  publish:
+    needs: [params, test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      versionIncrement: ${{ inputs.versionIncrement || 'patch' }}
+    outputs:
+      releasedVersion: ${{ steps.released.outputs.releasedVersion }}
+      newVersion: ${{ steps.rotated.outputs.newVersion }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+          registry-url: "https://registry.npmjs.org"
+
+      - run: npm ci
+
+      - name: Configure git
+        run: |
+          git config --local user.email '${{ env.gitUserEmail }}'
+          git config --local user.name '${{ env.gitUserName }}'
+          git config --local pull.ff false
+          git config --local pull.rebase false
+
+      - name: Get latest from remote
+        run: |
+          git fetch origin ${{ github.ref_name }}
+          git merge origin/${{ github.ref_name }} --no-ff --no-edit --strategy=recursive --strategy-option=ours
+
+      - name: Publish release
+        id: released
+        if: env.versionIncrement == 'major' || env.versionIncrement == 'minor' || env.versionIncrement == 'patch'
+        shell: bash
+        run: |
+          npm version ${{ env.versionIncrement }}
+          RELEASED=$(node -p "require('./package.json').version")
+          # Update seed package.json to depend on the version being released
+          node -e "
+            const fs = require('fs');
+            const seed = JSON.parse(fs.readFileSync('src/seeds/zero-package.json', 'utf8'));
+            seed.dependencies['@xn-intenton-z2a/agentic-lib'] = '^${RELEASED}';
+            fs.writeFileSync('src/seeds/zero-package.json', JSON.stringify(seed, null, 2) + '\n');
+          "
+          git add src/seeds/zero-package.json
+          git commit --amend --no-edit
+          npm publish --provenance --tag latest --access public
+          git push --follow-tags
+          releasedVersion=$(node -p "require('./package.json').version")
+          echo "releasedVersion=${releasedVersion}" >> $GITHUB_OUTPUT
+          echo "Published: ${releasedVersion}"
+
+      - name: Create GitHub Release
+        if: steps.released.outputs.releasedVersion
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.released.outputs.releasedVersion }}
+          name: Release ${{ steps.released.outputs.releasedVersion }}
+          body: "Release increment: ${{ env.versionIncrement }}."
+
+      - name: Rotate to next prepatch from a released version
+        if: env.versionIncrement == 'major' || env.versionIncrement == 'minor' || env.versionIncrement == 'patch'
+        shell: bash
+        run: npm version --no-git-tag-version prepatch
+
+      - name: Rotate to next pre-release version
+        if: env.versionIncrement == 'premajor' || env.versionIncrement == 'preminor' || env.versionIncrement == 'prepatch' || env.versionIncrement == 'prerelease'
+        shell: bash
+        run: npm version --no-git-tag-version ${{ env.versionIncrement }}
+
+      - name: Record rotated version
+        id: rotated
+        shell: bash
+        run: |
+          newVersion=$(node -p "require('./package.json').version")
+          echo "newVersion=${newVersion}" >> $GITHUB_OUTPUT
+
+      - name: Push version commit
+        shell: bash
+        run: |
+          git add -v --all
+          newVersion=$(node -p "require('./package.json').version")
+          git commit -m "${newVersion?}"
+          git push origin HEAD --follow-tags
+
+      - name: Tear down .npmrc
+        shell: bash
+        run: rm -f .npmrc
+
+      - name: Log final version
+        shell: bash
+        run: |
+          echo "Released: ${{ steps.released.outputs.releasedVersion || 'prerelease only' }}"
+          echo "Next: ${{ steps.rotated.outputs.newVersion }}"
+
+      - name: Job Summary
+        if: always()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const summary = `## Job: publish\n| Key | Value |\n|-----|-------|\n| Status | ${context.job.status || 'completed'} |\n| Released Version | ${{ steps.released.outputs.releasedVersion || 'N/A' }} |\n| Next Version | ${{ steps.rotated.outputs.newVersion || 'N/A' }} |\n| Bump Type | ${{ inputs.versionIncrement || 'patch' }} |`;
+            core.summary.addRaw(summary).write();

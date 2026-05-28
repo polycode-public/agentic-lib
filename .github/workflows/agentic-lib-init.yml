@@ -1,0 +1,532 @@
+# SPDX-License-Identifier: MIT
+# Copyright (C) 2025-2026 Polycode Limited
+# .github/workflows/agentic-lib-init.yml
+#
+# Init: delegates to agentic-lib-update.yml for the update step, then
+# optionally reseeds or purges user content and configures schedule/model.
+# Commits and pushes to main [skip ci].
+
+name: agentic-lib-init
+run-name: "agentic-lib-init ${{ inputs.mode || 'update' }} [${{ github.ref_name }}]"
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: false
+        default: ""
+      mode:
+        type: string
+        required: false
+        default: "purge"
+      dry-run:
+        type: string
+        required: false
+        default: "false"
+      mission-seed:
+        type: string
+        required: false
+        default: "7-kyu-understand-fizz-buzz"
+      mission-text:
+        type: string
+        required: false
+        default: ""
+      schedule:
+        type: string
+        required: false
+        default: ""
+      model:
+        type: string
+        required: false
+        default: ""
+      profile:
+        type: string
+        required: false
+        default: ""
+      create-seed-issues:
+        type: string
+        required: false
+        default: "false"
+      run-workflow:
+        type: string
+        required: false
+        default: "true"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Init mode"
+        type: choice
+        required: false
+        default: "purge"
+        options:
+          - purge
+          - reseed
+          - update
+      dry-run:
+        description: "Preview changes without writing files"
+        type: boolean
+        required: false
+        default: false
+      mission-seed:
+        description: "Mission seed name (purge only)"
+        type: choice
+        required: false
+        default: "7-kyu-understand-fizz-buzz"
+        options:
+          - random
+          - 8-kyu-remember-empty
+          - 8-kyu-remember-hello-world
+          - 7-kyu-understand-fizz-buzz
+          - 6-kyu-understand-hamming-distance
+          - 6-kyu-understand-roman-numerals
+          - 5-kyu-apply-ascii-face
+          - 5-kyu-apply-string-utils
+          - 4-kyu-apply-cron-engine
+          - 4-kyu-apply-dense-encoding
+          - 4-kyu-analyze-json-schema-diff
+          - 4-kyu-apply-owl-ontology
+          - 3-kyu-analyze-lunar-lander
+          - 3-kyu-evaluate-time-series-lab
+          - 2-kyu-create-markdown-compiler
+          - 2-kyu-create-plot-code-lib
+          - 1-kyu-create-ray-tracer
+          - 1-dan-create-c64-emulator
+          - 1-dan-create-planning-engine
+          - 2-dan-create-self-hosted
+      mission-text:
+        description: "Freeform mission text for MISSION.md (overrides mission-seed if provided)"
+        type: string
+        required: false
+        default: ""
+      schedule:
+        description: "Supervisor schedule (leave empty to keep current)"
+        type: choice
+        required: false
+        default: ""
+        options:
+          - ""
+          - "off"
+          - "weekly"
+          - "daily"
+          - "hourly"
+          - "continuous"
+      model:
+        description: "Copilot SDK model for LLM requests (leave empty to keep current)"
+        type: choice
+        required: false
+        default: ""
+        options:
+          - ""
+          - gpt-5-mini
+          - claude-sonnet-4
+          - gpt-4.1
+      profile:
+        description: "Tuning profile (leave empty to keep current)"
+        type: choice
+        required: false
+        default: ""
+        options:
+          - ""
+          - min
+          - med
+          - max
+      create-seed-issues:
+        description: "Create initial seed issues after purge"
+        type: boolean
+        required: false
+        default: false
+      run-workflow:
+        description: "Dispatch agentic-lib-workflow after init completes"
+        type: boolean
+        required: false
+        default: true
+
+permissions: write-all
+
+jobs:
+  params:
+    runs-on: ubuntu-latest
+    outputs:
+      dry-run: ${{ steps.resolve.outputs.dry-run }}
+      mode: ${{ steps.resolve.outputs.mode }}
+      mission-seed: ${{ steps.resolve.outputs.mission-seed }}
+      mission-text: ${{ steps.resolve.outputs.mission-text }}
+      schedule: ${{ steps.resolve.outputs.schedule }}
+      model: ${{ steps.resolve.outputs.model }}
+      profile: ${{ steps.resolve.outputs.profile }}
+      create-seed-issues: ${{ steps.resolve.outputs.create-seed-issues }}
+      run-workflow: ${{ steps.resolve.outputs.run-workflow }}
+    steps:
+      - id: resolve
+        uses: actions/github-script@v8
+        env:
+          INPUT_DRY_RUN: ${{ inputs.dry-run }}
+          INPUT_MODE: ${{ inputs.mode }}
+          INPUT_MISSION_SEED: ${{ inputs.mission-seed }}
+          INPUT_MISSION_TEXT: ${{ inputs.mission-text }}
+          INPUT_SCHEDULE: ${{ inputs.schedule }}
+          INPUT_MODEL: ${{ inputs.model }}
+          INPUT_PROFILE: ${{ inputs.profile }}
+          INPUT_CREATE_SEED_ISSUES: ${{ inputs.create-seed-issues }}
+          INPUT_RUN_WORKFLOW: ${{ inputs.run-workflow }}
+        with:
+          script: |
+            const resolve = (name, input, configKey, defaultValue) => {
+              let value = input || '';
+              let source = 'input';
+              if (!value && configKey) {
+                source = '';
+              }
+              if (!value) {
+                value = defaultValue;
+                source = 'default';
+              }
+              core.info(`param ${name}: input='${input}' default='${defaultValue}' → '${value}' (source: ${source})`);
+              core.setOutput(name, value);
+              return value;
+            };
+            resolve('dry-run', process.env.INPUT_DRY_RUN, null, 'false');
+            resolve('mode', process.env.INPUT_MODE, null, 'purge');
+            resolve('mission-seed', process.env.INPUT_MISSION_SEED, null, '7-kyu-understand-fizz-buzz');
+            resolve('mission-text', process.env.INPUT_MISSION_TEXT, null, '');
+            resolve('schedule', process.env.INPUT_SCHEDULE, null, '');
+            resolve('model', process.env.INPUT_MODEL, null, '');
+            resolve('profile', process.env.INPUT_PROFILE, null, '');
+            resolve('create-seed-issues', process.env.INPUT_CREATE_SEED_ISSUES, null, 'false');
+            resolve('run-workflow', process.env.INPUT_RUN_WORKFLOW, null, 'true');
+
+  # Step 1: Update agentic-lib and infrastructure (commits to main)
+  # Skip tests when purge/reseed will replace all user code anyway
+  update:
+    needs: [params]
+    uses: ./.github/workflows/agentic-lib-update.yml
+    with:
+      ref: ${{ inputs.ref }}
+      dry-run: ${{ inputs.dry-run || 'false' }}
+      skip-tests: ${{ inputs.mode != 'update' }}
+    secrets: inherit
+
+  # Step 2: Reseed/purge and configure (only if mode != update)
+  # Use !cancelled() so purge runs even if update's npm test failed
+  init:
+    needs: [params, update]
+    if: "!cancelled() && inputs.mode != 'update'"
+    runs-on: ubuntu-latest
+    env:
+      INIT_MODE: ${{ inputs.mode }}
+      INIT_MISSION_SEED: ${{ inputs.mission-seed || '7-kyu-understand-fizz-buzz' }}
+      INIT_MISSION_TEXT: ${{ inputs.mission-text }}
+    steps:
+      - uses: actions/checkout@v6
+        if: inputs.dry-run == 'true' || inputs.dry-run == true
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+      - uses: actions/checkout@v6
+        if: inputs.dry-run != 'true' && inputs.dry-run != true
+        with:
+          ref: ${{ inputs.ref || 'main' }}
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Close hanging init PRs
+        if: github.repository != 'xn-intenton-z2a/agentic-lib' && env.INIT_MODE == 'purge' && inputs.dry-run != 'true' && inputs.dry-run != true
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+        run: |
+          gh pr list --state open --json number,headRefName \
+            --jq '.[] | select(.headRefName | startswith("agentic-lib-init-")) | .number' \
+            | while read -r pr_num; do
+                echo "Closing hanging init PR #${pr_num}"
+                gh pr close "$pr_num" --delete-branch || true
+              done
+
+      - name: Run init (reseed/purge)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          FLAGS="init"
+          if [ "$INIT_MODE" = "reseed" ]; then FLAGS="$FLAGS --reseed"; fi
+          if [ "$INIT_MODE" = "purge" ]; then FLAGS="$FLAGS --purge --mission $INIT_MISSION_SEED"; fi
+          DRY_RUN='${{ inputs.dry-run }}'
+          if [ "$DRY_RUN" = "true" ]; then FLAGS="$FLAGS --dry-run"; fi
+          if [ -f "bin/agentic-lib.js" ]; then
+            node bin/agentic-lib.js $FLAGS
+          else
+            npx @xn-intenton-z2a/agentic-lib $FLAGS
+          fi
+
+      - name: Write mission text (if provided, overrides seed)
+        if: env.INIT_MISSION_TEXT != '' && inputs.dry-run != 'true' && inputs.dry-run != true
+        run: |
+          printf '# Mission\n\n%s\n' "$INIT_MISSION_TEXT" > MISSION.md
+          echo "Wrote custom mission text to MISSION.md"
+
+      - run: npm install
+
+      - name: Install agentic-step deps
+        if: hashFiles('.github/agentic-lib/actions/agentic-step/package.json') != ''
+        run: cd .github/agentic-lib/actions/agentic-step && npm ci
+
+      - name: Install sub-project dependencies (agentic-lib dev only)
+        if: hashFiles('src/actions/agentic-step/package.json') != ''
+        run: cd src/actions/agentic-step && npm ci
+
+      - run: npm test
+
+      - name: Update model and profile (if requested)
+        if: github.repository != 'xn-intenton-z2a/agentic-lib' && inputs.dry-run != 'true' && inputs.dry-run != true && (inputs.model != '' || inputs.profile != '')
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const model = '${{ inputs.model }}';
+            const profile = '${{ inputs.profile }}';
+            const tomlPath = 'agentic-lib.toml';
+            if (!fs.existsSync(tomlPath)) return;
+            let toml = fs.readFileSync(tomlPath, 'utf8');
+            const tuningSectionRegex = /(\[tuning\])([\s\S]*?)(?=\n\[|$)/;
+            const tuningMatch = toml.match(tuningSectionRegex);
+            if (tuningMatch) {
+              let section = tuningMatch[0];
+              if (model) {
+                const updated = section.replace(/^(\s*model\s*=\s*)"[^"]*"/m, `$1"${model}"`);
+                if (updated !== section) {
+                  toml = toml.replace(section, updated);
+                  section = updated;
+                  core.info(`Updated [tuning].model to: ${model}`);
+                }
+              }
+              if (profile) {
+                const updated = section.replace(/^(\s*profile\s*=\s*)"[^"]*"/m, `$1"${profile}"`);
+                if (updated !== section) {
+                  toml = toml.replace(section, updated);
+                  core.info(`Updated [tuning].profile to: ${profile}`);
+                }
+              }
+            }
+            fs.writeFileSync(tomlPath, toml);
+
+      - name: Update schedule (if requested)
+        if: github.repository != 'xn-intenton-z2a/agentic-lib' && inputs.schedule != '' && inputs.dry-run != 'true' && inputs.dry-run != true
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const frequency = '${{ inputs.schedule }}';
+            const workflowPath = '.github/workflows/agentic-lib-workflow.yml';
+            const tomlPath = 'agentic-lib.toml';
+            let model = '${{ inputs.model }}';
+            if (!model && fs.existsSync(tomlPath)) {
+              const toml = fs.readFileSync(tomlPath, 'utf8');
+              const m = toml.match(/^\s*model\s*=\s*"([^"]*)"/m);
+              if (m) model = m[1];
+            }
+            if (!model) model = 'gpt-5-mini';
+
+            // Shared schedule maps and helper (single source of truth)
+            // In consumer repos: .github/agentic-lib/scripts/; in agentic-lib itself: src/scripts/
+            const scheduleUtilsPath = fs.existsSync('./.github/agentic-lib/scripts/schedule-utils.cjs')
+              ? './.github/agentic-lib/scripts/schedule-utils.cjs'
+              : './src/scripts/schedule-utils.cjs';
+            const { updateAllSchedules } = require(scheduleUtilsPath);
+            const logger = { info: core.info };
+
+            // Update all three workflow files proportionally
+            updateAllSchedules(frequency, logger);
+
+            // Stamp the workflow file with current date
+            if (fs.existsSync(workflowPath)) {
+              let content = fs.readFileSync(workflowPath, 'utf8');
+              const dateStamp = `# Schedule updated: ${new Date().toISOString()}`;
+              const stampRegex = /^# Schedule updated: .*/m;
+              if (stampRegex.test(content)) {
+                content = content.replace(stampRegex, dateStamp);
+              } else {
+                content = content.replace(/^(# .*\n)+/m, (match) => match + dateStamp + '\n');
+              }
+              fs.writeFileSync(workflowPath, content);
+            }
+            core.info(`Updated proportional schedules to: ${frequency}`);
+
+            if (fs.existsSync(tomlPath)) {
+              let toml = fs.readFileSync(tomlPath, 'utf8');
+              const scheduleModelRegex = /(\[schedule\][^\[]*?)(^\s*model\s*=\s*"[^"]*")/m;
+              if (scheduleModelRegex.test(toml)) {
+                toml = toml.replace(scheduleModelRegex, `$1model = "${model}"`);
+              }
+              const scheduleSupervisorRegex = /(\[schedule\][^\[]*?)(^\s*supervisor\s*=\s*"[^"]*")/m;
+              if (scheduleSupervisorRegex.test(toml)) {
+                toml = toml.replace(scheduleSupervisorRegex, `$1supervisor = "${frequency}"`);
+              }
+              fs.writeFileSync(tomlPath, toml);
+              core.info(`Updated agentic-lib.toml: model=${model}, supervisor=${frequency}`);
+            }
+
+      - name: Commit and push to main
+        if: github.repository != 'xn-intenton-z2a/agentic-lib' && inputs.dry-run != 'true' && inputs.dry-run != true
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+        run: |
+          TOKEN_USER=$(gh api /user --jq '.login')
+          TOKEN_ID=$(gh api /user --jq '.id')
+          git config user.name "${TOKEN_USER}"
+          git config user.email "${TOKEN_ID}+${TOKEN_USER}@users.noreply.github.com"
+          git add -A
+          # Unstage log/screenshot/state files — these live on the agentic-lib-logs branch
+          git reset HEAD -- 'intentïon.md' 'SCREENSHOT_INDEX.png' 2>/dev/null || true
+          git reset HEAD -- agent-log-*.md 2>/dev/null || true
+          git reset HEAD -- agentic-lib-state.toml 2>/dev/null || true
+          git diff --cached --quiet && echo "No changes" && exit 0
+          VERSION=$(npx @xn-intenton-z2a/agentic-lib version 2>/dev/null || echo "latest")
+          # Problem 1 fix: Don't use [skip ci] when workflow files changed.
+          # GitHub may not register cron schedule changes from [skip ci] commits.
+          WORKFLOW_CHANGED=$(git diff --cached --name-only -- '.github/workflows/' | head -1)
+          if [ -n "$WORKFLOW_CHANGED" ]; then
+            git commit -m "init ${INIT_MODE} (agentic-lib@${VERSION})"
+          else
+            git commit -m "init ${INIT_MODE} (agentic-lib@${VERSION}) [skip ci]"
+          fi
+          MAX_RETRIES=3
+          PUSH_SUCCESS=""
+          for attempt in $(seq 1 $MAX_RETRIES); do
+            # Tiered conflict resolution (mirrors fix-stuck strategy)
+            case $attempt in
+              1)
+                echo "=== Attempt 1: rebase (cleanest) ==="
+                git pull --rebase origin main || {
+                  echo "Rebase conflict on attempt 1 — aborting rebase"
+                  git rebase --abort 2>/dev/null || true
+                  sleep $((10 + RANDOM % 10))
+                  continue
+                }
+                ;;
+              2)
+                echo "=== Attempt 2: merge (handles non-overlapping changes) ==="
+                git pull --no-rebase origin main || {
+                  echo "Merge conflict on attempt 2 — aborting merge"
+                  git merge --abort 2>/dev/null || true
+                  sleep $((20 + RANDOM % 10))
+                  continue
+                }
+                ;;
+              3)
+                echo "=== Attempt 3: merge -X theirs (accept remote on conflict) ==="
+                git pull -X theirs --no-rebase origin main || {
+                  echo "Merge -X theirs failed on attempt 3"
+                  git merge --abort 2>/dev/null || true
+                  sleep $((30 + RANDOM % 10))
+                  continue
+                }
+                ;;
+            esac
+            git push origin HEAD:refs/heads/main && { PUSH_SUCCESS="true"; break; }
+            echo "Push failed on attempt $attempt"
+            sleep $((attempt * 10 + RANDOM % 10))
+          done
+          if [ "$PUSH_SUCCESS" != "true" ]; then
+            echo "::error::Failed to push after $MAX_RETRIES attempts"
+            exit 1
+          fi
+
+      - name: "Verify schedule registered with GitHub"
+        if: github.repository != 'xn-intenton-z2a/agentic-lib' && inputs.schedule != '' && inputs.dry-run != 'true' && inputs.dry-run != true
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+        run: |
+          echo "Waiting 10s for GitHub to process the push..."
+          sleep 10
+          WORKFLOW_STATE=$(gh api "repos/${{ github.repository }}/actions/workflows/agentic-lib-workflow.yml" --jq '.state' 2>/dev/null || echo "unknown")
+          echo "Workflow state: ${WORKFLOW_STATE}"
+          if [ "$WORKFLOW_STATE" != "active" ]; then
+            echo "::warning::Workflow state is '${WORKFLOW_STATE}', attempting to enable..."
+            gh api "repos/${{ github.repository }}/actions/workflows/agentic-lib-workflow.yml/enable" -X PUT 2>/dev/null || true
+            WORKFLOW_STATE=$(gh api "repos/${{ github.repository }}/actions/workflows/agentic-lib-workflow.yml" --jq '.state' 2>/dev/null || echo "unknown")
+            echo "Workflow state after enable: ${WORKFLOW_STATE}"
+          fi
+
+      - name: Create initial seed issues
+        if: github.repository != 'xn-intenton-z2a/agentic-lib' && env.INIT_MODE == 'purge' && inputs.dry-run != 'true' && inputs.dry-run != true && (inputs.create-seed-issues == 'true' || inputs.create-seed-issues == true)
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const missionContent = fs.existsSync('MISSION.md')
+              ? fs.readFileSync('MISSION.md', 'utf8')
+              : '(no MISSION.md found)';
+
+            for (const label of ['automated', 'ready']) {
+              try {
+                await github.rest.issues.createLabel({
+                  ...context.repo, name: label,
+                  color: label === 'automated' ? '0e8a16' : '1d76db',
+                  description: label === 'automated' ? 'Created by automation' : 'Ready for dev transform',
+                });
+              } catch (e) { /* label already exists */ }
+            }
+
+            const unitTestBody = [
+              'Create a unit test file for each of the major features in the mission ',
+              'and put a TODO in a trivial empty passing test in each.',
+              '',
+              '## MISSION.md',
+              '',
+              missionContent,
+            ].join('\n');
+            const { data: issue1 } = await github.rest.issues.create({
+              ...context.repo,
+              title: 'Initial unit tests',
+              body: unitTestBody,
+              labels: ['automated', 'ready'],
+            });
+            core.info(`Created issue #${issue1.number}: Initial unit tests`);
+
+            const webLayoutBody = [
+              'Create the home page layout to showcase each of the major features in the mission ',
+              'and put a TODO in a trivial empty passing test in each.',
+              '',
+              '## MISSION.md',
+              '',
+              missionContent,
+            ].join('\n');
+            const { data: issue2 } = await github.rest.issues.create({
+              ...context.repo,
+              title: 'Initial web layout',
+              body: webLayoutBody,
+              labels: ['automated', 'ready'],
+            });
+            core.info(`Created issue #${issue2.number}: Initial web layout`);
+
+      - name: Job Summary
+        if: always()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const summary = `## Job: init\n| Key | Value |\n|-----|-------|\n| Status | ${context.job.status || 'completed'} |\n| Mode | ${{ inputs.mode }} |\n| Dry Run | ${{ inputs.dry-run }} |\n| Create Seed Issues | ${{ inputs.create-seed-issues }} |`;
+            core.summary.addRaw(summary).write();
+
+  # Step 3: Dispatch agentic-lib-workflow to start the first cycle
+  dispatch-workflow:
+    needs: [params, init]
+    if: >-
+      !cancelled()
+      && needs.init.result == 'success'
+      && inputs.dry-run != 'true' && inputs.dry-run != true
+      && inputs.run-workflow != 'false' && inputs.run-workflow != false
+      && github.repository != 'xn-intenton-z2a/agentic-lib'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch agentic-lib-workflow
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+        run: |
+          echo "Dispatching agentic-lib-workflow to start first cycle..."
+          gh workflow run agentic-lib-workflow.yml \
+            --repo "${{ github.repository }}" \
+            --ref main \
+            -f mode=full \
+            -f dry-run=false
+          echo "Dispatched agentic-lib-workflow"

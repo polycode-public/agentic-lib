@@ -1,0 +1,10 @@
+{
+  "data": {
+    "content": "OPEN: The issue requests HTTP endpoint support but the current codebase only has a CLI entry point. No HTTP server or routing code exists.",
+    "usage": {
+      "totalTokens": 120,
+      "promptTokens": 100,
+      "completionTokens": 20
+    }
+  }
+}

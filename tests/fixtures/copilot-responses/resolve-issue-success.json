@@ -1,0 +1,10 @@
+{
+  "data": {
+    "content": "I've analyzed the issue and implemented the fix.\n\n```javascript\n// src/lib/main.js\nexport function hello() {\n  return 'Hello, World!';\n}\n```\n\nThe change adds the `hello` function as requested in the issue.",
+    "usage": {
+      "totalTokens": 250,
+      "promptTokens": 180,
+      "completionTokens": 70
+    }
+  }
+}
