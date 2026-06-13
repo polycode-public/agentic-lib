@@ -4,15 +4,15 @@
 # transform.yml — THE reusable dispatch for the intentïon delivery loop.
 #
 # One trigger -> one headless `claude -p` run -> one draft PR (or nothing).
-# This is the only abstraction agentic-lib still owns: a thin wrapper that selects
-# a provider purely by environment variable, assembles a prompt from the trigger
-# context plus components/prompts/<type>.md, runs the engine under a turn cap, gates
-# on a `fixes #N` trailer, and opens / revises a PR.
+# A thin wrapper that selects a provider purely by environment variable, assembles
+# a prompt from the trigger context plus components/prompts/<type>.md (shipped in
+# THIS repo, checked out alongside the caller), runs the engine under a turn cap,
+# then commits the result with a `fixes #N` trailer and opens / revises a PR.
 #
-# Provider lanes (selected by which secrets are present — no code branch):
-#   Anthropic lane : ANTHROPIC_API_KEY
-#   Bedrock lane   : CLAUDE_CODE_USE_BEDROCK=1 + OIDC-vended AWS creds
-#                    + AWS_REGION=eu-west-2 + ANTHROPIC_MODEL=<inference-profile-id>
+# Provider lanes (no code branch — driven by config):
+#   Anthropic lane : secret ANTHROPIC_API_KEY
+#   Bedrock lane   : var CLAUDE_CODE_USE_BEDROCK=1 + secret AWS_OIDC_ROLE (OIDC)
+#                    + var AWS_REGION=eu-west-2 + var ANTHROPIC_MODEL=<inference-profile-id>
 # See MODELS.md for the env-var matrix.
 
 name: transform
@@ -25,19 +25,19 @@ on:
         required: true
         type: string
       work_item:
-        description: "issue or PR number (0 for none)"
+        description: "issue/PR number or 'INTENT.md' (string; a leading # is stripped)"
         required: false
-        default: 0
-        type: number
+        default: "INTENT.md"
+        type: string
       max_turns:
         description: "per-run --max-turns ceiling"
         required: false
-        default: 30
+        default: 20
         type: number
       model:
-        description: "opus | sonnet | haiku | fable"
+        description: "opus | sonnet | haiku | fable (blank = ANTHROPIC_MODEL / engine default)"
         required: false
-        default: sonnet
+        default: ""
         type: string
 
 # C8 idempotency: one in-flight transformation per work item.
@@ -56,24 +56,35 @@ jobs:
     timeout-minutes: 30
     env:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      CLAUDE_CODE_USE_BEDROCK: ${{ secrets.CLAUDE_CODE_USE_BEDROCK }}
+      AWS_OIDC_ROLE: ${{ secrets.AWS_OIDC_ROLE }}
+      CLAUDE_CODE_USE_BEDROCK: ${{ vars.CLAUDE_CODE_USE_BEDROCK }}
       AWS_REGION: ${{ vars.AWS_REGION || 'eu-west-2' }}
       ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
+      ANTHROPIC_SMALL_FAST_MODEL: ${{ vars.ANTHROPIC_SMALL_FAST_MODEL || vars.ANTHROPIC_MODEL }}
       GH_TOKEN: ${{ github.token }}
       TYPE: ${{ inputs.type }}
       WORK_ITEM: ${{ inputs.work_item }}
       MAX_TURNS: ${{ inputs.max_turns }}
       MODEL: ${{ inputs.model }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - name: Checkout caller repo
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # Bedrock lane: vend short-lived AWS creds via GitHub OIDC. No-op on the
-      # Anthropic lane (the role secret is simply absent).
+      # The prompt/components live in agentic-lib, not the caller — a reusable
+      # workflow checks out the caller, so fetch the engine's content explicitly.
+      - name: Checkout engine (prompts/components)
+        uses: actions/checkout@v4
+        with:
+          repository: polycode-public/agentic-lib
+          ref: v8
+          path: .engine
+
+      # Bedrock lane: vend short-lived AWS creds via GitHub OIDC. Skipped on the
+      # Anthropic lane (no role secret).
       - name: Configure AWS credentials (Bedrock lane)
-        if: ${{ env.CLAUDE_CODE_USE_BEDROCK == '1' && secrets.AWS_OIDC_ROLE != '' }}
+        if: ${{ env.CLAUDE_CODE_USE_BEDROCK == '1' && env.AWS_OIDC_ROLE != '' }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_OIDC_ROLE }}
@@ -84,65 +95,69 @@ jobs:
 
       - name: Assemble prompt
         id: prompt
-        env:
-          PROMPT_REF: ${{ github.action_ref }}
         run: |
           set -euo pipefail
-          # The transformation prompt ships with this workflow's repo. When invoked
-          # via `uses:`, GITHUB_ACTION_PATH points at agentic-lib's checkout.
-          BASE="${GITHUB_ACTION_PATH:-.}/.."
-          PROMPT_FILE="$BASE/../components/prompts/${TYPE}.md"
-          if [ ! -f "$PROMPT_FILE" ]; then PROMPT_FILE="components/prompts/${TYPE}.md"; fi
+          WI="${WORK_ITEM#\#}"          # strip a leading '#'
+          echo "wi=${WI}" >> "$GITHUB_OUTPUT"
+          PROMPT_FILE=".engine/components/prompts/${TYPE}.md"
           {
-            sed "s/{{work_item}}/${WORK_ITEM}/g" "$PROMPT_FILE"
-            echo
-            echo "## Work item context"
-            if [ "${WORK_ITEM}" != "0" ]; then
-              gh issue view "${WORK_ITEM}" --json title,body,comments 2>/dev/null \
-                || gh pr view "${WORK_ITEM}" --json title,body,comments,reviews 2>/dev/null \
-                || echo "(no work item #${WORK_ITEM} found)"
+            sed "s/{{work_item}}/${WI}/g" "$PROMPT_FILE"
+            echo; echo "## Work item context"
+            if [ "${WI}" != "INTENT.md" ] && [ "${WI}" != "0" ] && [ -n "${WI}" ]; then
+              gh issue view "${WI}" --json title,body,comments 2>/dev/null \
+                || gh pr view "${WI}" --json title,body,comments,reviews 2>/dev/null \
+                || echo "(no work item #${WI} found)"
             else
-              echo "(no work item — scheduled/standalone run)"
+              echo "(no issue — deliver the current INTENT.md)"
             fi
+            echo; echo "## House rules for this run"
+            echo "- Implement the change and update/add tests so \`npm test\` passes."
+            echo "- Do NOT run git, push, or open a PR — the surrounding workflow commits your file changes and opens the draft PR."
           } > /tmp/prompt.md
           echo "path=/tmp/prompt.md" >> "$GITHUB_OUTPUT"
 
       - name: Run claude -p (one transformation)
         run: |
           set -euo pipefail
-          claude -p "$(cat ${{ steps.prompt.outputs.path }})" \
-            --max-turns "${MAX_TURNS}" \
-            --model "${MODEL}" \
-            --permission-mode acceptEdits \
-            --output-format json \
-            > /tmp/result.json
-          cat /tmp/result.json
+          # Least-privilege headless agent: auto-accept file edits, but keep the
+          # permission gate ON for shell — only whitelist the build/test commands a
+          # delivery needs. Anything else is denied (no human to approve, by design).
+          ARGS=(-p "$(cat ${{ steps.prompt.outputs.path }})"
+                --max-turns "${MAX_TURNS}"
+                --permission-mode acceptEdits
+                --allowedTools "Edit,Write,Read,Glob,Grep,Bash(npm install),Bash(npm ci),Bash(npm test),Bash(npm run test:unit),Bash(npx vitest run)"
+                --output-format json)
+          # On the Bedrock lane the model is selected by ANTHROPIC_MODEL; only pass
+          # --model when an explicit alias was requested on the Anthropic lane.
+          if [ -n "${MODEL}" ] && [ "${CLAUDE_CODE_USE_BEDROCK}" != "1" ]; then
+            ARGS+=(--model "${MODEL}")
+          fi
+          claude "${ARGS[@]}" > /tmp/result.json || { echo "::error::claude -p failed"; cat /tmp/result.json || true; exit 1; }
+          echo "----- result (truncated) -----"; head -c 2000 /tmp/result.json || true; echo
 
-      # C3 provenance gate: refuse to open/revise a PR without a fixes #N trailer.
-      - name: Gate on fixes-#N trailer
-        id: gate
+      - name: Commit, push, open draft PR
+        env:
+          WI: ${{ steps.prompt.outputs.wi }}
         run: |
           set -euo pipefail
-          if git diff --quiet && git diff --cached --quiet; then
-            echo "No changes produced — nothing to propose."; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No file changes produced — nothing to propose."; exit 0
           fi
-          if ! git log -1 --format='%B' | grep -qiE 'fixes #[0-9]+'; then
-            echo "::error::commit is missing a 'fixes #N' / 'Fixes #N' closure trailer (C3)."
-            exit 1
-          fi
-          echo "changed=true" >> "$GITHUB_OUTPUT"
-
-      - name: Open or revise pull request
-        if: ${{ steps.gate.outputs.changed == 'true' }}
-        run: |
-          set -euo pipefail
-          BRANCH="agentic-lib/${TYPE}-${WORK_ITEM}"
-          git push -u origin "HEAD:${BRANCH}" --force-with-lease
+          git config user.name "intention-agentic-lib[bot]"
+          git config user.email "intention-agentic-lib[bot]@users.noreply.github.com"
+          BRANCH="agentic-lib/${TYPE}-${WI}"
+          git checkout -b "${BRANCH}"
+          git add -A
+          SUBJECT="feat: deliver intent (${TYPE})"
+          TRAILER=""
+          if [ "${WI}" != "INTENT.md" ] && [ -n "${WI}" ]; then TRAILER="fixes #${WI}"; fi
+          git commit -m "${SUBJECT}" -m "Delivered by \`claude -p\` (Path B, Bedrock). ${TRAILER}"
+          git push -u origin "${BRANCH}" --force-with-lease
           if [ "${TYPE}" = "address-review" ] || [ "${TYPE}" = "fix-ci" ]; then
             echo "Revision pushed to ${BRANCH}."
           else
             gh pr create --draft --head "${BRANCH}" \
-              --title "$(git log -1 --format='%s')" \
-              --body "$(git log -1 --format='%b')" \
+              --title "${SUBJECT}" \
+              --body "Automated one-shot delivery via the agentic-lib transform engine. ${TRAILER}" \
               || echo "PR already exists for ${BRANCH}."
           fi
