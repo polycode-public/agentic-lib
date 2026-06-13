@@ -22,7 +22,7 @@ function classifyToken(t) {
 }
 const tokenType = classifyToken(token);
 
-const REPO_OWNER = "xn-intenton-z2a";
+const REPO_OWNER = "polycode-public";
 const REPO_NAME = "agentic-lib";
 
 let failures = 0;

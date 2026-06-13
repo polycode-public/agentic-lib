@@ -1,6 +1,6 @@
 # Plan: Benchmark 012 Fixes (Workflow Failures 2026-03-18)
 
-**Source**: Workflow run analysis from [repository0 Actions](https://github.com/xn-intenton-z2a/repository0/actions) on 2026-03-18
+**Source**: Workflow run analysis from [repository0 Actions](https://github.com/polycode-public/repository0/actions) on 2026-03-18
 **Created**: 2026-03-18
 **Status**: completed
 
@@ -18,16 +18,16 @@
 
 | Time | Run | Event | Outcome | Root Cause |
 |------|-----|-------|---------|------------|
-| 08:48 | [#23236434245](https://github.com/xn-intenton-z2a/repository0/actions/runs/23236434245) | schedule: agentic-lib-workflow | **FAILURE** | `post-commit-test / test` failed: `edge-cases.test.js` has no test suite |
-| 09:21 | [#23237669543](https://github.com/xn-intenton-z2a/repository0/actions/runs/23237669543) | workflow_dispatch: agentic-lib-flow (hamming, 2 runs) | **FAILURE** | Same `edge-cases.test.js` issue in `update/update`, `test-1/test`, `test-final/test`; also `test-final/behaviour` screenshot upload failed |
-| 09:26 | [#23237859384](https://github.com/xn-intenton-z2a/repository0/actions/runs/23237859384) | workflow_dispatch: agentic-lib-init purge | **SUCCESS** | Init purge (agentic-lib@7.4.26) deleted `edge-cases.test.js` and 26 other files, reset to seed state |
-| 09:28 | [#23237938188](https://github.com/xn-intenton-z2a/repository0/actions/runs/23237938188) | push: agentic-lib-test | **SUCCESS** | Tests pass after init purge |
+| 08:48 | [#23236434245](https://github.com/polycode-public/repository0/actions/runs/23236434245) | schedule: agentic-lib-workflow | **FAILURE** | `post-commit-test / test` failed: `edge-cases.test.js` has no test suite |
+| 09:21 | [#23237669543](https://github.com/polycode-public/repository0/actions/runs/23237669543) | workflow_dispatch: agentic-lib-flow (hamming, 2 runs) | **FAILURE** | Same `edge-cases.test.js` issue in `update/update`, `test-1/test`, `test-final/test`; also `test-final/behaviour` screenshot upload failed |
+| 09:26 | [#23237859384](https://github.com/polycode-public/repository0/actions/runs/23237859384) | workflow_dispatch: agentic-lib-init purge | **SUCCESS** | Init purge (agentic-lib@7.4.26) deleted `edge-cases.test.js` and 26 other files, reset to seed state |
+| 09:28 | [#23237938188](https://github.com/polycode-public/repository0/actions/runs/23237938188) | push: agentic-lib-test | **SUCCESS** | Tests pass after init purge |
 | 09:55–11:03 | Multiple | schedule: agentic-lib-workflow | **SUCCESS** | Normal operation, maintain pushes succeeding |
-| 11:21 | #1021 [#23242240683](https://github.com/xn-intenton-z2a/repository0/actions/runs/23242240683) | workflow_dispatch: agentic-lib-workflow | **SUCCESS** | Started immediately at 11:21:39, finished 11:38:05. |
-| 11:26 | #1022 [#23242427323](https://github.com/xn-intenton-z2a/repository0/actions/runs/23242427323) | schedule: agentic-lib-workflow | **FAILURE** | **Pending 12 min** (11:26→11:38) behind #1021. `params` started 11:38:07. `maintain` step 13 rebase conflicts in `features/HAMMING_DISTANCE.md`, `HAMMING_TESTS.md`, `HAMMING_TYPES.md`. 3 retries all failed. Finished 12:13. |
-| 11:48 | #1023 [#23243210585](https://github.com/xn-intenton-z2a/repository0/actions/runs/23243210585) | schedule: agentic-lib-workflow | **CANCELLED** | **Pending entire time** — `params` job never started. Cancelled at 12:05:42 when #1024 replaced it in the pending slot (GitHub "one pending" rule). |
-| 12:05 | #1024 [#23243847993](https://github.com/xn-intenton-z2a/repository0/actions/runs/23243847993) | schedule: agentic-lib-workflow | **FAILURE** | **Pending 8 min** (12:05→12:13) behind #1022. `params` started 12:13:12. `maintain` step 13: rebase conflict in `features/HAMMING_BIGINT.md`. 3 retries all failed. |
-| 12:32 | [#23244836341](https://github.com/xn-intenton-z2a/repository0/actions/runs/23244836341) | schedule: agentic-lib-workflow | **SUCCESS** | Maintain pushed successfully — conflicts resolved |
+| 11:21 | #1021 [#23242240683](https://github.com/polycode-public/repository0/actions/runs/23242240683) | workflow_dispatch: agentic-lib-workflow | **SUCCESS** | Started immediately at 11:21:39, finished 11:38:05. |
+| 11:26 | #1022 [#23242427323](https://github.com/polycode-public/repository0/actions/runs/23242427323) | schedule: agentic-lib-workflow | **FAILURE** | **Pending 12 min** (11:26→11:38) behind #1021. `params` started 11:38:07. `maintain` step 13 rebase conflicts in `features/HAMMING_DISTANCE.md`, `HAMMING_TESTS.md`, `HAMMING_TYPES.md`. 3 retries all failed. Finished 12:13. |
+| 11:48 | #1023 [#23243210585](https://github.com/polycode-public/repository0/actions/runs/23243210585) | schedule: agentic-lib-workflow | **CANCELLED** | **Pending entire time** — `params` job never started. Cancelled at 12:05:42 when #1024 replaced it in the pending slot (GitHub "one pending" rule). |
+| 12:05 | #1024 [#23243847993](https://github.com/polycode-public/repository0/actions/runs/23243847993) | schedule: agentic-lib-workflow | **FAILURE** | **Pending 8 min** (12:05→12:13) behind #1022. `params` started 12:13:12. `maintain` step 13: rebase conflict in `features/HAMMING_BIGINT.md`. 3 retries all failed. |
+| 12:32 | [#23244836341](https://github.com/polycode-public/repository0/actions/runs/23244836341) | schedule: agentic-lib-workflow | **SUCCESS** | Maintain pushed successfully — conflicts resolved |
 
 ---
 

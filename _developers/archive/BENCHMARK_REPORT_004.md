@@ -9,7 +9,7 @@
 
 ## Context: v7.1.97 Fixes (PR #1882)
 
-This benchmark validates the 10 fixes from [PLAN_BENCHMARK_003_FIXES.md](_developers/archive/PLAN_BENCHMARK_003_FIXES.md), implemented in PR [#1882](https://github.com/xn-intenton-z2a/agentic-lib/pull/1882) (merged 2026-03-09 01:13 UTC). Key changes:
+This benchmark validates the 10 fixes from [PLAN_BENCHMARK_003_FIXES.md](_developers/archive/PLAN_BENCHMARK_003_FIXES.md), implemented in PR [#1882](https://github.com/polycode-public/agentic-lib/pull/1882) (merged 2026-03-09 01:13 UTC). Key changes:
 
 | Fix | Title | Status in This Benchmark |
 |-----|-------|--------------------------|
@@ -44,7 +44,7 @@ This benchmark validates the 10 fixes from [PLAN_BENCHMARK_003_FIXES.md](_develo
 | Model | gpt-5-mini |
 | Profile | recommended |
 | Budget | 32 |
-| Init run | [22835384221](https://github.com/xn-intenton-z2a/repository0/actions/runs/22835384221) |
+| Init run | [22835384221](https://github.com/polycode-public/repository0/actions/runs/22835384221) |
 | Init time | 02:05 UTC |
 | Schedule | off |
 
@@ -52,11 +52,11 @@ This benchmark validates the 10 fixes from [PLAN_BENCHMARK_003_FIXES.md](_develo
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [22835418969](https://github.com/xn-intenton-z2a/repository0/actions/runs/22835418969) | 02:06 | ~7min | NO | -- | 35 | 5 | Supervisor created issue #2746. Dev transformed FizzBuzz (12 files) but **push failed** — concurrent schedule workflow modified `agentic-lib-workflow.yml` which got included in commit, triggering GitHub App `workflows` permission error. Operator error, not pipeline bug. Safety check blocked writing to `tests/behaviour/fizzbuzz.spec.js` (path-writable restriction working). |
-| 2 | [22835590037](https://github.com/xn-intenton-z2a/repository0/actions/runs/22835590037) | 02:18 | ~7min | **YES** | [#2747](https://github.com/xn-intenton-z2a/repository0/pull/2747) | 82 | 8 (fizzbuzz.test.js) | Issue #2746 still open. Dev transformed successfully: `fizzBuzz()` and `fizzBuzzSingle()` implemented in main.js with correct function names, edge cases, CLI support. PR #2747 merged. fizzbuzz.test.js created (42 lines, 8 test cases). README updated. Safety check again blocked behaviour test path. Post-commit behaviour tests pass, unit tests have jsdom error in web.test.js. |
-| 3 | [22835826309](https://github.com/xn-intenton-z2a/repository0/actions/runs/22835826309) | 02:26 | ~7min | NO | -- | 82 | 8 | Supervisor created issue #2748 "Add comprehensive unit tests and verification for FizzBuzz functions." Review-features used Copilot to verify: "RESOLVED: Library exports fizzBuzz and fizzBuzzSingle with required behavior." Issue #2748 closed by review. Dev: no open issue, skipped (17s). |
-| 4 | [22835988803](https://github.com/xn-intenton-z2a/repository0/actions/runs/22835988803) | 02:35 | ~7min | NO | -- | 82 | 8 | Supervisor created issue #2749 "Complete fizz-buzz mission: implement library, tests, README, and docs." Review-features verified and closed it as resolved. Dev: no open issue, skipped (25s). |
-| 5 | [22836139892](https://github.com/xn-intenton-z2a/repository0/actions/runs/22836139892) | 02:43 | ~5min | NO | -- | 82 | 8 | **Supervisor declared `mission-complete`**: "0 open issues, 2+ recent issues closed by review as RESOLVED, src/lib/main.js exports fizzBuzz and fizzBuzzSingle with edge-case handling." MISSION_COMPLETE.md written locally but not committed to repo. Review-features: no issues to review (16s). Dev: no open issue, skipped (27s). |
+| 1 | [22835418969](https://github.com/polycode-public/repository0/actions/runs/22835418969) | 02:06 | ~7min | NO | -- | 35 | 5 | Supervisor created issue #2746. Dev transformed FizzBuzz (12 files) but **push failed** — concurrent schedule workflow modified `agentic-lib-workflow.yml` which got included in commit, triggering GitHub App `workflows` permission error. Operator error, not pipeline bug. Safety check blocked writing to `tests/behaviour/fizzbuzz.spec.js` (path-writable restriction working). |
+| 2 | [22835590037](https://github.com/polycode-public/repository0/actions/runs/22835590037) | 02:18 | ~7min | **YES** | [#2747](https://github.com/polycode-public/repository0/pull/2747) | 82 | 8 (fizzbuzz.test.js) | Issue #2746 still open. Dev transformed successfully: `fizzBuzz()` and `fizzBuzzSingle()` implemented in main.js with correct function names, edge cases, CLI support. PR #2747 merged. fizzbuzz.test.js created (42 lines, 8 test cases). README updated. Safety check again blocked behaviour test path. Post-commit behaviour tests pass, unit tests have jsdom error in web.test.js. |
+| 3 | [22835826309](https://github.com/polycode-public/repository0/actions/runs/22835826309) | 02:26 | ~7min | NO | -- | 82 | 8 | Supervisor created issue #2748 "Add comprehensive unit tests and verification for FizzBuzz functions." Review-features used Copilot to verify: "RESOLVED: Library exports fizzBuzz and fizzBuzzSingle with required behavior." Issue #2748 closed by review. Dev: no open issue, skipped (17s). |
+| 4 | [22835988803](https://github.com/polycode-public/repository0/actions/runs/22835988803) | 02:35 | ~7min | NO | -- | 82 | 8 | Supervisor created issue #2749 "Complete fizz-buzz mission: implement library, tests, README, and docs." Review-features verified and closed it as resolved. Dev: no open issue, skipped (25s). |
+| 5 | [22836139892](https://github.com/polycode-public/repository0/actions/runs/22836139892) | 02:43 | ~5min | NO | -- | 82 | 8 | **Supervisor declared `mission-complete`**: "0 open issues, 2+ recent issues closed by review as RESOLVED, src/lib/main.js exports fizzBuzz and fizzBuzzSingle with edge-case handling." MISSION_COMPLETE.md written locally but not committed to repo. Review-features: no issues to review (16s). Dev: no open issue, skipped (27s). |
 
 ### Acceptance Criteria
 
@@ -75,9 +75,9 @@ This benchmark validates the 10 fixes from [PLAN_BENCHMARK_003_FIXES.md](_develo
 
 | Issue | State | Title | Created By | Closed By |
 |-------|-------|-------|------------|-----------|
-| [#2746](https://github.com/xn-intenton-z2a/repository0/issues/2746) | closed | Implement FizzBuzz library, tests, and README | Supervisor (iter 1) | Dev PR #2747 (iter 2) |
-| [#2748](https://github.com/xn-intenton-z2a/repository0/issues/2748) | closed | Add comprehensive unit tests and verification for FizzBuzz functions | Supervisor (iter 3) | Review-features (iter 3) |
-| [#2749](https://github.com/xn-intenton-z2a/repository0/issues/2749) | closed | Complete fizz-buzz mission: implement library, tests, README, and docs | Supervisor (iter 4) | Review-features (iter 4) |
+| [#2746](https://github.com/polycode-public/repository0/issues/2746) | closed | Implement FizzBuzz library, tests, and README | Supervisor (iter 1) | Dev PR #2747 (iter 2) |
+| [#2748](https://github.com/polycode-public/repository0/issues/2748) | closed | Add comprehensive unit tests and verification for FizzBuzz functions | Supervisor (iter 3) | Review-features (iter 3) |
+| [#2749](https://github.com/polycode-public/repository0/issues/2749) | closed | Complete fizz-buzz mission: implement library, tests, README, and docs | Supervisor (iter 4) | Review-features (iter 4) |
 
 ### Scenario Summary
 
@@ -143,7 +143,7 @@ The supervisor declared mission-complete and the log says "Mission complete sign
 
 ### FINDING-7: Repeated "mission started" discussion posts (BUG)
 
-The maintain job's narrative thread posted "New mission started!" to [Discussion #2745](https://github.com/xn-intenton-z2a/repository0/discussions/2745) on every iteration (4 times). Only the first post-init iteration should announce mission start. The final post correctly said "the implementation appears to meet the acceptance criteria."
+The maintain job's narrative thread posted "New mission started!" to [Discussion #2745](https://github.com/polycode-public/repository0/discussions/2745) on every iteration (4 times). Only the first post-init iteration should announce mission start. The final post correctly said "the implementation appears to meet the acceptance criteria."
 
 **Root cause** (in `src/actions/agentic-step/tasks/supervise.js` lines 716-727):
 1. The "first run after init" guard checks `a.name === "agentic-lib-workflow"` but the GitHub API returns `"agentic-lib-workflow [main]"` (with branch suffix from `run-name`). The exact-match **never matches**, so `supervisorRunCount` is always 0.

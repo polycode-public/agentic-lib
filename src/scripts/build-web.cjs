@@ -11,7 +11,7 @@
 //    - Browser-safe exported functions extracted from src/lib/main.js
 //    This overwrites the src/web/lib.js re-export (which only works in dev).
 //
-// This file is part of the Example Suite for `agentic-lib` see: https://github.com/xn-intenton-z2a/agentic-lib
+// This file is part of the Example Suite for `agentic-lib` see: https://github.com/polycode-public/agentic-lib
 // This file is licensed under the MIT License. For details, see LICENSE-MIT
 
 const fs = require("fs");

@@ -18,8 +18,8 @@
 Prompt for this report:
 ```
 Hello Claude, Please create a BENCHMARK_REPORT_*.md document like the other ones in ./agentic-lib which analyses a single experiment which ran from this init and purge at 1:05am           
-https://github.com/xn-intenton-z2a/repository0/actions/workflows/agentic-lib-init.yml to work on 3-kyu-evaluate-owl-ontology and the logs are in here                                         
-https://github.com/xn-intenton-z2a/repository0/tree/agentic-lib-logs. Please so these things with 1 and 2 in consecutively, then 2 through 6 concurrently, then 7 and 8 consecutively: 1.     
+https://github.com/polycode-public/repository0/actions/workflows/agentic-lib-init.yml to work on 3-kyu-evaluate-owl-ontology and the logs are in here                                         
+https://github.com/polycode-public/repository0/tree/agentic-lib-logs. Please so these things with 1 and 2 in consecutively, then 2 through 6 concurrently, then 7 and 8 consecutively: 1.     
 Build a timeline summarising the log activity and when changes (otherbhan logs) were committed to git. 2. Create a report similar to the other BENCHMARK_REPORT_*.md documents. 3. Add        
 reccommedations to improve the workflows based on the report. 4. Take a deep dive into the logging documents and locate reported values which are counter intuative and suggest improvements. 
  5. Locate periods where the workflow seems stuck and suggest ways to mitigate this.6. Review the code that was actually created and make reccomendations which will skew the work towards    
@@ -38,7 +38,7 @@ optimised and suggest improvements.
 | Model | gpt-5-mini |
 | Profile | max |
 | Budget | 128 |
-| Init run | [23076868530](https://github.com/xn-intenton-z2a/repository0/actions/runs/23076868530) |
+| Init run | [23076868530](https://github.com/polycode-public/repository0/actions/runs/23076868530) |
 | Init time | 01:07 UTC |
 | Schedule | initially continuous, set to weekly at 13:13 UTC |
 | Final source lines | 544 (main.js) |
@@ -69,11 +69,11 @@ optimised and suggest improvements.
 | 02:06 | maintain-features | features-maintained | 81,743 | 97s | Wrote PERSISTENCE feature spec |
 | 02:07 | maintain-library | sources-discovered | 73,679 | 122s | Wrote SOURCES.md with 8 curated sources |
 | 02:08 | maintain-library | committed | — | — | `0ec9a947` Add curated sources |
-| **02:21** | **TRANSFORM #1** | **transformed** | **486,269** | **307s** | **PR [#2980](https://github.com/xn-intenton-z2a/repository0/pull/2980) — resolved issue #2978** |
+| **02:21** | **TRANSFORM #1** | **transformed** | **486,269** | **307s** | **PR [#2980](https://github.com/polycode-public/repository0/pull/2980) — resolved issue #2978** |
 | 02:22 | PR merged | PR #2980 merged | — | — | `f58c8731` agentic-step: transform issue #2978 |
 | 03:17 | maintain-features | features-maintained | 95,939 | 107s | Created 7 feature specification files |
 | 03:20 | maintain step | committed | — | — | `4f292e51` maintain features and library |
-| **03:34** | **TRANSFORM #2** | **transformed** | **277,859** | **294s** | **PR [#2981](https://github.com/xn-intenton-z2a/repository0/pull/2981) — resolved issue #2979** |
+| **03:34** | **TRANSFORM #2** | **transformed** | **277,859** | **294s** | **PR [#2981](https://github.com/polycode-public/repository0/pull/2981) — resolved issue #2979** |
 | 03:34 | PR merged | PR #2981 merged | — | — | `3eb7374b` agentic-step: transform issue #2979 |
 | 04:07 | workflow | **cancelled** | — | — | One workflow run cancelled |
 | 04:10 | maintain-features | features-maintained | 133,851 | 137s | Added MODEL_VALIDATION spec to PERSISTENCE |

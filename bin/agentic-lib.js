@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: GPL-3.0-only
 // Copyright (C) 2025-2026 Polycode Limited
-// bin/agentic-lib.js — CLI for @xn-intenton-z2a/agentic-lib
+// bin/agentic-lib.js — CLI for @polycode-public/agentic-lib
 //
 // Infrastructure commands:
-//   npx @xn-intenton-z2a/agentic-lib init           # set up agentic infrastructure
-//   npx @xn-intenton-z2a/agentic-lib init --purge    # also reset source files to seeds
-//   npx @xn-intenton-z2a/agentic-lib reset           # alias for init --purge
+//   npx @polycode-public/agentic-lib init           # set up agentic infrastructure
+//   npx @polycode-public/agentic-lib init --purge    # also reset source files to seeds
+//   npx @polycode-public/agentic-lib reset           # alias for init --purge
 //
 // Task commands (run Copilot SDK transformations locally):
-//   npx @xn-intenton-z2a/agentic-lib transform
-//   npx @xn-intenton-z2a/agentic-lib maintain-features
-//   npx @xn-intenton-z2a/agentic-lib maintain-library
-//   npx @xn-intenton-z2a/agentic-lib fix-code
+//   npx @polycode-public/agentic-lib transform
+//   npx @polycode-public/agentic-lib maintain-features
+//   npx @polycode-public/agentic-lib maintain-library
+//   npx @polycode-public/agentic-lib fix-code
 
 import { copyFileSync, existsSync, mkdirSync, rmSync, rmdirSync, readdirSync, readFileSync, writeFileSync, unlinkSync } from "fs";
 import { applyDistTransform } from "../src/dist-transform.js";
@@ -41,7 +41,7 @@ const INIT_COMMANDS = ["init", "update", "reset"];
 const ALL_COMMANDS = [...INIT_COMMANDS, ...TASK_COMMANDS, "version", "iterate"];
 
 const HELP = `
-@xn-intenton-z2a/agentic-lib — Agentic Coding Systems SDK
+@polycode-public/agentic-lib — Agentic Coding Systems SDK
 
 Infrastructure:
   init                 Update workflows, actions, agents, seeds, scripts
@@ -80,17 +80,17 @@ Options:
   --discussion <url>   GitHub Discussion URL (fetched via gh CLI for context)
 
 Examples:
-  npx @xn-intenton-z2a/agentic-lib init
-  npx @xn-intenton-z2a/agentic-lib transform
-  npx @xn-intenton-z2a/agentic-lib maintain-features --model gpt-5-mini
-  npx @xn-intenton-z2a/agentic-lib reset --dry-run
-  npx @xn-intenton-z2a/agentic-lib iterate --mission 7-kyu-understand-fizz-buzz
-  npx @xn-intenton-z2a/agentic-lib iterate --mission-file ~/my-mission.md
-  npx @xn-intenton-z2a/agentic-lib iterate --here
-  npx @xn-intenton-z2a/agentic-lib iterate --list-missions
-  npx @xn-intenton-z2a/agentic-lib iterate --model gpt-5-mini --timeout 300000
-  npx @xn-intenton-z2a/agentic-lib iterate --agent agent-issue-resolution --issue 42
-  npx @xn-intenton-z2a/agentic-lib iterate --agent agent-apply-fix --pr 123
+  npx @polycode-public/agentic-lib init
+  npx @polycode-public/agentic-lib transform
+  npx @polycode-public/agentic-lib maintain-features --model gpt-5-mini
+  npx @polycode-public/agentic-lib reset --dry-run
+  npx @polycode-public/agentic-lib iterate --mission 7-kyu-understand-fizz-buzz
+  npx @polycode-public/agentic-lib iterate --mission-file ~/my-mission.md
+  npx @polycode-public/agentic-lib iterate --here
+  npx @polycode-public/agentic-lib iterate --list-missions
+  npx @polycode-public/agentic-lib iterate --model gpt-5-mini --timeout 300000
+  npx @polycode-public/agentic-lib iterate --agent agent-issue-resolution --issue 42
+  npx @polycode-public/agentic-lib iterate --agent agent-apply-fix --pr 123
 `.trim();
 
 if (!command || command === "--help" || command === "-h" || command === "help") {
@@ -177,8 +177,8 @@ async function runIterate() {
       const firstLine = content.split("\n").find((l) => l.trim() && !l.startsWith("#")) || "";
       console.log(`  ${name.padEnd(22)} ${firstLine.trim()}`);
     }
-    console.log(`\nUsage: npx @xn-intenton-z2a/agentic-lib iterate --mission <name>`);
-    console.log(`       npx @xn-intenton-z2a/agentic-lib iterate --mission-file <path>\n`);
+    console.log(`\nUsage: npx @polycode-public/agentic-lib iterate --mission <name>`);
+    console.log(`       npx @polycode-public/agentic-lib iterate --mission-file <path>\n`);
     return 0;
   }
 
@@ -1386,7 +1386,7 @@ async function runInit() {
   initChanges = 0;
 
   console.log("");
-  console.log("=== @xn-intenton-z2a/agentic-lib init ===");
+  console.log("=== @polycode-public/agentic-lib init ===");
   console.log(`Source:  ${srcDir}`);
   console.log(`Target:  ${target}`);
   console.log(`Reseed:  ${reseed}`);

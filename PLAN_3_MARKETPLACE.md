@@ -2,7 +2,7 @@
 
 ## Goal
 
-Publish the `agentic-step` GitHub Action to the GitHub Marketplace so it appears in search, has its own listing page, and can be referenced as `xn-intenton-z2a/agentic-step@v1`.
+Publish the `agentic-step` GitHub Action to the GitHub Marketplace so it appears in search, has its own listing page, and can be referenced as `polycode-public/agentic-step@v1`.
 
 ## Constraint
 
@@ -20,7 +20,7 @@ The action currently lives at `agentic-lib/src/actions/agentic-step/`. It cannot
 
 ## Steps
 
-### 1. Create repository `xn-intenton-z2a/agentic-step`
+### 1. Create repository `polycode-public/agentic-step`
 
 - Public repository
 - MIT license (matches the distributed action)
@@ -84,7 +84,7 @@ Categories: "Code quality" (primary), "Utilities" (secondary).
 After Marketplace publication, consumer workflows can optionally reference the action as:
 
 ```yaml
-uses: xn-intenton-z2a/agentic-step@v1
+uses: polycode-public/agentic-step@v1
 ```
 
 instead of:

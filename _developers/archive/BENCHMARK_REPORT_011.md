@@ -27,7 +27,7 @@
 | Model | gpt-5-mini |
 | Profile | recommended |
 | Budget | 32 |
-| Init run | [23175113020](https://github.com/xn-intenton-z2a/repository0/actions/runs/23175113020) |
+| Init run | [23175113020](https://github.com/polycode-public/repository0/actions/runs/23175113020) |
 | Init time | 02:08 UTC |
 | Schedule | off (manual dispatch) |
 | Seed issues | YES (create-seed-issues=true) |
@@ -36,12 +36,12 @@
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | What Happened |
 |---|--------|------|----------|------------|-----|-------------|---------------|
-| 1 | [23175155768](https://github.com/xn-intenton-z2a/repository0/actions/runs/23175155768) | 02:10 | 10m27s | **YES** | [#3052](https://github.com/xn-intenton-z2a/repository0/pull/3052) | 108 | Director: gap analysis. Supervisor created issue. Dev transform: implemented `fizzBuzz()` and `fizzBuzzSingle()` with validation, wired into website, added unit tests. 7 files written in 131s. Post-commit tests pass. |
-| 2 | [23175421742](https://github.com/xn-intenton-z2a/repository0/actions/runs/23175421742) | 02:21 | ~15min | **YES** | [#3055](https://github.com/xn-intenton-z2a/repository0/pull/3055) | 108 | Supervisor created #3053 (implementation-gap). Dev transform: added 4 placeholder unit test files for issue #3050. Behaviour test had retry. New issue #3054 (behaviour test failure). |
-| 3 | [23175816742](https://github.com/xn-intenton-z2a/repository0/actions/runs/23175816742) | 02:37 | ~16min | **YES** | [#3056](https://github.com/xn-intenton-z2a/repository0/pull/3056) | 108 | Implementation-review failed (exit code 1). Dev transform resolved #3053 (implementation gap — full fizzBuzz(15) assert + behaviour tests). Post-commit behaviour test retry needed. |
-| 4 | [23176201930](https://github.com/xn-intenton-z2a/repository0/actions/runs/23176201930) | 02:53 | ~16min | **YES** | [#3058](https://github.com/xn-intenton-z2a/repository0/pull/3058) | 99 | Dev transform resolved #3054 (behaviour test failure). Source reduced from 108 to 99 lines. New issue #3057 created. Post-commit tests pass. |
-| 5 | [23176606350](https://github.com/xn-intenton-z2a/repository0/actions/runs/23176606350) | 03:10 | ~14min | **YES** | [#3059](https://github.com/xn-intenton-z2a/repository0/pull/3059) | 99 | Dev transform resolved #3057 (fix behaviour tests + dedicated tests). **Director declared mission-complete at 03:14 UTC.** New behaviour issue #3060 opened by post-commit but mission already declared. |
-| 6 | [23176946803](https://github.com/xn-intenton-z2a/repository0/actions/runs/23176946803) | 03:24 | cancelled | — | — | — | Dispatched after mission-complete. Cancelled by concurrency group. |
+| 1 | [23175155768](https://github.com/polycode-public/repository0/actions/runs/23175155768) | 02:10 | 10m27s | **YES** | [#3052](https://github.com/polycode-public/repository0/pull/3052) | 108 | Director: gap analysis. Supervisor created issue. Dev transform: implemented `fizzBuzz()` and `fizzBuzzSingle()` with validation, wired into website, added unit tests. 7 files written in 131s. Post-commit tests pass. |
+| 2 | [23175421742](https://github.com/polycode-public/repository0/actions/runs/23175421742) | 02:21 | ~15min | **YES** | [#3055](https://github.com/polycode-public/repository0/pull/3055) | 108 | Supervisor created #3053 (implementation-gap). Dev transform: added 4 placeholder unit test files for issue #3050. Behaviour test had retry. New issue #3054 (behaviour test failure). |
+| 3 | [23175816742](https://github.com/polycode-public/repository0/actions/runs/23175816742) | 02:37 | ~16min | **YES** | [#3056](https://github.com/polycode-public/repository0/pull/3056) | 108 | Implementation-review failed (exit code 1). Dev transform resolved #3053 (implementation gap — full fizzBuzz(15) assert + behaviour tests). Post-commit behaviour test retry needed. |
+| 4 | [23176201930](https://github.com/polycode-public/repository0/actions/runs/23176201930) | 02:53 | ~16min | **YES** | [#3058](https://github.com/polycode-public/repository0/pull/3058) | 99 | Dev transform resolved #3054 (behaviour test failure). Source reduced from 108 to 99 lines. New issue #3057 created. Post-commit tests pass. |
+| 5 | [23176606350](https://github.com/polycode-public/repository0/actions/runs/23176606350) | 03:10 | ~14min | **YES** | [#3059](https://github.com/polycode-public/repository0/pull/3059) | 99 | Dev transform resolved #3057 (fix behaviour tests + dedicated tests). **Director declared mission-complete at 03:14 UTC.** New behaviour issue #3060 opened by post-commit but mission already declared. |
+| 6 | [23176946803](https://github.com/polycode-public/repository0/actions/runs/23176946803) | 03:24 | cancelled | — | — | — | Dispatched after mission-complete. Cancelled by concurrency group. |
 
 ### Acceptance Criteria
 
@@ -60,12 +60,12 @@
 
 | Issue | State | Title | Type |
 |-------|-------|-------|------|
-| [#3050](https://github.com/xn-intenton-z2a/repository0/issues/3050) | closed | Initial unit tests | seed |
-| [#3051](https://github.com/xn-intenton-z2a/repository0/issues/3051) | closed | Initial web layout | seed |
-| [#3053](https://github.com/xn-intenton-z2a/repository0/issues/3053) | closed | implementation-gap: assert full fizzBuzz(15) array & add behaviour tests | gap |
-| [#3054](https://github.com/xn-intenton-z2a/repository0/issues/3054) | closed | behaviour test failure on main | instability |
-| [#3057](https://github.com/xn-intenton-z2a/repository0/issues/3057) | closed | fix: behaviour tests and add dedicated tests for fizzBuzz demo | instability |
-| [#3060](https://github.com/xn-intenton-z2a/repository0/issues/3060) | **open** | behaviour test failure on main | instability |
+| [#3050](https://github.com/polycode-public/repository0/issues/3050) | closed | Initial unit tests | seed |
+| [#3051](https://github.com/polycode-public/repository0/issues/3051) | closed | Initial web layout | seed |
+| [#3053](https://github.com/polycode-public/repository0/issues/3053) | closed | implementation-gap: assert full fizzBuzz(15) array & add behaviour tests | gap |
+| [#3054](https://github.com/polycode-public/repository0/issues/3054) | closed | behaviour test failure on main | instability |
+| [#3057](https://github.com/polycode-public/repository0/issues/3057) | closed | fix: behaviour tests and add dedicated tests for fizzBuzz demo | instability |
+| [#3060](https://github.com/polycode-public/repository0/issues/3060) | **open** | behaviour test failure on main | instability |
 
 ### State File (final — at mission-complete)
 
@@ -131,7 +131,7 @@ Note: `mission-complete = false` in state file despite MISSION_COMPLETE.md exist
 | Model | gpt-5-mini |
 | Profile | recommended |
 | Budget | 32 |
-| Init run | [23177088598](https://github.com/xn-intenton-z2a/repository0/actions/runs/23177088598) |
+| Init run | [23177088598](https://github.com/polycode-public/repository0/actions/runs/23177088598) |
 | Init time | 03:31 UTC |
 | Schedule | off (manual dispatch), then auto-enabled by supervisor |
 | Seed issues | YES (create-seed-issues=true) |
@@ -140,10 +140,10 @@ Note: `mission-complete = false` in state file despite MISSION_COMPLETE.md exist
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | What Happened |
 |---|--------|------|----------|------------|-----|-------------|---------------|
-| 1 | [23177171099](https://github.com/xn-intenton-z2a/repository0/actions/runs/23177171099) | 03:34 | 13min | **YES** | [#3065](https://github.com/xn-intenton-z2a/repository0/pull/3065) | 95 | Director: gap analysis. Dev transform: implemented `hammingDistanceStrings()` and `hammingDistanceBits()` with Unicode support, BigInt, Brian Kernighan's algorithm. Resolved #3063 (Initial unit tests). |
-| 2 | [23177472159](https://github.com/xn-intenton-z2a/repository0/actions/runs/23177472159) | 03:47 | 16min | **YES** | [#3067](https://github.com/xn-intenton-z2a/repository0/pull/3067) | 95 | Dev transform resolved #3064 (Initial web layout). Website updated with Hamming distance demos. Supervisor enabled hourly schedule. |
-| 3 | [23178382204](https://github.com/xn-intenton-z2a/repository0/actions/runs/23178382204) | 04:25 | 17min | **YES** | [#3069](https://github.com/xn-intenton-z2a/repository0/pull/3069) | 95 | Schedule-triggered. Dev transform resolved #3066 (behaviour/E2E tests). Issues #3068 (API name alignment) created and resolved. |
-| 4 | [23179396437](https://github.com/xn-intenton-z2a/repository0/actions/runs/23179396437) | 05:07 | ~10min | **YES** | — | 95 | Schedule-triggered. **Director declared mission-complete at 05:13 UTC.** 5 duplicate "dedicated tests" issues (#3070-#3074) created and closed. |
+| 1 | [23177171099](https://github.com/polycode-public/repository0/actions/runs/23177171099) | 03:34 | 13min | **YES** | [#3065](https://github.com/polycode-public/repository0/pull/3065) | 95 | Director: gap analysis. Dev transform: implemented `hammingDistanceStrings()` and `hammingDistanceBits()` with Unicode support, BigInt, Brian Kernighan's algorithm. Resolved #3063 (Initial unit tests). |
+| 2 | [23177472159](https://github.com/polycode-public/repository0/actions/runs/23177472159) | 03:47 | 16min | **YES** | [#3067](https://github.com/polycode-public/repository0/pull/3067) | 95 | Dev transform resolved #3064 (Initial web layout). Website updated with Hamming distance demos. Supervisor enabled hourly schedule. |
+| 3 | [23178382204](https://github.com/polycode-public/repository0/actions/runs/23178382204) | 04:25 | 17min | **YES** | [#3069](https://github.com/polycode-public/repository0/pull/3069) | 95 | Schedule-triggered. Dev transform resolved #3066 (behaviour/E2E tests). Issues #3068 (API name alignment) created and resolved. |
+| 4 | [23179396437](https://github.com/polycode-public/repository0/actions/runs/23179396437) | 05:07 | ~10min | **YES** | — | 95 | Schedule-triggered. **Director declared mission-complete at 05:13 UTC.** 5 duplicate "dedicated tests" issues (#3070-#3074) created and closed. |
 | 5-13 | various schedule runs | 05:39–09:27 | 4-8min each | NO | — | 95 | 9 schedule-triggered nop/maintain runs AFTER mission-complete. Schedule not disabled. |
 
 ### Acceptance Criteria
@@ -162,15 +162,15 @@ Note: `mission-complete = false` in state file despite MISSION_COMPLETE.md exist
 
 | Issue | State | Title | Type |
 |-------|-------|-------|------|
-| [#3063](https://github.com/xn-intenton-z2a/repository0/issues/3063) | closed | Initial unit tests | seed |
-| [#3064](https://github.com/xn-intenton-z2a/repository0/issues/3064) | closed | Initial web layout | seed |
-| [#3066](https://github.com/xn-intenton-z2a/repository0/issues/3066) | closed | Add behaviour/E2E tests and dedicated tests | gap |
-| [#3068](https://github.com/xn-intenton-z2a/repository0/issues/3068) | closed | fix: align API documentation names | gap |
-| [#3070](https://github.com/xn-intenton-z2a/repository0/issues/3070) | closed | test: add dedicated unit tests and README examples | duplicate |
-| [#3071](https://github.com/xn-intenton-z2a/repository0/issues/3071) | closed | test(dedicated): add unit tests and README examples | duplicate |
-| [#3072](https://github.com/xn-intenton-z2a/repository0/issues/3072) | closed | test(dedicated): add dedicated unit tests... | duplicate |
-| [#3073](https://github.com/xn-intenton-z2a/repository0/issues/3073) | closed | test(dedicated): add dedicated unit tests... | duplicate |
-| [#3074](https://github.com/xn-intenton-z2a/repository0/issues/3074) | closed | test(dedicated): add dedicated unit tests... | duplicate |
+| [#3063](https://github.com/polycode-public/repository0/issues/3063) | closed | Initial unit tests | seed |
+| [#3064](https://github.com/polycode-public/repository0/issues/3064) | closed | Initial web layout | seed |
+| [#3066](https://github.com/polycode-public/repository0/issues/3066) | closed | Add behaviour/E2E tests and dedicated tests | gap |
+| [#3068](https://github.com/polycode-public/repository0/issues/3068) | closed | fix: align API documentation names | gap |
+| [#3070](https://github.com/polycode-public/repository0/issues/3070) | closed | test: add dedicated unit tests and README examples | duplicate |
+| [#3071](https://github.com/polycode-public/repository0/issues/3071) | closed | test(dedicated): add unit tests and README examples | duplicate |
+| [#3072](https://github.com/polycode-public/repository0/issues/3072) | closed | test(dedicated): add dedicated unit tests... | duplicate |
+| [#3073](https://github.com/polycode-public/repository0/issues/3073) | closed | test(dedicated): add dedicated unit tests... | duplicate |
+| [#3074](https://github.com/polycode-public/repository0/issues/3074) | closed | test(dedicated): add dedicated unit tests... | duplicate |
 
 ### State File (final — including post-mission nop runs)
 

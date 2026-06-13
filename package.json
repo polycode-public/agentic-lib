@@ -1,5 +1,5 @@
 {
-  "name": "@xn-intenton-z2a/agentic-lib",
+  "name": "@polycode-public/agentic-lib",
   "version": "7.4.60-0",
   "description": "Agentic-lib Agentic Coding Systems SDK powering automated GitHub workflows.",
   "type": "module",
@@ -25,7 +25,7 @@
     "start": "echo \"agentic-lib is a workflow SDK — see README.md\""
   },
   "keywords": [],
-  "author": "https://github.com/xn-intenton-z2a",
+  "author": "https://github.com/polycode-public",
   "license": "GPL-3.0, MIT",
   "devDependencies": {
     "@microsoft/eslint-formatter-sarif": "^3.1.0",
@@ -89,7 +89,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xn-intenton-z2a/agentic-lib.git"
+    "url": "git+https://github.com/polycode-public/agentic-lib.git"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

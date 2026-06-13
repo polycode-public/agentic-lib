@@ -202,7 +202,7 @@ jobs:
           echo "Generated ${REPORT_FILE}"
 
       - name: Commit and push report
-        if: needs.params.outputs.dry-run != 'true' && github.repository != 'xn-intenton-z2a/agentic-lib'
+        if: needs.params.outputs.dry-run != 'true' && github.repository != 'polycode-public/agentic-lib'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

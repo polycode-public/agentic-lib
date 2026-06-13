@@ -253,8 +253,8 @@ The dispatch-fix job is the primary loop driver and has zero awareness of other 
 
 ## 7. Why the Workflow Succeeded While Tests Failed
 
-Run [22832372642](https://github.com/xn-intenton-z2a/repository0/actions/runs/22832372642) (workflow) — **success**.
-Run [22832427737](https://github.com/xn-intenton-z2a/repository0/actions/runs/22832427737) (test) — **failure**.
+Run [22832372642](https://github.com/polycode-public/repository0/actions/runs/22832372642) (workflow) — **success**.
+Run [22832427737](https://github.com/polycode-public/repository0/actions/runs/22832427737) (test) — **failure**.
 
 ### What the workflow runs
 
@@ -344,7 +344,7 @@ Add a check before dispatching: count recent workflow dispatches and skip if abo
       !cancelled()
       && github.ref == 'refs/heads/main'
       && (github.event_name == 'push' || github.event_name == 'schedule')
-      && github.repository != 'xn-intenton-z2a/agentic-lib'
+      && github.repository != 'polycode-public/agentic-lib'
       && (needs.test.result == 'failure' || needs.behaviour.result == 'failure')
     runs-on: ubuntu-latest
     steps:

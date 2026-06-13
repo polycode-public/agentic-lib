@@ -54,7 +54,7 @@ function getWebsiteUrl(repo) {
  * Dispatch the discussions bot with a message and discussion URL.
  */
 async function dispatchBot(octokit, repo, message, discussionUrl) {
-  if (process.env.GITHUB_REPOSITORY === "xn-intenton-z2a/agentic-lib") {
+  if (process.env.GITHUB_REPOSITORY === "polycode-public/agentic-lib") {
     core.info("Skipping bot dispatch — running in SDK repo");
     return;
   }
@@ -80,7 +80,7 @@ async function dispatchBot(octokit, repo, message, discussionUrl) {
  * (which could loop back via request-supervisor).
  */
 async function postDirectReply(octokit, repo, nodeId, body) {
-  if (process.env.GITHUB_REPOSITORY === "xn-intenton-z2a/agentic-lib") {
+  if (process.env.GITHUB_REPOSITORY === "polycode-public/agentic-lib") {
     core.info("Skipping direct reply — running in SDK repo");
     return;
   }
@@ -559,7 +559,7 @@ async function executeDispatch(octokit, repo, actionName, params, ctx) {
   }
 
   // Guard: never dispatch workflows from the SDK repo itself (agentic-lib)
-  if (process.env.GITHUB_REPOSITORY === "xn-intenton-z2a/agentic-lib") {
+  if (process.env.GITHUB_REPOSITORY === "polycode-public/agentic-lib") {
     core.info(`Skipping dispatch of ${workflowFile} — running in SDK repo`);
     return `skipped:sdk-repo:${workflowFile}`;
   }
@@ -738,7 +738,7 @@ async function executeRespondDiscussions(octokit, repo, params, ctx) {
   const message = params.message || "";
   const url = params["discussion-url"] || ctx?.activeDiscussionUrl || "";
   if (message || url) {
-    if (process.env.GITHUB_REPOSITORY === "xn-intenton-z2a/agentic-lib") {
+    if (process.env.GITHUB_REPOSITORY === "polycode-public/agentic-lib") {
       core.info("Skipping bot dispatch — running in SDK repo");
       return `skipped:sdk-repo:respond-discussions`;
     }
@@ -761,7 +761,7 @@ async function executeSetSchedule(octokit, repo, frequency) {
   if (!valid.includes(frequency)) {
     return `skipped:invalid-frequency:${frequency}`;
   }
-  if (process.env.GITHUB_REPOSITORY === "xn-intenton-z2a/agentic-lib") {
+  if (process.env.GITHUB_REPOSITORY === "polycode-public/agentic-lib") {
     core.info(`Skipping schedule dispatch — running in SDK repo`);
     return `skipped:sdk-repo:set-schedule:${frequency}`;
   }

@@ -91,7 +91,7 @@ concurrency:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  npmAuthOrganisation: "@xn-intenton-z2a"
+  npmAuthOrganisation: "@polycode-public"
 
 jobs:
   # ─── Params: normalise inputs across all trigger types ─────────────
@@ -719,7 +719,7 @@ jobs:
     if: needs.params.outputs.hasCopilotToken == 'true'
     uses: ./.github/workflows/agentic-lib-bot.yml
     with:
-      discussion-url: "https://github.com/xn-intenton-z2a/agentic-lib/discussions/1840"
+      discussion-url: "https://github.com/polycode-public/agentic-lib/discussions/1840"
       model: ${{ needs.params.outputs.model }}
     secrets: inherit
 

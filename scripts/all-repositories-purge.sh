@@ -19,35 +19,35 @@ run_workflow=false
 
 # repository0 — fizz-buzz
 date
-time gh workflow run agentic-lib-init -R xn-intenton-z2a/repository0 \
+time gh workflow run agentic-lib-init -R polycode-public/repository0 \
   -f mission-seed=7-kyu-understand-fizz-buzz \
   -f mode=${mode?} -f schedule=${schedule?} -f model=${model?} -f profile=${profile?} \
   -f create-seed-issues=${create_seed_issues?} -f run-workflow=${run_workflow?}
 
 # repository0-string-utils — string-utils
 date
-time gh workflow run agentic-lib-init -R xn-intenton-z2a/repository0-string-utils \
+time gh workflow run agentic-lib-init -R polycode-public/repository0-string-utils \
   -f mission-seed=5-kyu-apply-string-utils \
   -f mode=${mode?} -f schedule=${schedule?} -f model=${model?} -f profile=${profile?} \
   -f create-seed-issues=${create_seed_issues?} -f run-workflow=${run_workflow?}
 
 # repository0-dense-encoder — dense-encoding
 date
-time gh workflow run agentic-lib-init -R xn-intenton-z2a/repository0-dense-encoder \
+time gh workflow run agentic-lib-init -R polycode-public/repository0-dense-encoder \
   -f mission-seed=4-kyu-apply-dense-encoding \
   -f mode=${mode?} -f schedule=${schedule?} -f model=${model?} -f profile=${profile?} \
   -f create-seed-issues=${create_seed_issues?} -f run-workflow=${run_workflow?}
 
 # repository0-random — random
 date
-time gh workflow run agentic-lib-init -R xn-intenton-z2a/repository0-random \
+time gh workflow run agentic-lib-init -R polycode-public/repository0-random \
   -f mission-seed=random \
   -f mode=${mode?} -f schedule=${schedule?} -f model=${model?} -f profile=${profile?} \
   -f create-seed-issues=${create_seed_issues?} -f run-workflow=${run_workflow?}
 
 # repository0-plot-code-lib — plot-code-lib
 date
-time gh workflow run agentic-lib-init -R xn-intenton-z2a/repository0-plot-code-lib \
+time gh workflow run agentic-lib-init -R polycode-public/repository0-plot-code-lib \
   -f mission-seed=2-kyu-create-plot-code-lib \
   -f mode=${mode?} -f schedule=${schedule?} -f model=${model?} -f profile=${profile?} \
   -f create-seed-issues=${create_seed_issues?} -f run-workflow=${run_workflow?}

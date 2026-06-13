@@ -33,7 +33,7 @@ The MCP server is a thin orchestration layer over the existing CLI. It manages w
 ## Entry Point
 
 ```
-npx @xn-intenton-z2a/agentic-lib mcp
+npx @polycode-public/agentic-lib mcp
 ```
 
 Or in Claude Code settings:
@@ -42,7 +42,7 @@ Or in Claude Code settings:
   "mcpServers": {
     "agentic-lib": {
       "command": "npx",
-      "args": ["-y", "@xn-intenton-z2a/agentic-lib@latest", "mcp"],
+      "args": ["-y", "@polycode-public/agentic-lib@latest", "mcp"],
       "env": { "COPILOT_GITHUB_TOKEN": "..." }
     }
   }

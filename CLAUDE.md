@@ -38,8 +38,8 @@
 
 The **core SDK** of the intentïon project. A collection of reusable GitHub Actions workflows that enable repositories to operate autonomously — reviewing, fixing, updating, and transforming code through branches and issues. Includes a CLI with `iterate` command for budget-tracked transformation cycles and an MCP server for Claude Code integration.
 
-- **Package**: `@xn-intenton-z2a/agentic-lib`
-- **Organisation**: `xn-intenton-z2a`
+- **Package**: `@polycode-public/agentic-lib`
+- **Organisation**: `polycode-public`
 - **License**: GPL (with MIT-licensed examples)
 - **Production code**: `src/` (workflows, actions, agents, scripts, seeds)
 
@@ -54,11 +54,11 @@ The **core SDK** of the intentïon project. A collection of reusable GitHub Acti
 - Reusable workflows invoked via `workflow_call` event
 - Workflows communicate through branches and issues
 - GitHub Copilot SDK integration for autonomous code decisions (via agentic-step action)
-- Published to npm as `@xn-intenton-z2a/agentic-lib`
+- Published to npm as `@polycode-public/agentic-lib`
 
 ## Distributed Files (mastered here, consumed by repository0)
 
-Running `npx @xn-intenton-z2a/agentic-lib init --purge` in a consumer repo copies these files from the npm package. **All bug fixes must be made here** — local edits in consumer repos are overwritten on the next init run.
+Running `npx @polycode-public/agentic-lib init --purge` in a consumer repo copies these files from the npm package. **All bug fixes must be made here** — local edits in consumer repos are overwritten on the next init run.
 
 | Source in agentic-lib | Target in consumer repo | Notes |
 |-----------------------|-------------------------|-------|
@@ -89,7 +89,7 @@ npm run linting       # ESLint
 npm run lint:workflows # Validate workflow YAML (15 files)
 npm run security      # npm audit (0 vulnerabilities)
 npm run test:smoke    # Connectivity smoke test (needs GITHUB_TOKEN)
-npx @xn-intenton-z2a/agentic-lib init --dry-run  # Preview init in current dir
+npx @polycode-public/agentic-lib init --dry-run  # Preview init in current dir
 ```
 
 ## CI Workflows
@@ -124,14 +124,14 @@ npx @xn-intenton-z2a/agentic-lib init --dry-run  # Preview init in current dir
 
 ### Discussions Bot (repository0)
 
-Talk to the bot by commenting on [Discussion #2401](https://github.com/xn-intenton-z2a/repository0/discussions/2401) using `gh api graphql`:
+Talk to the bot by commenting on [Discussion #2401](https://github.com/polycode-public/repository0/discussions/2401) using `gh api graphql`:
 
 ```bash
 # Comment on the ongoing discussion
 gh api graphql -f query='mutation { addDiscussionComment(input: { discussionId: "D_kwDON6E8ZM4AgQKM", body: "..." }) { comment { url } } }'
 
 # Read latest comments
-gh api graphql -f query='{ repository(owner:"xn-intenton-z2a", name:"repository0") { discussion(number: 2401) { comments(last:5) { nodes { body author { login } createdAt } } } } }'
+gh api graphql -f query='{ repository(owner:"polycode-public", name:"repository0") { discussion(number: 2401) { comments(last:5) { nodes { body author { login } createdAt } } } } }'
 ```
 
 The bot is currently powered by ChatGPT (old code on main). After merge, it will be powered by Copilot SDK. The discussion context persists across bot changes.
@@ -148,10 +148,10 @@ gh api graphql -f query='mutation { createDiscussion(input: { repositoryId: "R_k
 gh api graphql -f query='mutation { addDiscussionComment(input: { discussionId: "DISCUSSION_NODE_ID", body: "..." }) { comment { url } } }'
 
 # Read latest comments
-gh api graphql -f query='{ repository(owner:"xn-intenton-z2a", name:"agentic-lib") { discussion(number: 1775) { comments(last:5) { nodes { body author { login } createdAt } } } } }'
+gh api graphql -f query='{ repository(owner:"polycode-public", name:"agentic-lib") { discussion(number: 1775) { comments(last:5) { nodes { body author { login } createdAt } } } } }'
 ```
 
-Current Copilot discussion: [#1775](https://github.com/xn-intenton-z2a/agentic-lib/discussions/1775)
+Current Copilot discussion: [#1775](https://github.com/polycode-public/agentic-lib/discussions/1775)
 
 ### Communication Guidelines
 

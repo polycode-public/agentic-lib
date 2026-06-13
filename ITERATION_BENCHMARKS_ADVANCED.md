@@ -121,7 +121,7 @@ For advanced scenarios (3-2 kyu), additionally watch for:
 - **Token consumption scaling** — Compare `total-tokens` across kyu levels. A3-A4 may use 5-10x more tokens than A1-A2.
 - **Multi-file source growth** — Check for files in `src/lib/` beyond main.js:
   ```bash
-  gh api repos/xn-intenton-z2a/REPO_NAME/contents/src/lib -q '.[].name'
+  gh api repos/polycode-public/REPO_NAME/contents/src/lib -q '.[].name'
   ```
 - **Lockfile desync** — Report 016 found the LLM adding dependencies without `npm install` breaks CI. Watch for `npm ci` failures.
 - **Acceptance bookkeeping** — Does `agentic-lib-state.toml` mark criteria as `met=true`? Prior reports show this is consistently broken.
@@ -133,7 +133,7 @@ REPOS="repository0-random repository0-string-utils repository0-dense-encoder rep
 
 for REPO in $REPOS; do
   echo -n "$REPO: "
-  gh run list -R xn-intenton-z2a/$REPO -w agentic-lib-flow -L 1 \
+  gh run list -R polycode-public/$REPO -w agentic-lib-flow -L 1 \
     --json status,conclusion --jq '.[0] | "\(.status) \(.conclusion)"'
 done
 ```

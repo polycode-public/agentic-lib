@@ -3,11 +3,11 @@
 # .github/agentic-lib/actions/agentic-step/action.yml
 #
 # agentic-step — A GitHub Action wrapping the GitHub Copilot SDK for autonomous code transformation.
-# Part of the intentïon project: https://github.com/xn-intenton-z2a/agentic-lib
+# Part of the intentïon project: https://github.com/polycode-public/agentic-lib
 
 name: "agentic-step"
 description: "Run an autonomous agentic task using the GitHub Copilot SDK"
-author: "xn-intenton-z2a"
+author: "polycode-public"
 
 inputs:
   task:

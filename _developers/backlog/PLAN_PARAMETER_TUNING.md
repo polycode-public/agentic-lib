@@ -15,8 +15,8 @@ Use the local CLI for fast iteration and the GitHub Actions path for real-world 
 
 One clean run of the ITERATION_BENCHMARKS_SIMPLE.md scenario matrix constitutes Actions validation. The procedure is:
 
-1. **Init purge** — `gh workflow run agentic-lib-init -R xn-intenton-z2a/repository0 -f mode=purge -f mission-seed=MISSION_NAME -f schedule=off`
-2. **Dispatch workflow** — `gh workflow run agentic-lib-workflow -R xn-intenton-z2a/repository0`
+1. **Init purge** — `gh workflow run agentic-lib-init -R polycode-public/repository0 -f mode=purge -f mission-seed=MISSION_NAME -f schedule=off`
+2. **Dispatch workflow** — `gh workflow run agentic-lib-workflow -R polycode-public/repository0`
 3. **Monitor** — Read `agentic-lib-state.toml` and agent-log files from `agentic-lib-logs` branch
 4. **Collect metrics** — tokens, duration, transforms, budget, mission-complete/failed
 5. **Verify acceptance** — read source, tests, README, screenshot, website

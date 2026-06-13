@@ -69,10 +69,10 @@ All benchmark repos run concurrently, one scenario per repo.
 
 | Short Name | Full Name | GitHub CLI Flag | Website | Default Mission |
 |-----------|-----------|----------------|---------|-----------------|
-| `repository0-random` | `xn-intenton-z2a/repository0-random` | `-R xn-intenton-z2a/repository0-random` | `https://xn-intenton-z2a.github.io/repository0-random/` | `random` |
-| `string-utils` | `xn-intenton-z2a/repository0-string-utils` | `-R xn-intenton-z2a/repository0-string-utils` | `https://xn-intenton-z2a.github.io/repository0-string-utils/` | `5-kyu-apply-string-utils` |
-| `dense-encoder` | `xn-intenton-z2a/repository0-dense-encoder` | `-R xn-intenton-z2a/repository0-dense-encoder` | `https://xn-intenton-z2a.github.io/repository0-dense-encoder/` | `4-kyu-apply-dense-encoding` |
-| `plot-code-lib` | `xn-intenton-z2a/repository0-plot-code-lib` | `-R xn-intenton-z2a/repository0-plot-code-lib` | `https://xn-intenton-z2a.github.io/repository0-plot-code-lib/` | `2-kyu-create-plot-code-lib` |
+| `repository0-random` | `polycode-public/repository0-random` | `-R polycode-public/repository0-random` | `https://polycode-public.github.io/repository0-random/` | `random` |
+| `string-utils` | `polycode-public/repository0-string-utils` | `-R polycode-public/repository0-string-utils` | `https://polycode-public.github.io/repository0-string-utils/` | `5-kyu-apply-string-utils` |
+| `dense-encoder` | `polycode-public/repository0-dense-encoder` | `-R polycode-public/repository0-dense-encoder` | `https://polycode-public.github.io/repository0-dense-encoder/` | `4-kyu-apply-dense-encoding` |
+| `plot-code-lib` | `polycode-public/repository0-plot-code-lib` | `-R polycode-public/repository0-plot-code-lib` | `https://polycode-public.github.io/repository0-plot-code-lib/` | `2-kyu-create-plot-code-lib` |
 
 **Default Mission** is the "home" mission implied by each repository's name — used by `scripts/all-repositories-init.sh` and `scripts/all-repositories-flow.sh` and as the restore target after benchmarks.
 
@@ -174,11 +174,11 @@ Use these commands during or after benchmark runs to check status.
 REPOS="repository0-random repository0-string-utils repository0-dense-encoder repository0-plot-code-lib"
 
 for REPO in $REPOS; do
-  COMPLETE=$(gh api "repos/xn-intenton-z2a/$REPO/contents/MISSION_COMPLETE.md" \
+  COMPLETE=$(gh api "repos/polycode-public/$REPO/contents/MISSION_COMPLETE.md" \
     -q '.name' 2>/dev/null || echo "no")
-  FAILED=$(gh api "repos/xn-intenton-z2a/$REPO/contents/MISSION_FAILED.md" \
+  FAILED=$(gh api "repos/polycode-public/$REPO/contents/MISSION_FAILED.md" \
     -q '.name' 2>/dev/null || echo "no")
-  LAST_RUN=$(gh run list -R xn-intenton-z2a/$REPO -w agentic-lib-workflow -L 1 \
+  LAST_RUN=$(gh run list -R polycode-public/$REPO -w agentic-lib-workflow -L 1 \
     --json status,conclusion --jq '.[0] | "\(.status)/\(.conclusion)"' 2>/dev/null || echo "none")
   echo "$REPO: complete=$COMPLETE failed=$FAILED last_run=$LAST_RUN"
 done
@@ -191,7 +191,7 @@ REPOS="repository0-random repository0-string-utils repository0-dense-encoder rep
 
 for REPO in $REPOS; do
   echo "=== $REPO ==="
-  gh api "repos/xn-intenton-z2a/$REPO/contents/agentic-lib-state.toml" \
+  gh api "repos/polycode-public/$REPO/contents/agentic-lib-state.toml" \
     --jq '.content' -H "Accept: application/vnd.github.v3+json" \
     --method GET -f ref=agentic-lib-logs 2>/dev/null | base64 -d || echo "no state file"
   echo ""
@@ -204,11 +204,11 @@ Key fields: `log-sequence`, `cumulative-transforms`, `total-tokens`, `transforma
 
 ```bash
 # List log files for a specific repo
-gh api repos/xn-intenton-z2a/REPO_NAME/git/trees/agentic-lib-logs \
+gh api repos/polycode-public/REPO_NAME/git/trees/agentic-lib-logs \
   -q '.tree[].path' | grep '^agent-log-' | sort
 
 # Read a specific log file
-gh api "repos/xn-intenton-z2a/REPO_NAME/contents/FILENAME" \
+gh api "repos/polycode-public/REPO_NAME/contents/FILENAME" \
   --jq '.content' -H "Accept: application/vnd.github.v3+json" \
   --method GET -f ref=agentic-lib-logs | base64 -d
 ```
@@ -219,7 +219,7 @@ gh api "repos/xn-intenton-z2a/REPO_NAME/contents/FILENAME" \
 REPOS="repository0-random repository0-string-utils repository0-dense-encoder repository0-plot-code-lib"
 
 for REPO in $REPOS; do
-  gh api "repos/xn-intenton-z2a/$REPO/contents/SCREENSHOT_INDEX.png" \
+  gh api "repos/polycode-public/$REPO/contents/SCREENSHOT_INDEX.png" \
     --jq '.content' -H "Accept: application/vnd.github.v3+json" \
     --method GET -f ref=agentic-lib-logs 2>/dev/null | base64 -d > "/tmp/screenshot-$REPO.png" \
     && echo "$REPO: screenshot saved" || echo "$REPO: no screenshot"
@@ -232,7 +232,7 @@ done
 REPOS="repository0-random repository0-string-utils repository0-dense-encoder repository0-plot-code-lib"
 
 for REPO in $REPOS; do
-  curl -sL "https://xn-intenton-z2a.github.io/$REPO/" > "/tmp/website-$REPO.html" \
+  curl -sL "https://polycode-public.github.io/$REPO/" > "/tmp/website-$REPO.html" \
     && echo "$REPO: website fetched" || echo "$REPO: no website"
 done
 ```
@@ -243,30 +243,30 @@ done
 REPO=REPO_NAME
 
 # Latest workflow runs
-gh run list -R xn-intenton-z2a/$REPO -w agentic-lib-workflow -L 5
+gh run list -R polycode-public/$REPO -w agentic-lib-workflow -L 5
 
 # Source code size
-gh api repos/xn-intenton-z2a/$REPO/contents/src/lib/main.js \
+gh api repos/polycode-public/$REPO/contents/src/lib/main.js \
   -q '.content' | base64 -d | wc -l
 
 # Test files
-gh api repos/xn-intenton-z2a/$REPO/contents/tests/unit \
+gh api repos/polycode-public/$REPO/contents/tests/unit \
   -q '.[].name' 2>/dev/null || echo "no test dir"
 
 # Recent commits
-gh api repos/xn-intenton-z2a/$REPO/commits \
+gh api repos/polycode-public/$REPO/commits \
   -q '.[0:5] | .[] | .sha[0:8] + " " + (.commit.message | split("\n")[0])'
 
 # Issues (all states)
-gh api "repos/xn-intenton-z2a/$REPO/issues?state=all&per_page=10&sort=created&direction=desc" \
+gh api "repos/polycode-public/$REPO/issues?state=all&per_page=10&sort=created&direction=desc" \
   -q '.[] | select(.pull_request == null) | "#\(.number) \(.state) \(.title)"'
 
 # PRs (all states)
-gh api "repos/xn-intenton-z2a/$REPO/pulls?state=all&per_page=10&sort=created&direction=desc" \
+gh api "repos/polycode-public/$REPO/pulls?state=all&per_page=10&sort=created&direction=desc" \
   -q '.[] | "#\(.number) \(.state) merged=\(.merged_at // "no") \(.title)"'
 
 # Activity log
-gh api repos/xn-intenton-z2a/$REPO/contents/intenti%C3%B6n.md \
+gh api repos/polycode-public/$REPO/contents/intenti%C3%B6n.md \
   -q '.content' 2>/dev/null | base64 -d | tail -30
 ```
 
@@ -278,13 +278,13 @@ When `generate-report=true`, the `agentic-lib-flow` workflow commits a `BENCHMAR
    ```bash
    for REPO in $REPOS; do
      echo "=== $REPO ==="
-     gh api "repos/xn-intenton-z2a/$REPO/contents" --jq '.[].name' | grep 'BENCHMARK_REPORT'
+     gh api "repos/polycode-public/$REPO/contents" --jq '.[].name' | grep 'BENCHMARK_REPORT'
    done
    ```
 
 2. **Fetch each report**:
    ```bash
-   gh api "repos/xn-intenton-z2a/REPO_NAME/contents/BENCHMARK_REPORT_NNN.md" \
+   gh api "repos/polycode-public/REPO_NAME/contents/BENCHMARK_REPORT_NNN.md" \
      --jq '.content' | base64 -d
    ```
 
@@ -307,23 +307,23 @@ For each repo, verify the final codebase against the mission's acceptance criter
 REPO=REPO_NAME
 
 # Read source
-gh api repos/xn-intenton-z2a/$REPO/contents/src/lib/main.js \
+gh api repos/polycode-public/$REPO/contents/src/lib/main.js \
   -q '.content' | base64 -d
 
 # Read tests
-gh api repos/xn-intenton-z2a/$REPO/contents/tests/unit -q '.[].name'
+gh api repos/polycode-public/$REPO/contents/tests/unit -q '.[].name'
 
 # Read README
-gh api repos/xn-intenton-z2a/$REPO/contents/README.md \
+gh api repos/polycode-public/$REPO/contents/README.md \
   -q '.content' | base64 -d | head -50
 
 # Download final screenshot
-gh api "repos/xn-intenton-z2a/$REPO/contents/SCREENSHOT_INDEX.png" \
+gh api "repos/polycode-public/$REPO/contents/SCREENSHOT_INDEX.png" \
   --jq '.content' -H "Accept: application/vnd.github.v3+json" \
   --method GET -f ref=agentic-lib-logs | base64 -d > "/tmp/screenshot-final-$REPO.png"
 
 # Fetch final website
-curl -sL "https://xn-intenton-z2a.github.io/$REPO/" > "/tmp/website-final-$REPO.html"
+curl -sL "https://polycode-public.github.io/$REPO/" > "/tmp/website-final-$REPO.html"
 ```
 
 **Include in the report:** A description of each screenshot and a summary of each website's HTML content.
@@ -345,7 +345,7 @@ REPOS="repository0-random repository0-string-utils repository0-dense-encoder rep
 
 for REPO in $REPOS; do
   echo "=== $REPO ==="
-  gh api "repos/xn-intenton-z2a/$REPO/contents/agentic-lib.toml" \
+  gh api "repos/polycode-public/$REPO/contents/agentic-lib.toml" \
     --jq '.content' | base64 -d | grep -E '(mission-seed|schedule|model|profile)'
 done
 ```
@@ -358,7 +358,7 @@ done
 - **Tests**: Count of test files or test count, whichever is available.
 - **Duration**: Wall-clock time from workflow start to completion.
 - **Time format**: Use UTC throughout.
-- **Run IDs**: Link to `https://github.com/xn-intenton-z2a/REPO_NAME/actions/runs/RUN_ID`.
+- **Run IDs**: Link to `https://github.com/polycode-public/REPO_NAME/actions/runs/RUN_ID`.
 - **Repo shortnames**: Use the short names from the Target Repositories table in prose (e.g. "dense-encoder" not "repository0-dense-encoder").
 
 ## What to Watch For

@@ -210,7 +210,7 @@ async function executeMissionComplete(octokit, repo, reason) {
     `- **Detected by:** director`,
     `- **Reason:** ${reason}`,
     "",
-    "This file was created automatically. To restart transformations, delete this file or run `npx @xn-intenton-z2a/agentic-lib init --reseed`.",
+    "This file was created automatically. To restart transformations, delete this file or run `npx @polycode-public/agentic-lib init --reseed`.",
   ].join("\n");
   writeFileSync("MISSION_COMPLETE.md", signal);
 
@@ -306,7 +306,7 @@ async function executeMissionFailed(octokit, repo, reason, metricAssessment) {
     `- **Detected by:** director`,
     `- **Reason:** ${detailedReason}`,
     "",
-    "This file was created automatically. To restart, delete this file and run `npx @xn-intenton-z2a/agentic-lib init --reseed`.",
+    "This file was created automatically. To restart, delete this file and run `npx @polycode-public/agentic-lib init --reseed`.",
   ].join("\n");
   writeFileSync("MISSION_FAILED.md", signal);
 
@@ -584,12 +584,12 @@ export async function direct(context) {
   // Execute the decision
   let outcome = "directed";
   if (decision === "mission-complete") {
-    if (process.env.GITHUB_REPOSITORY !== "xn-intenton-z2a/agentic-lib") {
+    if (process.env.GITHUB_REPOSITORY !== "polycode-public/agentic-lib") {
       await executeMissionComplete(octokit, repo, reason);
       outcome = "mission-complete";
     }
   } else if (decision === "mission-failed") {
-    if (process.env.GITHUB_REPOSITORY !== "xn-intenton-z2a/agentic-lib") {
+    if (process.env.GITHUB_REPOSITORY !== "polycode-public/agentic-lib") {
       await executeMissionFailed(octokit, repo, reason, metricAssessment);
       outcome = "mission-failed";
     }

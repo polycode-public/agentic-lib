@@ -175,7 +175,7 @@ export async function discussions(context) {
 
   // ── Shared mutable state for action results ──────────────────────
   const actionResults = { action: "nop", actionArg: "", replyBody: "" };
-  const isSdkRepo = process.env.GITHUB_REPOSITORY === "xn-intenton-z2a/agentic-lib";
+  const isSdkRepo = process.env.GITHUB_REPOSITORY === "polycode-public/agentic-lib";
 
   // ── Create tools ─────────────────────────────────────────────────
   const createTools = (defineTool, _wp, logger) => {
@@ -212,7 +212,7 @@ export async function discussions(context) {
             `- **Detected by:** discussions`,
             `- **Reason:** ${argument || "Declared via discussion bot"}`,
             "",
-            "This file was created automatically. To restart transformations, delete this file or run `npx @xn-intenton-z2a/agentic-lib init --reseed`.",
+            "This file was created automatically. To restart transformations, delete this file or run `npx @polycode-public/agentic-lib init --reseed`.",
           ].join("\n");
           writeFileSync("MISSION_COMPLETE.md", signal);
           logger.info("Mission complete signal written (MISSION_COMPLETE.md)");

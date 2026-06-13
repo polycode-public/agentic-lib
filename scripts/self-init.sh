@@ -3,7 +3,7 @@
 # Copyright (C) 2025-2026 Polycode Limited
 # scripts/self-init.sh — Copy src/ content into .github/agentic-lib/ for testing.
 #
-# This is the same operation that `npx @xn-intenton-z2a/agentic-lib init` performs
+# This is the same operation that `npx @polycode-public/agentic-lib init` performs
 # for consumers, but done locally within the repo for self-testing.
 #
 # NOTE: Template workflows (src/workflows/*.yml) are NOT copied to .github/workflows/

@@ -127,7 +127,7 @@ echo ""
 node -e "
   const fs = require('fs');
   const p = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-  delete (p.dependencies || {})['@xn-intenton-z2a/agentic-lib'];
+  delete (p.dependencies || {})['@polycode-public/agentic-lib'];
   fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
 "
 

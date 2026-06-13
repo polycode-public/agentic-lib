@@ -28,7 +28,7 @@
 | Model | gpt-5-mini |
 | Profile | med |
 | Budget | 32 |
-| Init run | [#23272730314](https://github.com/xn-intenton-z2a/repository0/actions/runs/23272730314) |
+| Init run | [#23272730314](https://github.com/polycode-public/repository0/actions/runs/23272730314) |
 | Init time | 23:48 UTC |
 | Schedule | off (manual dispatch) |
 
@@ -36,10 +36,10 @@
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 0 | [23272764343](https://github.com/xn-intenton-z2a/repository0/actions/runs/23272764343) | 23:49 | ~4min | YES | #3124 | ~60 | 2 | Stale schedule run. Created #3123, transformed (FizzBuzz impl + tests). |
-| 1 | [23272775439](https://github.com/xn-intenton-z2a/repository0/actions/runs/23272775439) | 23:50 | ~15min | YES | #3126 | 87 | 4 | Auto-dispatched by init. Director: in-progress (tests unverified). Supervisor: #3125 (add tests). Dev: transformed, merged. |
-| 2 | [23273097459](https://github.com/xn-intenton-z2a/repository0/actions/runs/23273097459) | 00:01 | ~8min | NO | -- | 87 | 4 | Stale schedule run. Maintain pushed. Director: **mission-complete** at 00:12. |
-| 3 | [23273338544](https://github.com/xn-intenton-z2a/repository0/actions/runs/23273338544) | 00:10 | ~5min | NO | -- | 87 | 4 | Manual dispatch. Detected MISSION_COMPLETE.md, skipped all jobs. |
+| 0 | [23272764343](https://github.com/polycode-public/repository0/actions/runs/23272764343) | 23:49 | ~4min | YES | #3124 | ~60 | 2 | Stale schedule run. Created #3123, transformed (FizzBuzz impl + tests). |
+| 1 | [23272775439](https://github.com/polycode-public/repository0/actions/runs/23272775439) | 23:50 | ~15min | YES | #3126 | 87 | 4 | Auto-dispatched by init. Director: in-progress (tests unverified). Supervisor: #3125 (add tests). Dev: transformed, merged. |
+| 2 | [23273097459](https://github.com/polycode-public/repository0/actions/runs/23273097459) | 00:01 | ~8min | NO | -- | 87 | 4 | Stale schedule run. Maintain pushed. Director: **mission-complete** at 00:12. |
+| 3 | [23273338544](https://github.com/polycode-public/repository0/actions/runs/23273338544) | 00:10 | ~5min | NO | -- | 87 | 4 | Manual dispatch. Detected MISSION_COMPLETE.md, skipped all jobs. |
 
 ### Acceptance Criteria
 
@@ -114,7 +114,7 @@ mission-complete = false  # W3 bug: not persisted on logs branch
 | Model | gpt-5-mini |
 | Profile | med |
 | Budget | 32 |
-| Init run | [#23273595631](https://github.com/xn-intenton-z2a/repository0/actions/runs/23273595631) |
+| Init run | [#23273595631](https://github.com/polycode-public/repository0/actions/runs/23273595631) |
 | Init time | 00:19 UTC |
 | Schedule | off (manual dispatch) |
 
@@ -122,8 +122,8 @@ mission-complete = false  # W3 bug: not persisted on logs branch
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [23273642848](https://github.com/xn-intenton-z2a/repository0/actions/runs/23273642848) | 00:21 | ~10min | YES | #3131 | 95 | 2 | Auto-dispatched by init. Review found nothing implemented. Supervisor created #3129 (implement) + #3130 (behaviour tests). Transform: full hamming implementation + tests + website + README. PR merged at 00:29. |
-| 2 | [23273942323](https://github.com/xn-intenton-z2a/repository0/actions/runs/23273942323) | 00:32 | ~6min | NO | -- | 95 | 2 | Manual dispatch. Maintain-library + implementation-review (all elements present). Maintain-features updated specs. Director: **mission-complete** at 00:37. |
+| 1 | [23273642848](https://github.com/polycode-public/repository0/actions/runs/23273642848) | 00:21 | ~10min | YES | #3131 | 95 | 2 | Auto-dispatched by init. Review found nothing implemented. Supervisor created #3129 (implement) + #3130 (behaviour tests). Transform: full hamming implementation + tests + website + README. PR merged at 00:29. |
+| 2 | [23273942323](https://github.com/polycode-public/repository0/actions/runs/23273942323) | 00:32 | ~6min | NO | -- | 95 | 2 | Manual dispatch. Maintain-library + implementation-review (all elements present). Maintain-features updated specs. Director: **mission-complete** at 00:37. |
 
 ### Acceptance Criteria
 
@@ -197,7 +197,7 @@ mission-complete = false  # W3 bug: not persisted on logs branch
 | Model | gpt-5-mini |
 | Profile | med |
 | Budget | 32 |
-| Init run | [#23274187114](https://github.com/xn-intenton-z2a/repository0/actions/runs/23274187114) |
+| Init run | [#23274187114](https://github.com/polycode-public/repository0/actions/runs/23274187114) |
 | Init time | 00:42 UTC |
 | Schedule | off (manual dispatch) |
 
@@ -205,8 +205,8 @@ mission-complete = false  # W3 bug: not persisted on logs branch
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [23274234937](https://github.com/xn-intenton-z2a/repository0/actions/runs/23274234937) | 00:44 | ~11min | YES | #3134 | 111 | 3 | Auto-dispatched by init. Review: nothing implemented. Supervisor: #3133 (implement converter). Transform: intToRoman/romanToInt + tests + website + README. PR merged at 00:52. |
-| 2 | [23274529508](https://github.com/xn-intenton-z2a/repository0/actions/runs/23274529508) | 00:56 | ~5min | NO | -- | 112 | 3 | Manual dispatch. Maintain-library + implementation-review (all present). Maintain-features updated specs. Director: **mission-complete** at 01:00. |
+| 1 | [23274234937](https://github.com/polycode-public/repository0/actions/runs/23274234937) | 00:44 | ~11min | YES | #3134 | 111 | 3 | Auto-dispatched by init. Review: nothing implemented. Supervisor: #3133 (implement converter). Transform: intToRoman/romanToInt + tests + website + README. PR merged at 00:52. |
+| 2 | [23274529508](https://github.com/polycode-public/repository0/actions/runs/23274529508) | 00:56 | ~5min | NO | -- | 112 | 3 | Manual dispatch. Maintain-library + implementation-review (all present). Maintain-features updated specs. Director: **mission-complete** at 01:00. |
 
 ### Acceptance Criteria
 
@@ -281,7 +281,7 @@ mission-complete = false  # W3 bug: not persisted on logs branch
 | Model | gpt-5-mini |
 | Profile | max |
 | Budget | 128 |
-| Init run | [#23274742520](https://github.com/xn-intenton-z2a/repository0/actions/runs/23274742520) |
+| Init run | [#23274742520](https://github.com/polycode-public/repository0/actions/runs/23274742520) |
 | Init time | 01:03 UTC |
 | Schedule | off (manual dispatch) |
 
@@ -289,8 +289,8 @@ mission-complete = false  # W3 bug: not persisted on logs branch
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [23274787057](https://github.com/xn-intenton-z2a/repository0/actions/runs/23274787057) | 01:05 | ~17min | YES | #3137 | 89 | 2 | Auto-dispatched by init. Review: nothing implemented. Maintain took 6m34s (max profile = more context). Supervisor: #3136 (implement fizz-buzz). Transform: fizzBuzz/fizzBuzzSingle + tests + website + README. PR merged at 01:19. Director: in-progress. |
-| 2 | [23275232313](https://github.com/xn-intenton-z2a/repository0/actions/runs/23275232313) | 01:22 | ~10min | NO | -- | 89 | 2 | Manual dispatch. Maintain + implementation-review (all present). Director: **mission-complete** at 01:31. |
+| 1 | [23274787057](https://github.com/polycode-public/repository0/actions/runs/23274787057) | 01:05 | ~17min | YES | #3137 | 89 | 2 | Auto-dispatched by init. Review: nothing implemented. Maintain took 6m34s (max profile = more context). Supervisor: #3136 (implement fizz-buzz). Transform: fizzBuzz/fizzBuzzSingle + tests + website + README. PR merged at 01:19. Director: in-progress. |
+| 2 | [23275232313](https://github.com/polycode-public/repository0/actions/runs/23275232313) | 01:22 | ~10min | NO | -- | 89 | 2 | Manual dispatch. Maintain + implementation-review (all present). Director: **mission-complete** at 01:31. |
 
 ### Acceptance Criteria
 

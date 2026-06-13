@@ -52,7 +52,7 @@ if: >-
   !cancelled()
   && github.ref == 'refs/heads/main'
   && (github.event_name == 'push' || github.event_name == 'schedule')
-  && github.repository != 'xn-intenton-z2a/agentic-lib'
+  && github.repository != 'polycode-public/agentic-lib'
   && (needs.test.result == 'failure' || needs.behaviour.result == 'failure')
 ```
 
@@ -119,7 +119,7 @@ All fixes are made in `agentic-lib/.github/workflows/` (mastered here, distribut
 
 ### W4: Fix init profile parameter not written to toml (HIGH — FINDING-4)
 
-**Problem**: `npx @xn-intenton-z2a/agentic-lib init --purge` with `PROFILE=min` copies `agentic-lib.toml` as-is from the npm package with `profile = "recommended"` regardless.
+**Problem**: `npx @polycode-public/agentic-lib init --purge` with `PROFILE=min` copies `agentic-lib.toml` as-is from the npm package with `profile = "recommended"` regardless.
 
 **Fix**: In the init script's toml copy step, if a `profile` argument is provided, substitute it in the copied toml. Add a post-copy `sed` or JS replacement.
 
@@ -159,7 +159,7 @@ All fixes are made in `agentic-lib/.github/workflows/` (mastered here, distribut
     if: >-
       !cancelled()
       && github.ref == 'refs/heads/main'
-      && github.repository != 'xn-intenton-z2a/agentic-lib'
+      && github.repository != 'polycode-public/agentic-lib'
       && (needs.test.result == 'failure' || needs.behaviour.result == 'failure')
     runs-on: ubuntu-latest
     permissions:

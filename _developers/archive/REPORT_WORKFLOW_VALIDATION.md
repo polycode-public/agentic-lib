@@ -2,7 +2,7 @@
 
 **Date**: 2026-03-02 to 2026-03-03
 **Operator**: Claude Code (claude-opus-4-6)
-**Target**: `xn-intenton-z2a/repository0` (plot-code-lib mission)
+**Target**: `polycode-public/repository0` (plot-code-lib mission)
 **Duration**: ~2 hours interactive + overnight monitoring
 **agentic-lib version**: 7.1.27 → 7.1.28 → 7.1.29 → 7.1.30 (fixes applied during testing)
 
@@ -26,7 +26,7 @@ To run this validation autonomously, the operator needs:
 | `gh pr merge` on agentic-lib | Merge fixes discovered during testing |
 | Read access to workflow run logs | Diagnose failures |
 | NPM publish (via release workflow) | Publish fixed agentic-lib to npm |
-| `npx @xn-intenton-z2a/agentic-lib init --purge` in repository0 | Deploy fixes to repository0 |
+| `npx @polycode-public/agentic-lib init --purge` in repository0 | Deploy fixes to repository0 |
 
 ### Pre-conditions
 - repository0 on main, MISSION.md describes "plot-code-lib" (jq of formulae visualisations)
@@ -55,7 +55,7 @@ To run this validation autonomously, the operator needs:
 ### Experiment 1: Discussion Bot Engagement
 **Time**: 2026-03-02T22:09Z
 **Action**: Posted comment to discussion #2427 via GraphQL asking bot to create an issue for expression parser
-**Discussion comment**: https://github.com/xn-intenton-z2a/repository0/discussions/2427#discussioncomment-15977640
+**Discussion comment**: https://github.com/polycode-public/repository0/discussions/2427#discussioncomment-15977640
 **Triggered**: `agent-discussions-bot` via `discussion_comment` event (run 22597985582) — SUCCESS
 **Also dispatched manually**: run 22597987819 — SUCCESS but no-op (empty discussion URL on workflow_dispatch)
 **Result**: **PASS** — Bot responded naturally: "I'll get the supervisor to create that issue for your expression parser experiment."
@@ -67,7 +67,7 @@ To run this validation autonomously, the operator needs:
 ### Experiment 2: Feature Generation (agent-flow-maintain)
 **Time**: 2026-03-02T22:09Z
 **Action**: Dispatched `agent-flow-maintain` to generate features from MISSION.md
-**Run**: https://github.com/xn-intenton-z2a/repository0/actions/runs/22597976932
+**Run**: https://github.com/polycode-public/repository0/actions/runs/22597976932
 **Duration**: 1m23s
 **Result**: **PASS** — Created 4 feature files in `features/`:
 - `EXPRESSION_PARSING.md` — Mathematical expression parser with mathjs
@@ -80,9 +80,9 @@ Committed to main as `cfff77cd`.
 ### Experiment 3: Code Generation (agent-flow-transform)
 **Time**: 2026-03-02T22:10Z
 **Action**: Created issue #2440 "Implement expression parser for mathematical formulae", dispatched transform
-**Issue**: https://github.com/xn-intenton-z2a/repository0/issues/2440
+**Issue**: https://github.com/polycode-public/repository0/issues/2440
 **Run (attempt 1)**: 22598008914 — **CANCELLED** by concurrency group `agentic-lib-main` (maintain was still running)
-**Run (attempt 2)**: https://github.com/xn-intenton-z2a/repository0/actions/runs/22598059066
+**Run (attempt 2)**: https://github.com/polycode-public/repository0/actions/runs/22598059066
 **Duration**: 4m12s (31 LLM turns)
 **Result**: **PASS** — Generated a full implementation:
 - `src/lib/main.js` +287 lines: `ExpressionParser` class, CLI with `commander`, SVG generation with `d3` + `jsdom`
@@ -97,7 +97,7 @@ Committed to main as `d570e9bb`.
 ### Experiment 4: Issue Review (agent-flow-review)
 **Time**: 2026-03-02T22:10Z
 **Action**: Dispatched `agent-flow-review` with existing issue #2440
-**Run**: https://github.com/xn-intenton-z2a/repository0/actions/runs/22598012349
+**Run**: https://github.com/polycode-public/repository0/actions/runs/22598012349
 **Duration**: review-issues (25s) + enhance-issues (51s)
 **Result**: **PASS** — Added `ready` label to issue #2440. Both review and enhance jobs completed successfully.
 
@@ -107,7 +107,7 @@ Committed to main as `d570e9bb`.
 ### Experiment 6: Supervisor (Proactive LLM)
 **Time**: 2026-03-02T22:14Z
 **Action**: Dispatched `agent-supervisor` via `workflow_dispatch`
-**Run**: https://github.com/xn-intenton-z2a/repository0/actions/runs/22598140672
+**Run**: https://github.com/polycode-public/repository0/actions/runs/22598140672
 **Result**: **PASS** — The LLM supervisor ran successfully:
 - `evaluate` job skipped (correct — only fires on `workflow_run`)
 - `supervise` job ran using `claude-sonnet-4` model
@@ -131,7 +131,7 @@ After deploying v7.1.29 with concurrency fixes, the repository was purged (`init
 **Time**: 2026-03-02T23:28Z
 **Setup**: Created issues #2444 (expression parser) and #2445 (CLI interface). Ran `agent-flow-maintain` to generate features, then `agent-flow-review` to enhance issues.
 **Action**: Dispatched `agent-supervisor`
-**Run**: https://github.com/xn-intenton-z2a/repository0/actions/runs/22600575212
+**Run**: https://github.com/polycode-public/repository0/actions/runs/22600575212
 **Duration**: 28s
 **Result**: **PASS** — Supervisor chose 1 action:
 - **Action**: `dispatch:agent-flow-transform`
@@ -146,7 +146,7 @@ After deploying v7.1.29 with concurrency fixes, the repository was purged (`init
 ### Experiment 9: Supervisor Multi-Action (Cycle 2)
 **Time**: 2026-03-02T23:35Z
 **Action**: Dispatched `agent-supervisor` after first transform completed
-**Run**: https://github.com/xn-intenton-z2a/repository0/actions/runs/22600787979
+**Run**: https://github.com/polycode-public/repository0/actions/runs/22600787979
 **Duration**: 34s
 **Result**: **PASS** — Supervisor chose 2 concurrent actions:
 - `dispatch:agent-flow-transform` — To continue working on remaining issues
@@ -157,7 +157,7 @@ After deploying v7.1.29 with concurrency fixes, the repository was purged (`init
 ### Experiment 10: Supervisor Cycle 3
 **Time**: 2026-03-03T01:25Z
 **Action**: Dispatched `agent-supervisor`
-**Run**: https://github.com/xn-intenton-z2a/repository0/actions/runs/22603868483
+**Run**: https://github.com/polycode-public/repository0/actions/runs/22603868483
 **Duration**: 31s
 **Result**: **PASS** — Supervisor again chose 2 actions: `transform` + `maintain`. Consistent decision-making with good reasoning.
 

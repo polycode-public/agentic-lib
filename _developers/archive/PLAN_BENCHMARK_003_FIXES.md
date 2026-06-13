@@ -1,8 +1,8 @@
 # Plan: Benchmark Report 003 Fixes + GitHub Issues
 
-**Source**: [BENCHMARK_REPORT_003.md](../../BENCHMARK_REPORT_003.md), GitHub Issues [#1878](https://github.com/xn-intenton-z2a/agentic-lib/issues/1878), [#1879](https://github.com/xn-intenton-z2a/agentic-lib/issues/1879), [#1880](https://github.com/xn-intenton-z2a/agentic-lib/issues/1880), [#1881](https://github.com/xn-intenton-z2a/agentic-lib/issues/1881)
+**Source**: [BENCHMARK_REPORT_003.md](../../BENCHMARK_REPORT_003.md), GitHub Issues [#1878](https://github.com/polycode-public/agentic-lib/issues/1878), [#1879](https://github.com/polycode-public/agentic-lib/issues/1879), [#1880](https://github.com/polycode-public/agentic-lib/issues/1880), [#1881](https://github.com/polycode-public/agentic-lib/issues/1881)
 **Created**: 2026-03-08
-**Status**: implemented — PR [#1882](https://github.com/xn-intenton-z2a/agentic-lib/pull/1882) open, awaiting CI + merge
+**Status**: implemented — PR [#1882](https://github.com/polycode-public/agentic-lib/pull/1882) open, awaiting CI + merge
 
 ## Current State (2026-03-09)
 
@@ -10,7 +10,7 @@ All 10 work items implemented in PR #1882 (`claude/benchmark-003-fixes`). 429 te
 
 **Additional fix pushed to main**: Double-dispatch bug in `discussions.js` — the bot's `request-supervisor` action dispatched `agentic-lib-workflow.yml` from both `discussions.js` (line 346) AND the bot workflow's `dispatch-supervisor` job. Removed the dispatch from `discussions.js` (commit a851c817). This fix is live on main; repository0 needs `init --purge` after CI passes to pick it up.
 
-**Deployment sequence**: Merge PR #1882 → release → `npx @xn-intenton-z2a/agentic-lib init --purge` on repository0 → run benchmark 004
+**Deployment sequence**: Merge PR #1882 → release → `npx @polycode-public/agentic-lib init --purge` on repository0 → run benchmark 004
 
 ---
 
@@ -42,7 +42,7 @@ All 10 work items implemented in PR #1882 (`claude/benchmark-003-fixes`). 429 te
 
 ## W1: Fix-stuck can't commit (missing git config)
 
-**Issue**: [#1880](https://github.com/xn-intenton-z2a/agentic-lib/issues/1880)
+**Issue**: [#1880](https://github.com/polycode-public/agentic-lib/issues/1880)
 **Finding**: FINDING-6
 **Root cause**: `.github/workflows/agentic-lib-workflow.yml` lines 682-697 — the "Commit, push, and open PR for main build fix" step uses a raw `run:` block that calls `git commit` without configuring `user.name`/`user.email`. The other commit path (line 676-681) uses the `commit-if-changed` composite action which sets git config.
 
@@ -77,7 +77,7 @@ git config --local user.name 'GitHub Actions[bot]'
 
 **Implementation**:
 1. The `config` object is already available in `executeSupervisor()` and can be passed to `executeCreateIssue()`
-2. Read `config.init?.timestamp` (set by `npx @xn-intenton-z2a/agentic-lib init`)
+2. Read `config.init?.timestamp` (set by `npx @polycode-public/agentic-lib init`)
 3. In the dedup guard loop, add: skip issues where `closed_at < initTimestamp`
 4. This preserves same-scenario dedup protection while allowing fresh starts after init
 
@@ -119,7 +119,7 @@ git config --local user.name 'GitHub Actions[bot]'
 
 ## W4: Mission-complete readiness narrative + metrics dashboard in every intentïon.md entry
 
-**Issue**: [#1881](https://github.com/xn-intenton-z2a/agentic-lib/issues/1881)
+**Issue**: [#1881](https://github.com/polycode-public/agentic-lib/issues/1881)
 **Finding**: FINDING-7
 
 **Goal**: Every time intentïon.md is appended to (every `logActivity()` call), include:
@@ -230,7 +230,7 @@ These sections are placed **after** the existing Limits Status and Prompt Budget
 
 ## W5: Behaviour tests — missing config path, purge gap, no write permission
 
-**Issue**: [#1878](https://github.com/xn-intenton-z2a/agentic-lib/issues/1878)
+**Issue**: [#1878](https://github.com/polycode-public/agentic-lib/issues/1878)
 
 ### Root cause analysis
 
@@ -375,7 +375,7 @@ No change needed to the seed file itself.
 
 ## W6: Gather build/test/behaviour results in telemetry
 
-**Issue**: [#1879](https://github.com/xn-intenton-z2a/agentic-lib/issues/1879)
+**Issue**: [#1879](https://github.com/polycode-public/agentic-lib/issues/1879)
 **Root cause**: The telemetry job (workflow lines 237-311) gathers repo state (issues, PRs, runs, mission) but doesn't capture actual test results from build/test/behaviour steps. And the pipeline never actually runs tests within the main workflow to get a fresh signal on branch health.
 
 **Files**:
@@ -834,7 +834,7 @@ Add a check before dispatching: count recent workflow runs and skip if above thr
       !cancelled()
       && github.ref == 'refs/heads/main'
       && (github.event_name == 'push' || github.event_name == 'schedule')
-      && github.repository != 'xn-intenton-z2a/agentic-lib'
+      && github.repository != 'polycode-public/agentic-lib'
       && (needs.test.result == 'failure' || needs.behaviour.result == 'failure')
     runs-on: ubuntu-latest
     steps:
@@ -1009,7 +1009,7 @@ Current dispatch-fix condition (line 103-108 of agentic-lib-test.yml):
       !cancelled()
       && github.ref == 'refs/heads/main'
       && github.event_name != 'pull_request'
-      && github.repository != 'xn-intenton-z2a/agentic-lib'
+      && github.repository != 'polycode-public/agentic-lib'
       && (needs.test.result == 'failure' || needs.behaviour.result == 'failure')
 ```
 
@@ -1022,7 +1022,7 @@ Current dispatch-fix condition (line 103-108 of agentic-lib-test.yml):
       !cancelled()
       && github.ref == 'refs/heads/main'
       && (github.event_name == 'push' || github.event_name == 'schedule')
-      && github.repository != 'xn-intenton-z2a/agentic-lib'
+      && github.repository != 'polycode-public/agentic-lib'
       && (needs.test.result == 'failure' || needs.behaviour.result == 'failure')
 ```
 
@@ -1063,7 +1063,7 @@ No new files needed. Changes are confined to these two existing files.
 
 ### Proposed solution
 
-During `npx @xn-intenton-z2a/agentic-lib init --purge`, after resetting files, blank the last 100 closed issues.
+During `npx @polycode-public/agentic-lib init --purge`, after resetting files, blank the last 100 closed issues.
 
 ### Implementation detail
 
@@ -1286,5 +1286,5 @@ gh api repos/{owner}/{repo}/issues/{number}/labels -X DELETE
 6. PR 6 (W8) → merge → release
 7. PR 7 (W9) → merge → release
 8. PR 8 (W10) → merge → release
-9. `npx @xn-intenton-z2a/agentic-lib init --purge` on repository0
+9. `npx @polycode-public/agentic-lib init --purge` on repository0
 10. Run benchmark report 004 to validate all fixes

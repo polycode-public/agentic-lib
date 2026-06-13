@@ -10,7 +10,7 @@ const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
 
 describe("package.json structure", () => {
   it("has a name field", () => {
-    expect(pkg.name).toBe("@xn-intenton-z2a/agentic-lib");
+    expect(pkg.name).toBe("@polycode-public/agentic-lib");
   });
 
   it("has a version field", () => {

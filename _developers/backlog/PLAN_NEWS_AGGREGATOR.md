@@ -471,7 +471,7 @@ Watch the system run. Tune feed list, crawl frequency, summarisation quality. Ad
 
 | Resource | URL Pattern |
 |----------|-------------|
-| Data branch raw access | `https://raw.githubusercontent.com/xn-intenton-z2a/repository0/data/{file}` |
-| Website (GitHub Pages) | `https://xn-intenton-z2a.github.io/repository0/` |
-| Discussions | `https://github.com/xn-intenton-z2a/repository0/discussions` |
-| Workflow runs | `https://github.com/xn-intenton-z2a/repository0/actions` |
+| Data branch raw access | `https://raw.githubusercontent.com/polycode-public/repository0/data/{file}` |
+| Website (GitHub Pages) | `https://polycode-public.github.io/repository0/` |
+| Discussions | `https://github.com/polycode-public/repository0/discussions` |
+| Workflow runs | `https://github.com/polycode-public/repository0/actions` |

@@ -2,7 +2,7 @@
 
 **Date**: 2026-03-03
 **Operator**: Claude Code (claude-opus-4-6)
-**Target**: `xn-intenton-z2a/repository0` (plot-code-lib mission)
+**Target**: `polycode-public/repository0` (plot-code-lib mission)
 **agentic-lib version**: 7.1.32 (tuned supervisor)
 **Previous report**: REPORT_WORKFLOW_VALIDATION.md (v7.1.27 → v7.1.30)
 
@@ -21,8 +21,8 @@ V1 validated the full agentic pipeline works end-to-end. It found 9 issues, fixe
 
 ### Deployment
 
-- PR [#1811](https://github.com/xn-intenton-z2a/agentic-lib/pull/1811) merged to agentic-lib
-- Published as `@xn-intenton-z2a/agentic-lib@7.1.32`
+- PR [#1811](https://github.com/polycode-public/agentic-lib/pull/1811) merged to agentic-lib
+- Published as `@polycode-public/agentic-lib@7.1.32`
 - Init'd in repository0 (no purge, no seed)
 - Supervisor schedule set to continuous (`*/10 * * * *`)
 
@@ -67,7 +67,7 @@ The supervisor dispatched maintain 2:1 over transform. Review was never dispatch
 
 **Time**: 2026-03-03T19:48Z
 **Action**: Dispatched `agent-supervisor` via `workflow_dispatch` (first run with new prompt)
-**Run**: https://github.com/xn-intenton-z2a/repository0/actions/runs/22639805870
+**Run**: https://github.com/polycode-public/repository0/actions/runs/22639805870
 **Duration**: 23s
 **Result**: **PASS**
 
@@ -80,7 +80,7 @@ The supervisor chose 1 action: `dispatch:agent-flow-transform`
 ## Experiment 2: Transform Picks Up Ready Issue
 
 **Time**: 2026-03-03T19:48Z (dispatched by Experiment 1's supervisor)
-**Run**: https://github.com/xn-intenton-z2a/repository0/actions/runs/22639823804
+**Run**: https://github.com/polycode-public/repository0/actions/runs/22639823804
 **Duration**: 2m17s
 **Result**: **PASS**
 
@@ -95,9 +95,9 @@ Transform successfully picked up issue #2459 ("Implement CLI for mathematical ex
 The reactive `workflow_run` trigger fired 4 times after the init push and schedule change, but the post-transform review rule was **not exercised** — the supervisor runs triggered by `workflow_run` on the init-related workflows correctly chose `nop` (no failing PRs to fix).
 
 However, the **scheduled supervisor** at 19:53Z correctly observed that transform had completed and dispatched review:
-- Run: https://github.com/xn-intenton-z2a/repository0/actions/runs/22640023181
+- Run: https://github.com/polycode-public/repository0/actions/runs/22640023181
 - Decision: `dispatch:agent-flow-review`
-- Review run: https://github.com/xn-intenton-z2a/repository0/actions/runs/22640045051
+- Review run: https://github.com/polycode-public/repository0/actions/runs/22640045051
 - Review closed issue #2459 as resolved (46s)
 
 **ISSUE-10**: The reactive path (evaluate job dispatching review after transform) was never directly observed because the scheduled supervisor compensated. The rule exists in the code but needs further validation. Not blocking — the proactive supervisor covers this gap.
@@ -112,7 +112,7 @@ At 20:05Z, the scheduled supervisor saw only 1 open issue (#2460) and:
 1. Created issue #2461 ("Enhance CLI expression parsing and range syntax validation") with labels `enhancement, automated`
 2. Dispatched `agent-flow-review` to enhance the new issue
 
-Run: https://github.com/xn-intenton-z2a/repository0/actions/runs/22640457533
+Run: https://github.com/polycode-public/repository0/actions/runs/22640457533
 
 The supervisor reasoning: "With only 1 open issue (#2460) and capacity for 2, the pipeline needs feeding. Creating a CLI-focused enhancement issue addresses core mission requirements."
 
@@ -156,7 +156,7 @@ The supervisor dispatched **zero maintain** runs in 33 minutes (vs 69% maintain 
 | # | Issue | Severity | Status | Fix |
 |---|-------|----------|--------|-----|
 | 10 | Reactive post-transform review dispatch untested | Low | Open | The evaluate job's new rule (dispatch review after transform success) was never directly observed — the scheduled supervisor compensated. Need to verify the `workflow_run` event for `agent-flow-transform` reaches the evaluate job's post-transform logic. |
-| 11 | intentïon.log always shows `Tokens: 0` | Medium | **Fixed in v7.1.33** | Root cause: `sendAndWait()` response doesn't include usage data. Tokens come from separate `assistant.usage` events. PR [#1813](https://github.com/xn-intenton-z2a/agentic-lib/pull/1813) accumulates usage events. |
+| 11 | intentïon.log always shows `Tokens: 0` | Medium | **Fixed in v7.1.33** | Root cause: `sendAndWait()` response doesn't include usage data. Tokens come from separate `assistant.usage` events. PR [#1813](https://github.com/polycode-public/agentic-lib/pull/1813) accumulates usage events. |
 | 12 | Continuous schedule too aggressive | Low | **Fixed in v7.1.33** | Changed `*/10` → `*/15`. Reactive triggers handle fast cycling; cron is just a heartbeat. |
 
 ---

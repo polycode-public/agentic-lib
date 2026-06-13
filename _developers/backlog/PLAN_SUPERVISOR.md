@@ -10,11 +10,11 @@ Run init with `schedule=producer`. The producer handles all workflow executions 
 
 ```bash
 # The primary use case — fully autonomous mission execution
-npx @xn-intenton-z2a/agentic-lib supervise \
+npx @polycode-public/agentic-lib supervise \
   --mission 6-kyu-understand-hamming-distance \
   --profile med \
   --schedule producer \
-  --repo xn-intenton-z2a/repository0
+  --repo polycode-public/repository0
 ```
 
 The supervisor:
@@ -173,22 +173,22 @@ The supervisor is NOT a new codebase. It is the **extraction of the Claude Code 
 
 ```bash
 # Run all scenarios from a benchmark spec
-npx @xn-intenton-z2a/agentic-lib supervise \
+npx @polycode-public/agentic-lib supervise \
   --benchmarks ITERATION_BENCHMARKS_SIMPLE.md \
-  --repo xn-intenton-z2a/repository0 \
+  --repo polycode-public/repository0 \
   --report BENCHMARK_REPORT_015.md
 
 # Run a single mission
-npx @xn-intenton-z2a/agentic-lib supervise \
+npx @polycode-public/agentic-lib supervise \
   --mission 6-kyu-understand-hamming-distance \
   --profile med \
-  --repo xn-intenton-z2a/repository0
+  --repo polycode-public/repository0
 
 # Run benchmarks with fix mode (diagnose + fix + re-run)
-npx @xn-intenton-z2a/agentic-lib supervise \
+npx @polycode-public/agentic-lib supervise \
   --benchmarks ITERATION_BENCHMARKS_SIMPLE.md \
   --fix \
-  --repo xn-intenton-z2a/repository0
+  --repo polycode-public/repository0
 ```
 
 ## Implementation Phases

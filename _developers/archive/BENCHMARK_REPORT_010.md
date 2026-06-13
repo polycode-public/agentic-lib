@@ -25,10 +25,10 @@
 | Model | gpt-5-mini |
 | Profile | recommended |
 | Budget | 32 |
-| Init run (v7.4.17) | [23098130601](https://github.com/xn-intenton-z2a/repository0/actions/runs/23098130601) |
+| Init run (v7.4.17) | [23098130601](https://github.com/polycode-public/repository0/actions/runs/23098130601) |
 | Init time | 22:55 UTC |
-| Init run (v7.4.18) | [23098701268](https://github.com/xn-intenton-z2a/repository0/actions/runs/23098701268) |
-| Init run (v7.4.20) | [23099035822](https://github.com/xn-intenton-z2a/repository0/actions/runs/23099035822) |
+| Init run (v7.4.18) | [23098701268](https://github.com/polycode-public/repository0/actions/runs/23098701268) |
+| Init run (v7.4.20) | [23099035822](https://github.com/polycode-public/repository0/actions/runs/23099035822) |
 | Schedule | off |
 
 ### Version Changes During Benchmark
@@ -36,19 +36,19 @@
 | Version | Changes | Applied At |
 |---------|---------|------------|
 | 7.4.17 | Baseline (from Summary 009) | Init 22:55 |
-| 7.4.18 | W1: inline param parsing, W2: placeholder validation, W3: mode passthrough | PR [#1950](https://github.com/xn-intenton-z2a/agentic-lib/pull/1950) merged 23:26 |
-| 7.4.20 | W4: mission-context fallback for issue title | PR [#1951](https://github.com/xn-intenton-z2a/agentic-lib/pull/1951) merged 23:47 |
+| 7.4.18 | W1: inline param parsing, W2: placeholder validation, W3: mode passthrough | PR [#1950](https://github.com/polycode-public/agentic-lib/pull/1950) merged 23:26 |
+| 7.4.20 | W4: mission-context fallback for issue title | PR [#1951](https://github.com/polycode-public/agentic-lib/pull/1951) merged 23:47 |
 
 ### Iterations
 
 | # | Version | Run ID | Time | Duration | Transform? | PR | Source Lines | What Happened |
 |---|---------|--------|------|----------|------------|-----|-------------|---------------|
-| 1 | 7.4.17 | [23098153560](https://github.com/xn-intenton-z2a/repository0/actions/runs/23098153560) | 22:55 | 6min | NO | -- | 48 | Supervisor tried `github:create-issue` but action parser didn't recognize pipe-delimited format. Logged `unknown:github:create-issue`. Dispatch used placeholder `<created_issue_number>`. Dev had nothing to do. **BUG: W1** |
-| 2 | 7.4.17 | [23098409240](https://github.com/xn-intenton-z2a/repository0/actions/runs/23098409240) | 23:05 | 12min | NO (maintain only) | -- | 48 | Same W1 bug. Maintain jobs wrote 4 feature specs + 6 library docs (2 maintain transforms). Supervisor again failed to create issue. **BUG: W1** |
-| 3 | 7.4.18 | [23098736957](https://github.com/xn-intenton-z2a/repository0/actions/runs/23098736957) | 23:31 | 6min | NO (maintain only) | -- | 48 | W1 fix worked — action routing now reaches executeCreateIssue. But LLM provided no params (`{action: "github:create-issue", params: {}}`). Logged `skipped:no-title`. **BUG: W4** |
-| 4 | 7.4.20 | [23099060499](https://github.com/xn-intenton-z2a/repository0/actions/runs/23099060499) | 23:52 | 12min | **YES** | [#3004](https://github.com/xn-intenton-z2a/repository0/pull/3004) | 75 | W4 fix worked! Issues #3002, #3003 created. Dev transformed: `fizzbuzzNumber`, `fizzbuzzRange` implemented. PR merged. Post-commit tests pass. |
-| 5 | 7.4.20 | [23099281976](https://github.com/xn-intenton-z2a/repository0/actions/runs/23099281976) | 00:10 | 42min | **YES** | -- | 89 | Long iteration. review-features took 20+ min. More transforms (9 total). `fizzBuzz` and `fizzBuzzSingle` aliases added. Tests expanded. |
-| 6 | 7.4.20 | [23099668678](https://github.com/xn-intenton-z2a/repository0/actions/runs/23099668678) | 00:39 | 60+ min (dev stuck) | maintain only | -- | 89 | Dev job running 60+ min in a single Copilot session. `infinite-sessions = true` allows unbounded sessions. No new PR created. **FINDING-7** |
+| 1 | 7.4.17 | [23098153560](https://github.com/polycode-public/repository0/actions/runs/23098153560) | 22:55 | 6min | NO | -- | 48 | Supervisor tried `github:create-issue` but action parser didn't recognize pipe-delimited format. Logged `unknown:github:create-issue`. Dispatch used placeholder `<created_issue_number>`. Dev had nothing to do. **BUG: W1** |
+| 2 | 7.4.17 | [23098409240](https://github.com/polycode-public/repository0/actions/runs/23098409240) | 23:05 | 12min | NO (maintain only) | -- | 48 | Same W1 bug. Maintain jobs wrote 4 feature specs + 6 library docs (2 maintain transforms). Supervisor again failed to create issue. **BUG: W1** |
+| 3 | 7.4.18 | [23098736957](https://github.com/polycode-public/repository0/actions/runs/23098736957) | 23:31 | 6min | NO (maintain only) | -- | 48 | W1 fix worked — action routing now reaches executeCreateIssue. But LLM provided no params (`{action: "github:create-issue", params: {}}`). Logged `skipped:no-title`. **BUG: W4** |
+| 4 | 7.4.20 | [23099060499](https://github.com/polycode-public/repository0/actions/runs/23099060499) | 23:52 | 12min | **YES** | [#3004](https://github.com/polycode-public/repository0/pull/3004) | 75 | W4 fix worked! Issues #3002, #3003 created. Dev transformed: `fizzbuzzNumber`, `fizzbuzzRange` implemented. PR merged. Post-commit tests pass. |
+| 5 | 7.4.20 | [23099281976](https://github.com/polycode-public/repository0/actions/runs/23099281976) | 00:10 | 42min | **YES** | -- | 89 | Long iteration. review-features took 20+ min. More transforms (9 total). `fizzBuzz` and `fizzBuzzSingle` aliases added. Tests expanded. |
+| 6 | 7.4.20 | [23099668678](https://github.com/polycode-public/repository0/actions/runs/23099668678) | 00:39 | 60+ min (dev stuck) | maintain only | -- | 89 | Dev job running 60+ min in a single Copilot session. `infinite-sessions = true` allows unbounded sessions. No new PR created. **FINDING-7** |
 
 ### Acceptance Criteria
 

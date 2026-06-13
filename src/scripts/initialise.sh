@@ -7,7 +7,7 @@
 # Example: ./scripts/initialise.sh "repository0-plot-code-lib"
 # Example: ./scripts/initialise.sh "owl-builder"
 #
-# This file is part of the Example Suite for `agentic-lib` see: https://github.com/xn-intenton-z2a/agentic-lib
+# This file is part of the Example Suite for `agentic-lib` see: https://github.com/polycode-public/agentic-lib
 # This file is licensed under the MIT License. For details, see LICENSE-MIT
 
 defaultIntention=$(find .github/agentic-lib/seeds -maxdepth 1 -type f -name 'MISSION-*.md' | shuf -n 1 | sed -E 's/.*MISSION-(.*)\.md/\1/')

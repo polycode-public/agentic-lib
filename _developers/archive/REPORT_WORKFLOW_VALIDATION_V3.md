@@ -2,7 +2,7 @@
 
 **Date**: 2026-03-04
 **Operator**: Claude Code (claude-opus-4-6)
-**Target**: `xn-intenton-z2a/repository0` (plot-code-lib mission)
+**Target**: `polycode-public/repository0` (plot-code-lib mission)
 **agentic-lib version**: 7.1.39 → 7.1.40
 **Observation window**: 2026-03-03T22:29Z – 2026-03-04T17:56Z (~19.5 hours)
 **Previous report**: REPORT_WORKFLOW_VALIDATION_V2.md (v7.1.32 supervisor tuning)

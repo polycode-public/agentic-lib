@@ -174,7 +174,7 @@ Collects repository statistics (branches, PRs, issues, commits), publishes as JS
 
 Publishes npm packages with OIDC trusted publishing (no tokens). The npm package includes the `agentic-step` action and all distributed content. Published to npmjs.org with provenance attestation.
 
-**npm package:** `@xn-intenton-z2a/agentic-lib`
+**npm package:** `@polycode-public/agentic-lib`
 **Key workflow:** `release.yml`
 **Status:** Done
 

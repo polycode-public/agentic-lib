@@ -25,7 +25,7 @@
 | Model | gpt-5-mini |
 | Profile | recommended |
 | Budget | 32 |
-| Init run | [22883939237](https://github.com/xn-intenton-z2a/repository0/actions/runs/22883939237) |
+| Init run | [22883939237](https://github.com/polycode-public/repository0/actions/runs/22883939237) |
 | Init time | 02:14 UTC |
 | Schedule | off |
 
@@ -33,10 +33,10 @@
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [22883962547](https://github.com/xn-intenton-z2a/repository0/actions/runs/22883962547) | 02:15 | 7m25s | **YES** | [#2788](https://github.com/xn-intenton-z2a/repository0/pull/2788) | 93 | seed only | Supervisor created #2787. Dev transformed: `hammingDistance()` and `hammingDistanceBits()` fully implemented with Unicode support via `Array.from()`, BigInt handling, input validation (TypeError/RangeError). README updated with API docs and examples. Post-commit tests pass. |
-| 2 | [22884146677](https://github.com/xn-intenton-z2a/repository0/actions/runs/22884146677) | 02:23 | 6m45s | NO | -- | 93 | seed only | Supervisor chose `nop`. Dev: "No ready issues found". Maintain-only cycle. |
-| 3 | [22884312872](https://github.com/xn-intenton-z2a/repository0/actions/runs/22884312872) | 02:30 | 10m26s | **YES** | [#2790](https://github.com/xn-intenton-z2a/repository0/pull/2790) | 95 | seed only | Supervisor created #2789 "Implement Hamming distance library". Dev transformed — minor refinements (comments, documentation). Post-commit tests pass. |
-| 4 | [22884569666](https://github.com/xn-intenton-z2a/repository0/actions/runs/22884569666) | 02:41 | 7m26s | NO | -- | 95 | seed only | Supervisor declared **mission-complete**: "All acceptance criteria implemented". MISSION_COMPLETE.md committed. Schedule already off — no dispatch needed. |
+| 1 | [22883962547](https://github.com/polycode-public/repository0/actions/runs/22883962547) | 02:15 | 7m25s | **YES** | [#2788](https://github.com/polycode-public/repository0/pull/2788) | 93 | seed only | Supervisor created #2787. Dev transformed: `hammingDistance()` and `hammingDistanceBits()` fully implemented with Unicode support via `Array.from()`, BigInt handling, input validation (TypeError/RangeError). README updated with API docs and examples. Post-commit tests pass. |
+| 2 | [22884146677](https://github.com/polycode-public/repository0/actions/runs/22884146677) | 02:23 | 6m45s | NO | -- | 93 | seed only | Supervisor chose `nop`. Dev: "No ready issues found". Maintain-only cycle. |
+| 3 | [22884312872](https://github.com/polycode-public/repository0/actions/runs/22884312872) | 02:30 | 10m26s | **YES** | [#2790](https://github.com/polycode-public/repository0/pull/2790) | 95 | seed only | Supervisor created #2789 "Implement Hamming distance library". Dev transformed — minor refinements (comments, documentation). Post-commit tests pass. |
+| 4 | [22884569666](https://github.com/polycode-public/repository0/actions/runs/22884569666) | 02:41 | 7m26s | NO | -- | 95 | seed only | Supervisor declared **mission-complete**: "All acceptance criteria implemented". MISSION_COMPLETE.md committed. Schedule already off — no dispatch needed. |
 
 ### Acceptance Criteria
 
@@ -54,8 +54,8 @@
 
 | Issue | State | Title |
 |-------|-------|-------|
-| [#2787](https://github.com/xn-intenton-z2a/repository0/issues/2787) | closed | feature: implement hamming-distance library (hammingDistance, hammingDistanceBits) |
-| [#2789](https://github.com/xn-intenton-z2a/repository0/issues/2789) | closed | Implement Hamming distance library (hammingDistance, hammingDistanceBits) |
+| [#2787](https://github.com/polycode-public/repository0/issues/2787) | closed | feature: implement hamming-distance library (hammingDistance, hammingDistanceBits) |
+| [#2789](https://github.com/polycode-public/repository0/issues/2789) | closed | Implement Hamming distance library (hammingDistance, hammingDistanceBits) |
 
 ### Scenario Summary
 

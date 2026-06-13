@@ -20,7 +20,7 @@
 
 ## Context: v7.1.91 Fix
 
-This benchmark session discovered and fixed a blocker: the dev job's behaviour test gate created a catch-22 where the LLM-generated behaviour tests couldn't pass because the code wasn't committed yet. PR [#1876](https://github.com/xn-intenton-z2a/agentic-lib/pull/1876) removed the Playwright install and behaviour test gate from the dev/transform job. Behaviour tests remain in the fix-stuck job (non-blocking) and the CI test workflow.
+This benchmark session discovered and fixed a blocker: the dev job's behaviour test gate created a catch-22 where the LLM-generated behaviour tests couldn't pass because the code wasn't committed yet. PR [#1876](https://github.com/polycode-public/agentic-lib/pull/1876) removed the Playwright install and behaviour test gate from the dev/transform job. Behaviour tests remain in the fix-stuck job (non-blocking) and the CI test workflow.
 
 All scenarios were run on v7.1.91 (post-fix), except the first 3 iterations of S1 which were on v7.1.90 (pre-fix) and failed due to the behaviour test gate.
 
@@ -36,21 +36,21 @@ All scenarios were run on v7.1.91 (post-fix), except the first 3 iterations of S
 | Model | gpt-5-mini |
 | Profile | min |
 | Budget | 16 |
-| Init run | [22811336171](https://github.com/xn-intenton-z2a/repository0/actions/runs/22811336171) |
+| Init run | [22811336171](https://github.com/polycode-public/repository0/actions/runs/22811336171) |
 | Init time | 01:32 UTC |
-| Re-init (v7.1.91) | [22811731165](https://github.com/xn-intenton-z2a/repository0/actions/runs/22811731165) at 01:59 UTC |
+| Re-init (v7.1.91) | [22811731165](https://github.com/polycode-public/repository0/actions/runs/22811731165) at 01:59 UTC |
 | Schedule | off |
 
 ### Iterations
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 (v7.1.90) | [22811421437](https://github.com/xn-intenton-z2a/repository0/actions/runs/22811421437) | 01:38 | ~5min | NO | -- | 35 | 5 | Maintain ran. Dev blocked by safety check (tried to write behaviour test). |
-| 2 (v7.1.90) | [22811502892](https://github.com/xn-intenton-z2a/repository0/actions/runs/22811502892) | 01:44 | ~6min | NO | -- | 35 | 5 | Dev generated FizzBuzz but behaviour test failed → commit skipped. |
-| 3 (v7.1.90) | [22811594825](https://github.com/xn-intenton-z2a/repository0/actions/runs/22811594825) | 01:50 | ~5min | NO | -- | 35 | 5 | Same as iter 2. |
-| 4 (v7.1.91) | [22811749986](https://github.com/xn-intenton-z2a/repository0/actions/runs/22811749986) | 02:01 | ~4min | NO | -- | 35 | 5 | Supervisor created issue #2706 (duplicate — caught by dedup). Dev: no open issue. |
-| 5 (v7.1.91) | [22811802510](https://github.com/xn-intenton-z2a/repository0/actions/runs/22811802510) | 02:04 | ~7min | YES | [#2710](https://github.com/xn-intenton-z2a/repository0/pull/2710) | 35 | 5 | Issue #2709 created and closed. PR merged but **main.js unchanged** — only README, docs, package.json, behaviour test modified. |
-| 6 (v7.1.91) | [22811917291](https://github.com/xn-intenton-z2a/repository0/actions/runs/22811917291) | 02:12 | ~4min | NO | -- | 35 | 5 | No open issue. Supervisor dedup blocks new issue. |
+| 1 (v7.1.90) | [22811421437](https://github.com/polycode-public/repository0/actions/runs/22811421437) | 01:38 | ~5min | NO | -- | 35 | 5 | Maintain ran. Dev blocked by safety check (tried to write behaviour test). |
+| 2 (v7.1.90) | [22811502892](https://github.com/polycode-public/repository0/actions/runs/22811502892) | 01:44 | ~6min | NO | -- | 35 | 5 | Dev generated FizzBuzz but behaviour test failed → commit skipped. |
+| 3 (v7.1.90) | [22811594825](https://github.com/polycode-public/repository0/actions/runs/22811594825) | 01:50 | ~5min | NO | -- | 35 | 5 | Same as iter 2. |
+| 4 (v7.1.91) | [22811749986](https://github.com/polycode-public/repository0/actions/runs/22811749986) | 02:01 | ~4min | NO | -- | 35 | 5 | Supervisor created issue #2706 (duplicate — caught by dedup). Dev: no open issue. |
+| 5 (v7.1.91) | [22811802510](https://github.com/polycode-public/repository0/actions/runs/22811802510) | 02:04 | ~7min | YES | [#2710](https://github.com/polycode-public/repository0/pull/2710) | 35 | 5 | Issue #2709 created and closed. PR merged but **main.js unchanged** — only README, docs, package.json, behaviour test modified. |
+| 6 (v7.1.91) | [22811917291](https://github.com/polycode-public/repository0/actions/runs/22811917291) | 02:12 | ~4min | NO | -- | 35 | 5 | No open issue. Supervisor dedup blocks new issue. |
 
 ### Acceptance Criteria
 
@@ -69,8 +69,8 @@ All scenarios were run on v7.1.91 (post-fix), except the first 3 iterations of S
 
 | Issue | State | Title |
 |-------|-------|-------|
-| [#2706](https://github.com/xn-intenton-z2a/repository0/issues/2706) | closed | Implement FizzBuzz library with tests, exports, edge-case handling, README |
-| [#2709](https://github.com/xn-intenton-z2a/repository0/issues/2709) | closed | Implement FizzBuzz library (fizzBuzz, fizzBuzzSingle) with tests, docs, README |
+| [#2706](https://github.com/polycode-public/repository0/issues/2706) | closed | Implement FizzBuzz library with tests, exports, edge-case handling, README |
+| [#2709](https://github.com/polycode-public/repository0/issues/2709) | closed | Implement FizzBuzz library (fizzBuzz, fizzBuzzSingle) with tests, docs, README |
 
 ### Scenario Summary
 
@@ -97,7 +97,7 @@ All scenarios were run on v7.1.91 (post-fix), except the first 3 iterations of S
 | Model | claude-sonnet-4 (via workflow dispatch `-f model=claude-sonnet-4`) |
 | Profile | min |
 | Budget | 16 |
-| Init run | [22811964658](https://github.com/xn-intenton-z2a/repository0/actions/runs/22811964658) |
+| Init run | [22811964658](https://github.com/polycode-public/repository0/actions/runs/22811964658) |
 | Init time | 02:16 UTC |
 | Schedule | off |
 
@@ -107,9 +107,9 @@ All scenarios were run on v7.1.91 (post-fix), except the first 3 iterations of S
 
 | # | Run ID | Time | Duration | Transform? | PR | Model Used | What Happened |
 |---|--------|------|----------|------------|-----|------------|---------------|
-| 1 | [22811979921](https://github.com/xn-intenton-z2a/repository0/actions/runs/22811979921) | 02:20 | ~4min | NO | -- | gpt-5-mini | Dedup caught issue. Dev: no open issue. |
-| 2 | [22812036122](https://github.com/xn-intenton-z2a/repository0/actions/runs/22812036122) | 02:23 | ~4min | NO | -- | gpt-5-mini | Same. |
-| 3 | [22812118831](https://github.com/xn-intenton-z2a/repository0/actions/runs/22812118831) | 02:30 | ~5min | NO | -- | claude-sonnet-4 | Supervisor chose `nop`. Dev: no open issue. |
+| 1 | [22811979921](https://github.com/polycode-public/repository0/actions/runs/22811979921) | 02:20 | ~4min | NO | -- | gpt-5-mini | Dedup caught issue. Dev: no open issue. |
+| 2 | [22812036122](https://github.com/polycode-public/repository0/actions/runs/22812036122) | 02:23 | ~4min | NO | -- | gpt-5-mini | Same. |
+| 3 | [22812118831](https://github.com/polycode-public/repository0/actions/runs/22812118831) | 02:30 | ~5min | NO | -- | claude-sonnet-4 | Supervisor chose `nop`. Dev: no open issue. |
 
 ### Key Finding
 
@@ -137,7 +137,7 @@ claude-sonnet-4 chose `nop` with implicit reasoning that nothing needed to be do
 | Model | gpt-5-mini |
 | Profile | min |
 | Budget | 16 |
-| Init run | [22812346523](https://github.com/xn-intenton-z2a/repository0/actions/runs/22812346523) |
+| Init run | [22812346523](https://github.com/polycode-public/repository0/actions/runs/22812346523) |
 | Init time | 02:43 UTC |
 | Schedule | off |
 
@@ -145,8 +145,8 @@ claude-sonnet-4 chose `nop` with implicit reasoning that nothing needed to be do
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [22812361907](https://github.com/xn-intenton-z2a/repository0/actions/runs/22812361907) | 02:44 | ~5min | YES | [#2714](https://github.com/xn-intenton-z2a/repository0/pull/2714) | 79 | 10 (hamming.test.js) | Issue #2713 created. `hamming()` function implemented. PR merged. |
-| 2 | [22812435371](https://github.com/xn-intenton-z2a/repository0/actions/runs/22812435371) | 02:49 | ~5min | NO | -- | 79 | 10 | No open issue. Maintain used 2 budget units. |
+| 1 | [22812361907](https://github.com/polycode-public/repository0/actions/runs/22812361907) | 02:44 | ~5min | YES | [#2714](https://github.com/polycode-public/repository0/pull/2714) | 79 | 10 (hamming.test.js) | Issue #2713 created. `hamming()` function implemented. PR merged. |
+| 2 | [22812435371](https://github.com/polycode-public/repository0/actions/runs/22812435371) | 02:49 | ~5min | NO | -- | 79 | 10 | No open issue. Maintain used 2 budget units. |
 
 ### Code Analysis
 
@@ -172,7 +172,7 @@ The transform implemented `hamming(a, b)` which works for strings and `Uint8Arra
 
 | Issue | State | Title |
 |-------|-------|-------|
-| [#2713](https://github.com/xn-intenton-z2a/repository0/issues/2713) | closed | Implement Hamming distance library (functions + tests + README) |
+| [#2713](https://github.com/polycode-public/repository0/issues/2713) | closed | Implement Hamming distance library (functions + tests + README) |
 
 ### Scenario Summary
 
@@ -199,7 +199,7 @@ The transform implemented `hamming(a, b)` which works for strings and `Uint8Arra
 | Model | gpt-5-mini |
 | Profile | min |
 | Budget | 16 |
-| Init run | [22812507598](https://github.com/xn-intenton-z2a/repository0/actions/runs/22812507598) |
+| Init run | [22812507598](https://github.com/polycode-public/repository0/actions/runs/22812507598) |
 | Init time | 02:55 UTC |
 | Schedule | off |
 
@@ -207,7 +207,7 @@ The transform implemented `hamming(a, b)` which works for strings and `Uint8Arra
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [22812524141](https://github.com/xn-intenton-z2a/repository0/actions/runs/22812524141) | 02:56 | ~5min | YES | [#2718](https://github.com/xn-intenton-z2a/repository0/pull/2718) | 114 | tests in main.test.js | Issue #2717 created. `toRoman()` and `fromRoman()` implemented. PR merged. |
+| 1 | [22812524141](https://github.com/polycode-public/repository0/actions/runs/22812524141) | 02:56 | ~5min | YES | [#2718](https://github.com/polycode-public/repository0/pull/2718) | 114 | tests in main.test.js | Issue #2717 created. `toRoman()` and `fromRoman()` implemented. PR merged. |
 
 ### Code Analysis
 
@@ -237,7 +237,7 @@ The transform implemented both `toRoman(n)` and `fromRoman(s)` with:
 
 | Issue | State | Title |
 |-------|-------|-------|
-| [#2717](https://github.com/xn-intenton-z2a/repository0/issues/2717) | closed | Implement Roman numeral library (toRoman, fromRoman) |
+| [#2717](https://github.com/polycode-public/repository0/issues/2717) | closed | Implement Roman numeral library (toRoman, fromRoman) |
 
 ### Scenario Summary
 
@@ -258,7 +258,7 @@ The transform implemented both `toRoman(n)` and `fromRoman(s)` with:
 
 ### FINDING-1: Behaviour test gate was a critical blocker (FIXED)
 
-The pre-v7.1.91 dev job ran Playwright behaviour tests after transformation and blocked the commit if they failed. This created a catch-22: the LLM generated behaviour tests expecting the new code to work, but the code wasn't committed yet so the web demo couldn't serve it. Fix: PR [#1876](https://github.com/xn-intenton-z2a/agentic-lib/pull/1876) removed the behaviour test gate from the dev job. Behaviour tests remain in fix-stuck (non-blocking) and CI test workflow.
+The pre-v7.1.91 dev job ran Playwright behaviour tests after transformation and blocked the commit if they failed. This created a catch-22: the LLM generated behaviour tests expecting the new code to work, but the code wasn't committed yet so the web demo couldn't serve it. Fix: PR [#1876](https://github.com/polycode-public/agentic-lib/pull/1876) removed the behaviour test gate from the dev job. Behaviour tests remain in fix-stuck (non-blocking) and CI test workflow.
 
 **Impact**: 3 wasted iterations on S1 before the fix.
 

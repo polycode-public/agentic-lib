@@ -283,7 +283,7 @@ Mission complete in 3 transforms (~18m wall clock). JavaScript plotting library 
 
 ## Fixes Applied During This Session
 
-Fixes implemented on branch `claude/benchmark-020-fixes`, merged as PR [#1985](https://github.com/xn-intenton-z2a/agentic-lib/pull/1985), released as v7.4.58:
+Fixes implemented on branch `claude/benchmark-020-fixes`, merged as PR [#1985](https://github.com/polycode-public/agentic-lib/pull/1985), released as v7.4.58:
 
 | Fix | Description | Impact |
 |-----|-------------|--------|

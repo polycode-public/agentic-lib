@@ -47,7 +47,7 @@ The system has no external dependencies beyond GitHub. It runs as GitHub Actions
 
 ### For developers (the loop)
 
-> `npx @xn-intenton-z2a/agentic-lib init` — then write your intentïon. Nine task handlers run as GitHub Actions workflows. No external services. No API keys beyond GitHub. TOML-configurable. MIT-licensed distributed code.
+> `npx @polycode-public/agentic-lib init` — then write your intentïon. Nine task handlers run as GitHub Actions workflows. No external services. No API keys beyond GitHub. TOML-configurable. MIT-licensed distributed code.
 
 **What they care about:** Does it work? Can I try it in 10 minutes? What happens when it breaks?
 

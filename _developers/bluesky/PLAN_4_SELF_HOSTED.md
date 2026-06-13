@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-agentic-lib distributes autonomous development workflows to consumer repos via `npx @xn-intenton-z2a/agentic-lib init --purge`. Today it can manage consumer repos (like repository0) but cannot manage itself. The computer science concept for a system capable of maintaining/reproducing itself is **self-hosting** (like a compiler that compiles its own source code).
+agentic-lib distributes autonomous development workflows to consumer repos via `npx @polycode-public/agentic-lib init --purge`. Today it can manage consumer repos (like repository0) but cannot manage itself. The computer science concept for a system capable of maintaining/reproducing itself is **self-hosting** (like a compiler that compiles its own source code).
 
 The strongest proof of capability: if the system can maintain and recreate itself, it can maintain anything.
 

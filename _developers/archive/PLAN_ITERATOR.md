@@ -129,7 +129,7 @@ These sections are documentation — the active profile is set by `[tuning].prof
 New CLI command that wraps the same loop as the MCP `iterate` tool, but runs directly from the command line without needing an MCP client.
 
 ```
-npx @xn-intenton-z2a/agentic-lib iterate [options]
+npx @polycode-public/agentic-lib iterate [options]
 
 Options:
   --target <path>    Target repository (default: current directory)
@@ -143,14 +143,14 @@ Options:
 **Example usage** (reproducing V4 report Scenario 1):
 ```bash
 # Quick: init + iterate with budget
-npx @xn-intenton-z2a/agentic-lib iterate \
+npx @polycode-public/agentic-lib iterate \
   --mission fizz-buzz --model gpt-5-mini --cycles 4
 
 # Just iterate on existing workspace
-npx @xn-intenton-z2a/agentic-lib iterate --cycles 2
+npx @polycode-public/agentic-lib iterate --cycles 2
 
 # Transform-only cycles (skip maintain)
-npx @xn-intenton-z2a/agentic-lib iterate --steps transform,fix --cycles 3
+npx @polycode-public/agentic-lib iterate --steps transform,fix --cycles 3
 ```
 
 **Implementation**: Extract the loop logic from `handleIterate()` in `src/mcp/server.js` into a shared `src/iterate.js` module. Both the MCP tool and the CLI command call it.
@@ -302,19 +302,19 @@ The V4 report scenarios can be reproduced with the iterator:
 
 ```bash
 # Scenario 1: fizz-buzz / gpt-5-mini (baseline)
-npx @xn-intenton-z2a/agentic-lib iterate \
+npx @polycode-public/agentic-lib iterate \
   --mission fizz-buzz --model gpt-5-mini --target /tmp/scenario-1
 
 # Scenario 2: fizz-buzz / claude-sonnet-4 (model comparison)
-npx @xn-intenton-z2a/agentic-lib iterate \
+npx @polycode-public/agentic-lib iterate \
   --mission fizz-buzz --model claude-sonnet-4 --target /tmp/scenario-2
 
 # Scenario 3: roman-numerals / gpt-5-mini (medium complexity)
-npx @xn-intenton-z2a/agentic-lib iterate \
+npx @polycode-public/agentic-lib iterate \
   --mission roman-numerals --model gpt-5-mini --target /tmp/scenario-3
 
 # Scenario 4: cron-engine / gpt-5-mini (complex, should hit budget)
-npx @xn-intenton-z2a/agentic-lib iterate \
+npx @polycode-public/agentic-lib iterate \
   --mission cron-engine --model gpt-5-mini --target /tmp/scenario-4 --cycles 8
 ```
 
@@ -326,7 +326,7 @@ PLAN_1_LOCAL_SCENARIO_TESTS.md describes local testing with a tiny LLM via `--lo
 
 ```bash
 # Local scenario test (future — when node-llama-cpp is integrated)
-npx @xn-intenton-z2a/agentic-lib iterate \
+npx @polycode-public/agentic-lib iterate \
   --mission fizz-buzz --local-llm --cycles 4 --target /tmp/local-test
 ```
 
@@ -383,7 +383,7 @@ All items implemented. 393 tests pass across 26 test files.
 
 | # | Criterion | Status |
 |---|-----------|--------|
-| 1 | `npx @xn-intenton-z2a/agentic-lib iterate --mission fizz-buzz --cycles 4` runs a complete loop | Ready (needs live COPILOT_GITHUB_TOKEN) |
+| 1 | `npx @polycode-public/agentic-lib iterate --mission fizz-buzz --cycles 4` runs a complete loop | Ready (needs live COPILOT_GITHUB_TOKEN) |
 | 2 | Iterator stops early when tests pass for 2 consecutive cycles | Done (unit tested) |
 | 3 | Iterator stops early when no files change for 2 consecutive cycles | Done (unit tested) |
 | 4 | Iterator stops when transformation budget is exhausted | Done (unit tested) |

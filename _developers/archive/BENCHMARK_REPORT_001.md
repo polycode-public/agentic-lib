@@ -25,7 +25,7 @@
 | Model | gpt-5-mini |
 | Profile | recommended |
 | Budget | 32 |
-| Init run | [22802517544](https://github.com/xn-intenton-z2a/repository0/actions/runs/22802517544) |
+| Init run | [22802517544](https://github.com/polycode-public/repository0/actions/runs/22802517544) |
 | Init time | 16:14 UTC |
 | Init mode | purge |
 | Schedule | continuous (`*/10 * * * *` + manual dispatches) |
@@ -34,10 +34,10 @@
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [22802576618](https://github.com/xn-intenton-z2a/repository0/actions/runs/22802576618) | 16:18 | 6m42s | YES | [#2667](https://github.com/xn-intenton-z2a/repository0/pull/2667) | 70 | 19 (1 file) | Maintain updated docs. Supervisor created issue #2666. Dev implemented full FizzBuzz in single PR. |
-| 2 | [22802640249](https://github.com/xn-intenton-z2a/repository0/actions/runs/22802640249) | 16:22 | 7m9s | NO | -- | 70 | 19 (1 file) | Maintain added 3 feature files + 7 library descriptors. Dev found no new issue to work on. FizzBuzz code preserved. |
-| 3 | [22802875189](https://github.com/xn-intenton-z2a/repository0/actions/runs/22802875189) | 16:38 | ~6m | NO | -- | 70 | 19 | Maintain added more library entries. Code preserved. |
-| 4 | [22802877806](https://github.com/xn-intenton-z2a/repository0/actions/runs/22802877806) | 16:38 | ~6m | YES | [#2669](https://github.com/xn-intenton-z2a/repository0/pull/2669) | 70 | 17 tests (3 files) | Transform #2 — fixed tests to ESM, added comprehensive tests. **MISSION_COMPLETE.md written.** |
+| 1 | [22802576618](https://github.com/polycode-public/repository0/actions/runs/22802576618) | 16:18 | 6m42s | YES | [#2667](https://github.com/polycode-public/repository0/pull/2667) | 70 | 19 (1 file) | Maintain updated docs. Supervisor created issue #2666. Dev implemented full FizzBuzz in single PR. |
+| 2 | [22802640249](https://github.com/polycode-public/repository0/actions/runs/22802640249) | 16:22 | 7m9s | NO | -- | 70 | 19 (1 file) | Maintain added 3 feature files + 7 library descriptors. Dev found no new issue to work on. FizzBuzz code preserved. |
+| 3 | [22802875189](https://github.com/polycode-public/repository0/actions/runs/22802875189) | 16:38 | ~6m | NO | -- | 70 | 19 | Maintain added more library entries. Code preserved. |
+| 4 | [22802877806](https://github.com/polycode-public/repository0/actions/runs/22802877806) | 16:38 | ~6m | YES | [#2669](https://github.com/polycode-public/repository0/pull/2669) | 70 | 17 tests (3 files) | Transform #2 — fixed tests to ESM, added comprehensive tests. **MISSION_COMPLETE.md written.** |
 | 5-8 | (4 concurrent runs) | 16:39-16:52 | ~6m each | NO | -- | 70 | 17 tests | Subsequent runs — no further transforms needed. Mission already complete. |
 
 ### Job Breakdown — Iteration 1 (22802576618)
@@ -105,7 +105,7 @@ and transform each count as separate transformations.
 
 | Issue | State | Title |
 |-------|-------|-------|
-| [#2666](https://github.com/xn-intenton-z2a/repository0/issues/2666) | closed | Implement FizzBuzz library: fizzBuzz and fizzBuzzSingle with tests, README, and docs |
+| [#2666](https://github.com/polycode-public/repository0/issues/2666) | closed | Implement FizzBuzz library: fizzBuzz and fizzBuzzSingle with tests, README, and docs |
 
 ### Files Changed in Implementation (PR #2667)
 

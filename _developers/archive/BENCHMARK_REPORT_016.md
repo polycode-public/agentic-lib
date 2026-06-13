@@ -17,7 +17,7 @@ Evaluated the first 20 hours of `repository0-plot-code-lib`, a new repository cr
 
 | Parameter | Value |
 |-----------|-------|
-| Repository | `xn-intenton-z2a/repository0-plot-code-lib` |
+| Repository | `polycode-public/repository0-plot-code-lib` |
 | Mission seed | `2-kyu-create-plot-code-lib` |
 | Mission | JavaScript plotting library + CLI (SVG/PNG, CSV, expressions) |
 | Model | gpt-5-mini |

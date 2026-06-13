@@ -86,7 +86,7 @@ jobs:
           node-version: "24"
 
       - name: Update agentic-lib to latest
-        run: npm update @xn-intenton-z2a/agentic-lib
+        run: npm update @polycode-public/agentic-lib
 
       - name: Run init (update mode)
         env:
@@ -96,7 +96,7 @@ jobs:
           if [ -f "bin/agentic-lib.js" ]; then
             node bin/agentic-lib.js init
           else
-            npx @xn-intenton-z2a/agentic-lib init
+            npx @polycode-public/agentic-lib init
           fi
 
       - run: npm install
@@ -114,7 +114,7 @@ jobs:
         run: npm test
 
       - name: Commit and push to main [skip ci]
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && inputs.dry-run != 'true' && inputs.dry-run != true
+        if: github.repository != 'polycode-public/agentic-lib' && inputs.dry-run != 'true' && inputs.dry-run != true
         env:
           GH_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
         run: |
@@ -128,7 +128,7 @@ jobs:
           git reset HEAD -- agent-log-*.md 2>/dev/null || true
           git reset HEAD -- agentic-lib-state.toml 2>/dev/null || true
           git diff --cached --quiet && echo "No changes" && exit 0
-          VERSION=$(npx @xn-intenton-z2a/agentic-lib version 2>/dev/null || echo "latest")
+          VERSION=$(npx @polycode-public/agentic-lib version 2>/dev/null || echo "latest")
           git commit -m "update agentic-lib@${VERSION} [skip ci]"
           MAX_RETRIES=3
           PUSH_SUCCESS=""

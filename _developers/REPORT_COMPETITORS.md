@@ -262,11 +262,11 @@ Persistent semantic memory for AI agents. "Makes repositories self-aware." The r
 
 ## Are They Looking at Us?
 
-### Search Results for "agentic-lib", "xn-intenton-z2a", "intentïon"
+### Search Results for "agentic-lib", "polycode-public", "intentïon"
 
 All code search results trace back to:
 
-1. **Own repositories:** `xn-intenton-z2a/agentic-lib`, `xn-intenton-z2a/repository0`, and other org repos
+1. **Own repositories:** `polycode-public/agentic-lib`, `polycode-public/repository0`, and other org repos
 2. **Own related repos:** `polycode-projects/bitpack-encoder`, `polycode-projects/apply-fixes-sarif-lib`, `antonycc/submit.diyaccounting.co.uk`
 3. **Automated data collectors** (passive, no editorial awareness):
    - `rumca-js/RSS-Link-Database-2025` — RSS feed scraper that captured a Reddit r/programming post mentioning agentic-lib (2025-02-25)

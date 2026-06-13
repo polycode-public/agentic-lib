@@ -448,7 +448,7 @@ The main `agentic-lib-workflow.yml` picks up changes from init on its next sched
 ### Phase 2: Deploy to repository0
 
 1. Bump agentic-lib version
-2. Run `npx @xn-intenton-z2a/agentic-lib init --purge` on repository0
+2. Run `npx @polycode-public/agentic-lib init --purge` on repository0
 3. Verify: old workflows deleted, new workflows present (5 total)
 4. Manual dispatch of `agentic-lib-workflow` in `full` mode
 5. Observe: single run, no cascades, all jobs execute in order

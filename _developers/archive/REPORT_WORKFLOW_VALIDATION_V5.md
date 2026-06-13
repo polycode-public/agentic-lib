@@ -2,7 +2,7 @@
 
 **Date**: 2026-03-07
 **Operator**: Claude Code (claude-opus-4-6)
-**Target**: `xn-intenton-z2a/repository0`
+**Target**: `polycode-public/repository0`
 **agentic-lib version**: 7.1.62
 **Previous report**: REPORT_WORKFLOW_VALIDATION_V4.md (V4, agentic-lib 7.1.60)
 
@@ -34,28 +34,28 @@ Scenarios run on repository0 using `gh workflow run` dispatches. The schedule is
 
 ```bash
 # Init with purge (reset to seed code for a mission)
-gh workflow run agentic-lib-init -R xn-intenton-z2a/repository0 \
+gh workflow run agentic-lib-init -R polycode-public/repository0 \
   -f mode=purge -f mission-seed=MISSION_NAME -f schedule=off
 
 # Check latest runs
-gh run list -R xn-intenton-z2a/repository0 -L 5
+gh run list -R polycode-public/repository0 -L 5
 
 # Read source
-gh api repos/xn-intenton-z2a/repository0/contents/src/lib/main.js -q '.content' | base64 -d | wc -l
+gh api repos/polycode-public/repository0/contents/src/lib/main.js -q '.content' | base64 -d | wc -l
 
 # Check commits
-gh api repos/xn-intenton-z2a/repository0/commits -q '.[0:5] | .[] | .sha[0:8] + " " + (.commit.message | split("\n")[0])'
+gh api repos/polycode-public/repository0/commits -q '.[0:5] | .[] | .sha[0:8] + " " + (.commit.message | split("\n")[0])'
 
 # Check issues
-gh api 'repos/xn-intenton-z2a/repository0/issues?state=all&per_page=10&sort=created&direction=desc' \
+gh api 'repos/polycode-public/repository0/issues?state=all&per_page=10&sort=created&direction=desc' \
   -q '.[] | select(.pull_request == null) | "#\(.number) \(.state) \(.title)"'
 
 # Check PRs
-gh api 'repos/xn-intenton-z2a/repository0/pulls?state=all&per_page=10&sort=created&direction=desc' \
+gh api 'repos/polycode-public/repository0/pulls?state=all&per_page=10&sort=created&direction=desc' \
   -q '.[] | "#\(.number) \(.state) merged=\(.merged_at // "no") \(.title)"'
 
 # Check MISSION_COMPLETE
-gh api repos/xn-intenton-z2a/repository0/contents/MISSION_COMPLETE.md -q '.name' 2>/dev/null || echo "not yet"
+gh api repos/polycode-public/repository0/contents/MISSION_COMPLETE.md -q '.name' 2>/dev/null || echo "not yet"
 ```
 
 ### Scenarios
@@ -81,22 +81,22 @@ gh api repos/xn-intenton-z2a/repository0/contents/MISSION_COMPLETE.md -q '.name'
 
 This baseline captures what happened with v7.1.61 before the v7.1.62 fixes.
 
-**Init**: [#13](https://github.com/xn-intenton-z2a/repository0/actions/runs/22781401265) at 20:48 UTC
-**Re-init**: [#14](https://github.com/xn-intenton-z2a/repository0/actions/runs/22786522033) at 23:38 UTC (v7.1.62)
+**Init**: [#13](https://github.com/polycode-public/repository0/actions/runs/22781401265) at 20:48 UTC
+**Re-init**: [#14](https://github.com/polycode-public/repository0/actions/runs/22786522033) at 23:38 UTC (v7.1.62)
 
 ### Iterations (v7.1.61)
 
 | # | Run ID | Time | Transform? | PR | What Happened |
 |---|--------|------|------------|-----|---------------|
-| 1 | [22781639068](https://github.com/xn-intenton-z2a/repository0/actions/runs/22781639068) | 20:56 | YES | #2606 merged | Transform #2605 merged |
-| 2 | [22782211296](https://github.com/xn-intenton-z2a/repository0/actions/runs/22782211296) | 21:13 | NO | — | Maintain only (dev skipped) |
-| 3 | [22782790265](https://github.com/xn-intenton-z2a/repository0/actions/runs/22782790265) | 21:31 | NO | — | Maintain only (dev skipped) |
-| 4 | [22783517332](https://github.com/xn-intenton-z2a/repository0/actions/runs/22783517332) | 21:54 | NO | — | Maintain only (dev skipped) |
-| 5 | [22784060804](https://github.com/xn-intenton-z2a/repository0/actions/runs/22784060804) | 22:11 | YES | #2612 merged | Transform #2611 merged |
-| 6 | [22784575871](https://github.com/xn-intenton-z2a/repository0/actions/runs/22784575871) | 22:28 | NO | — | Maintain only (dev skipped) |
-| 7 | [22785123698](https://github.com/xn-intenton-z2a/repository0/actions/runs/22785123698) | 22:47 | NO | — | Maintain only (dev skipped) |
-| 8 | [22785816706](https://github.com/xn-intenton-z2a/repository0/actions/runs/22785816706) | 23:11 | NO | — | Maintain only (dev skipped) |
-| 9 | [22786279503](https://github.com/xn-intenton-z2a/repository0/actions/runs/22786279503) | 23:28 | NO | — | Maintain only (dev skipped) |
+| 1 | [22781639068](https://github.com/polycode-public/repository0/actions/runs/22781639068) | 20:56 | YES | #2606 merged | Transform #2605 merged |
+| 2 | [22782211296](https://github.com/polycode-public/repository0/actions/runs/22782211296) | 21:13 | NO | — | Maintain only (dev skipped) |
+| 3 | [22782790265](https://github.com/polycode-public/repository0/actions/runs/22782790265) | 21:31 | NO | — | Maintain only (dev skipped) |
+| 4 | [22783517332](https://github.com/polycode-public/repository0/actions/runs/22783517332) | 21:54 | NO | — | Maintain only (dev skipped) |
+| 5 | [22784060804](https://github.com/polycode-public/repository0/actions/runs/22784060804) | 22:11 | YES | #2612 merged | Transform #2611 merged |
+| 6 | [22784575871](https://github.com/polycode-public/repository0/actions/runs/22784575871) | 22:28 | NO | — | Maintain only (dev skipped) |
+| 7 | [22785123698](https://github.com/polycode-public/repository0/actions/runs/22785123698) | 22:47 | NO | — | Maintain only (dev skipped) |
+| 8 | [22785816706](https://github.com/polycode-public/repository0/actions/runs/22785816706) | 23:11 | NO | — | Maintain only (dev skipped) |
+| 9 | [22786279503](https://github.com/polycode-public/repository0/actions/runs/22786279503) | 23:28 | NO | — | Maintain only (dev skipped) |
 
 ### Baseline Summary
 
@@ -114,16 +114,16 @@ This baseline captures what happened with v7.1.61 before the v7.1.62 fixes.
 **Mission**: Hamming distance — 2 core functions with Unicode support, input validation, BigInt
 **Model**: gpt-5-mini
 **Profile**: recommended
-**Init**: [#14](https://github.com/xn-intenton-z2a/repository0/actions/runs/22786522033) at 23:38 UTC (v7.1.62)
+**Init**: [#14](https://github.com/polycode-public/repository0/actions/runs/22786522033) at 23:38 UTC (v7.1.62)
 **Schedule**: continuous (*/15 cron)
 
 ### Iterations
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [22786674431](https://github.com/xn-intenton-z2a/repository0/actions/runs/22786674431) | 23:44 | 8m20s | YES | #2619 merged | 93 | 1 (seed) | Full hamming-distance implementation: `hammingDistance` (Unicode, Buffer, Uint8Array) + `hammingDistanceBits` (Number, BigInt). PR #2619 auto-merged. |
-| 2 | [22786967484](https://github.com/xn-intenton-z2a/repository0/actions/runs/22786967484) | 23:56 | ~5min | NO | — | 93 | 1 (seed) | Maintain commit only. Dev ran but found "No ready issues". All issues closed by review. Features grew to 4 (added BATCH_SUPPORT.md). |
-| 3 | [22787603067](https://github.com/xn-intenton-z2a/repository0/actions/runs/22787603067) | 00:25 | ~7min | NO | — | 93 | 1 (seed) | Maintain commit only. Dev: "No ready issues found". All issues closed. 2nd consecutive nop — **CONVERGED**. |
+| 1 | [22786674431](https://github.com/polycode-public/repository0/actions/runs/22786674431) | 23:44 | 8m20s | YES | #2619 merged | 93 | 1 (seed) | Full hamming-distance implementation: `hammingDistance` (Unicode, Buffer, Uint8Array) + `hammingDistanceBits` (Number, BigInt). PR #2619 auto-merged. |
+| 2 | [22786967484](https://github.com/polycode-public/repository0/actions/runs/22786967484) | 23:56 | ~5min | NO | — | 93 | 1 (seed) | Maintain commit only. Dev ran but found "No ready issues". All issues closed by review. Features grew to 4 (added BATCH_SUPPORT.md). |
+| 3 | [22787603067](https://github.com/polycode-public/repository0/actions/runs/22787603067) | 00:25 | ~7min | NO | — | 93 | 1 (seed) | Maintain commit only. Dev: "No ready issues found". All issues closed. 2nd consecutive nop — **CONVERGED**. |
 
 ### Current Source State (after iteration 1)
 
@@ -184,7 +184,7 @@ This baseline captures what happened with v7.1.61 before the v7.1.62 fixes.
 **Mission**: Hamming distance (same as Scenario 3)
 **Model**: gpt-5-mini
 **Profile**: recommended
-**Init**: [#22787900916](https://github.com/xn-intenton-z2a/repository0/actions/runs/22787900916) at 00:38 UTC (user-initiated, v7.1.66)
+**Init**: [#22787900916](https://github.com/polycode-public/repository0/actions/runs/22787900916) at 00:38 UTC (user-initiated, v7.1.66)
 **Schedule**: continuous (*/15 cron)
 **Note**: User re-init'd after Claude's Scenario 1 attempt. This run uses the same config as Scenario 3 but starts fresh.
 
@@ -192,9 +192,9 @@ This baseline captures what happened with v7.1.61 before the v7.1.62 fixes.
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [22788560297](https://github.com/xn-intenton-z2a/repository0/actions/runs/22788560297) | 01:08 | ~6min | YES | #2627 merged | 97 | 1 (seed) | Full hamming-distance implementation: `hammingDistance` (NFC Unicode, code points) + `hammingDistanceBits` (Number, BigInt). PR #2627 auto-merged. |
-| 2 | [22788947071](https://github.com/xn-intenton-z2a/repository0/actions/runs/22788947071) | 01:28 | ~5min | NO | — | 97 | 1 (seed) | Maintain only. Dev: "No ready issues found". All issues closed. |
-| 3 | [22789056412](https://github.com/xn-intenton-z2a/repository0/actions/runs/22789056412) | 01:34 | ~4min | NO | — | 97 | 1 (seed) | Maintain only. Dev: "No ready issues found". **CONVERGED** (3 consecutive nops). |
+| 1 | [22788560297](https://github.com/polycode-public/repository0/actions/runs/22788560297) | 01:08 | ~6min | YES | #2627 merged | 97 | 1 (seed) | Full hamming-distance implementation: `hammingDistance` (NFC Unicode, code points) + `hammingDistanceBits` (Number, BigInt). PR #2627 auto-merged. |
+| 2 | [22788947071](https://github.com/polycode-public/repository0/actions/runs/22788947071) | 01:28 | ~5min | NO | — | 97 | 1 (seed) | Maintain only. Dev: "No ready issues found". All issues closed. |
+| 3 | [22789056412](https://github.com/polycode-public/repository0/actions/runs/22789056412) | 01:34 | ~4min | NO | — | 97 | 1 (seed) | Maintain only. Dev: "No ready issues found". **CONVERGED** (3 consecutive nops). |
 
 ### Scenario 3b Summary
 
@@ -220,21 +220,21 @@ This baseline captures what happened with v7.1.61 before the v7.1.62 fixes.
 **Mission**: FizzBuzz — simplest possible mission (2 functions)
 **Model**: gpt-5-mini
 **Profile**: min
-**Init**: [#22789280197](https://github.com/xn-intenton-z2a/repository0/actions/runs/22789280197) at 01:45 UTC (v7.1.66)
+**Init**: [#22789280197](https://github.com/polycode-public/repository0/actions/runs/22789280197) at 01:45 UTC (v7.1.66)
 **Schedule**: off (manually dispatched)
 
 ### Iterations
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [22789297966](https://github.com/xn-intenton-z2a/repository0/actions/runs/22789297966) | 01:46 | ~3min | NO | — | 15 (seed) | 11 (seed) | Supervisor failed (transient npm error). Dev found no ready issues. |
-| 2 | [22789407556](https://github.com/xn-intenton-z2a/repository0/actions/runs/22789407556) | 01:49 | ~9min | YES | #2632 merged | 15 (seed) | 11 (seed) | Supervisor created issue #2631. Transform wrote tests + docs but NOT implementation. `fizzbuzz.test.js` (39 lines) + docs created. Source unchanged. |
-| 3 | [22789559620](https://github.com/xn-intenton-z2a/repository0/actions/runs/22789559620) | 02:01 | ~6min | YES | #2634 merged | 70 | 67 (main.test.js rewritten) | Implementation landed: `fizzBuzzSingle` + `fizzBuzz(start, end)`. Tests rewritten. But casing mismatch: code returns lowercase "fizz", tests expect lowercase. |
-| 4 | [22789797495](https://github.com/xn-intenton-z2a/repository0/actions/runs/22789797495) | 02:12 | ~6min | YES | #2636 merged | 67 | 67 | Refactored: source 70→67 lines. **Casing changed to capitalized "Fizz"/"Buzz"/"FizzBuzz"** (matching MISSION.md). Tests NOT updated — still expect lowercase. |
-| 5 | [22789967973](https://github.com/xn-intenton-z2a/repository0/actions/runs/22789967973) | 02:22 | ~3min | NO | — | 67 | 67 | Maintain only. Dev: "No ready issues found". |
-| 6 | [22790047507](https://github.com/xn-intenton-z2a/repository0/actions/runs/22790047507) | 02:26 | ~5min | YES | #2639 merged | 68 | 67 | Transform ran but did NOT fix the casing mismatch. Minor code change (67→68 lines). |
-| 7 | [22790150446](https://github.com/xn-intenton-z2a/repository0/actions/runs/22790150446) | 02:29 | ~3min | NO | — | 68 | 67 | Maintain only. No ready issues. Tests still broken (Fizz vs fizz). |
-| 8 | [22790297130](https://github.com/xn-intenton-z2a/repository0/actions/runs/22790297130) | 02:34 | ~6min | YES | #2642 merged | 14 (re-export) | 67 | Restructured: fizzBuzz moved to `fizzbuzz.js`, main.js re-exports. Still mismatched casing. Pipeline churning. |
+| 1 | [22789297966](https://github.com/polycode-public/repository0/actions/runs/22789297966) | 01:46 | ~3min | NO | — | 15 (seed) | 11 (seed) | Supervisor failed (transient npm error). Dev found no ready issues. |
+| 2 | [22789407556](https://github.com/polycode-public/repository0/actions/runs/22789407556) | 01:49 | ~9min | YES | #2632 merged | 15 (seed) | 11 (seed) | Supervisor created issue #2631. Transform wrote tests + docs but NOT implementation. `fizzbuzz.test.js` (39 lines) + docs created. Source unchanged. |
+| 3 | [22789559620](https://github.com/polycode-public/repository0/actions/runs/22789559620) | 02:01 | ~6min | YES | #2634 merged | 70 | 67 (main.test.js rewritten) | Implementation landed: `fizzBuzzSingle` + `fizzBuzz(start, end)`. Tests rewritten. But casing mismatch: code returns lowercase "fizz", tests expect lowercase. |
+| 4 | [22789797495](https://github.com/polycode-public/repository0/actions/runs/22789797495) | 02:12 | ~6min | YES | #2636 merged | 67 | 67 | Refactored: source 70→67 lines. **Casing changed to capitalized "Fizz"/"Buzz"/"FizzBuzz"** (matching MISSION.md). Tests NOT updated — still expect lowercase. |
+| 5 | [22789967973](https://github.com/polycode-public/repository0/actions/runs/22789967973) | 02:22 | ~3min | NO | — | 67 | 67 | Maintain only. Dev: "No ready issues found". |
+| 6 | [22790047507](https://github.com/polycode-public/repository0/actions/runs/22790047507) | 02:26 | ~5min | YES | #2639 merged | 68 | 67 | Transform ran but did NOT fix the casing mismatch. Minor code change (67→68 lines). |
+| 7 | [22790150446](https://github.com/polycode-public/repository0/actions/runs/22790150446) | 02:29 | ~3min | NO | — | 68 | 67 | Maintain only. No ready issues. Tests still broken (Fizz vs fizz). |
+| 8 | [22790297130](https://github.com/polycode-public/repository0/actions/runs/22790297130) | 02:34 | ~6min | YES | #2642 merged | 14 (re-export) | 67 | Restructured: fizzBuzz moved to `fizzbuzz.js`, main.js re-exports. Still mismatched casing. Pipeline churning. |
 
 ### Scenario 1 Summary
 
@@ -272,7 +272,7 @@ The transform step generates code changes and creates a PR, but does NOT validat
 **Mission**: FizzBuzz — simplest possible mission (2 functions)
 **Model**: gpt-5-mini
 **Profile**: recommended (budget 32)
-**Init**: [#22790928241](https://github.com/xn-intenton-z2a/repository0/actions/runs/22790928241) at 03:17 UTC (v7.1.68)
+**Init**: [#22790928241](https://github.com/polycode-public/repository0/actions/runs/22790928241) at 03:17 UTC (v7.1.68)
 **Schedule**: hourly (with manual dispatches)
 
 **Changes since Scenario 1** (not yet released — still on v7.1.68 published prompts):
@@ -288,13 +288,13 @@ The transform step generates code changes and creates a PR, but does NOT validat
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1a | [22791015228](https://github.com/xn-intenton-z2a/repository0/actions/runs/22791015228) | 03:22 | ~2min | NO | — | 15 (seed) | 26 (seed) | Review-only. Created issue #2646 "Implement FizzBuzz library with tests, docs, and README". |
-| 1b | [22791019854](https://github.com/xn-intenton-z2a/repository0/actions/runs/22791019854) | 03:22 | ~7min | YES | #2647 merged | 39 (main.js) + 46 (fizzbuzz.js) | 26 (seed) | Full cycle. Supervisor created 5 more issues (#2637-2643). Transform wrote fizzbuzz.js with `fizz()`/`fizzSequence()` + main.js re-exports as `fizzBuzzSingle`/`fizzBuzz`. Tests NOT updated. All 6 issues closed by review. |
-| 2 | [22791127721](https://github.com/xn-intenton-z2a/repository0/actions/runs/22791127721) | 03:30 | ~5min | NO | — | 39+46 | 26 (seed) | Supervisor created #2648. Review closed it immediately as "resolved" (saw code exists, ignored missing tests). No transform. |
-| 3 | [22791216147](https://github.com/xn-intenton-z2a/repository0/actions/runs/22791216147) | 03:36 | ~8min | YES | #2650 merged | 161 (main.js) + 46 (fizzbuzz.js) | 26 (main) + 88 (fizzbuzz) + web | Transform expanded main.js (streaming, CLI) AND created fizzbuzz.test.js (88 lines) covering ALL acceptance criteria. Also created docs/, README, website. Review correctly identified resolution. |
-| 4 | [22791368178](https://github.com/xn-intenton-z2a/repository0/actions/runs/22791368178) | 03:46 | ~6min | NO | — | 161+46 | 26+88+web | New review prompt active. Supervisor created #2651, review correctly assessed as resolved. No transform needed. |
-| 5 | [22791460289](https://github.com/xn-intenton-z2a/repository0/actions/runs/22791460289) | 03:52 | ~5min | NO | — | 161+46 | 26+88+web | Same pattern: #2652 created → review closes as resolved. 2nd consecutive nop. |
-| 6 | [22791534272](https://github.com/xn-intenton-z2a/repository0/actions/runs/22791534272) | 03:58 | ~5min | NO | — | 161+46 | 26+88+web | #2653 created → review closes as resolved. 3rd consecutive nop. **CONVERGED — mission complete.** Supervisor did not set schedule to off. |
+| 1a | [22791015228](https://github.com/polycode-public/repository0/actions/runs/22791015228) | 03:22 | ~2min | NO | — | 15 (seed) | 26 (seed) | Review-only. Created issue #2646 "Implement FizzBuzz library with tests, docs, and README". |
+| 1b | [22791019854](https://github.com/polycode-public/repository0/actions/runs/22791019854) | 03:22 | ~7min | YES | #2647 merged | 39 (main.js) + 46 (fizzbuzz.js) | 26 (seed) | Full cycle. Supervisor created 5 more issues (#2637-2643). Transform wrote fizzbuzz.js with `fizz()`/`fizzSequence()` + main.js re-exports as `fizzBuzzSingle`/`fizzBuzz`. Tests NOT updated. All 6 issues closed by review. |
+| 2 | [22791127721](https://github.com/polycode-public/repository0/actions/runs/22791127721) | 03:30 | ~5min | NO | — | 39+46 | 26 (seed) | Supervisor created #2648. Review closed it immediately as "resolved" (saw code exists, ignored missing tests). No transform. |
+| 3 | [22791216147](https://github.com/polycode-public/repository0/actions/runs/22791216147) | 03:36 | ~8min | YES | #2650 merged | 161 (main.js) + 46 (fizzbuzz.js) | 26 (main) + 88 (fizzbuzz) + web | Transform expanded main.js (streaming, CLI) AND created fizzbuzz.test.js (88 lines) covering ALL acceptance criteria. Also created docs/, README, website. Review correctly identified resolution. |
+| 4 | [22791368178](https://github.com/polycode-public/repository0/actions/runs/22791368178) | 03:46 | ~6min | NO | — | 161+46 | 26+88+web | New review prompt active. Supervisor created #2651, review correctly assessed as resolved. No transform needed. |
+| 5 | [22791460289](https://github.com/polycode-public/repository0/actions/runs/22791460289) | 03:52 | ~5min | NO | — | 161+46 | 26+88+web | Same pattern: #2652 created → review closes as resolved. 2nd consecutive nop. |
+| 6 | [22791534272](https://github.com/polycode-public/repository0/actions/runs/22791534272) | 03:58 | ~5min | NO | — | 161+46 | 26+88+web | #2653 created → review closes as resolved. 3rd consecutive nop. **CONVERGED — mission complete.** Supervisor did not set schedule to off. |
 
 ### Observations
 

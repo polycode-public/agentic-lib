@@ -156,7 +156,7 @@ jobs:
           node -e "
             const fs = require('fs');
             const seed = JSON.parse(fs.readFileSync('src/seeds/zero-package.json', 'utf8'));
-            seed.dependencies['@xn-intenton-z2a/agentic-lib'] = '^${RELEASED}';
+            seed.dependencies['@polycode-public/agentic-lib'] = '^${RELEASED}';
             fs.writeFileSync('src/seeds/zero-package.json', JSON.stringify(seed, null, 2) + '\n');
           "
           git add src/seeds/zero-package.json

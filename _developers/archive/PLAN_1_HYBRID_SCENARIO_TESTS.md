@@ -111,7 +111,7 @@ await transform({ config, model, writablePaths, logger });
 ### Success criteria
 
 - [ ] `npm test` passes (existing tests still work)
-- [ ] `npx @xn-intenton-z2a/agentic-lib transform --target /tmp/ws --model gpt-5-mini` uses the shared module
+- [ ] `npx @polycode-public/agentic-lib transform --target /tmp/ws --model gpt-5-mini` uses the shared module
 - [ ] Actions `agentic-step` still works (deployed to repository0, runs a cycle)
 - [ ] CLI and Actions produce identical prompts for the same task+config
 
@@ -643,7 +643,7 @@ The Action's `index.js` becomes a thin adapter that:
 
 ### Success Criteria
 
-- [x] Every Action task is expressible as `npx @xn-intenton-z2a/agentic-lib iterate --agent <agent-name>`
+- [x] Every Action task is expressible as `npx @polycode-public/agentic-lib iterate --agent <agent-name>`
 - [x] `src/copilot/` is the single source of truth for all SDK integration
 - [x] `src/actions/agentic-step/index.js` is < 150 lines (I/O adapter only) — **137 lines** (telemetry → `src/copilot/telemetry.js`, GitHub metrics → `metrics.js`)
 - [x] Agent .md files are the system prompts for both CLI and Actions
@@ -664,21 +664,21 @@ Run all task types via CLI against a real workspace:
 
 ```bash
 # Iterate (existing — already validated in Phase 3)
-COPILOT_GITHUB_TOKEN=<token> npx @xn-intenton-z2a/agentic-lib iterate \
+COPILOT_GITHUB_TOKEN=<token> npx @polycode-public/agentic-lib iterate \
   --mission 6-kyu-understand-hamming-distance --model gpt-5-mini
 
 # Discovery (new)
-COPILOT_GITHUB_TOKEN=<token> npx @xn-intenton-z2a/agentic-lib iterate --here
+COPILOT_GITHUB_TOKEN=<token> npx @polycode-public/agentic-lib iterate --here
 
 # Transform (shared task handler)
-COPILOT_GITHUB_TOKEN=<token> npx @xn-intenton-z2a/agentic-lib transform \
+COPILOT_GITHUB_TOKEN=<token> npx @polycode-public/agentic-lib transform \
   --target /tmp/test-ws --model gpt-5-mini
 
 # Supervise (local-only mode — no GitHub context, shows prompt)
-npx @xn-intenton-z2a/agentic-lib supervise --target /tmp/test-ws --dry-run
+npx @polycode-public/agentic-lib supervise --target /tmp/test-ws --dry-run
 
 # All 10 tasks as CLI commands
-npx @xn-intenton-z2a/agentic-lib --help
+npx @polycode-public/agentic-lib --help
 ```
 
 ### Actions validation
@@ -686,7 +686,7 @@ npx @xn-intenton-z2a/agentic-lib --help
 Deploy to repository0 and run full cycle:
 
 1. Push refactored agentic-lib to npm (new version)
-2. Run `npx @xn-intenton-z2a/agentic-lib init --purge` on repository0
+2. Run `npx @polycode-public/agentic-lib init --purge` on repository0
 3. Verify init copies `src/copilot/` alongside `src/actions/`
 4. Dispatch `agentic-lib-workflow-transform` manually
 5. Verify: session creates, tools fire, code transforms, tests run

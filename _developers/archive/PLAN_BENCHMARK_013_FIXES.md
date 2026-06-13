@@ -1,6 +1,6 @@
 # Plan: Benchmark 013 Fixes (Post-W9 Observation 2026-03-18)
 
-**Source**: Workflow run analysis from [repository0 Actions](https://github.com/xn-intenton-z2a/repository0/actions) on 2026-03-18 22:28–23:23 UTC
+**Source**: Workflow run analysis from [repository0 Actions](https://github.com/polycode-public/repository0/actions) on 2026-03-18 22:28–23:23 UTC
 **Created**: 2026-03-18
 **Status**: DONE (W2, W3, W4 implemented; W1 deferred as operator behaviour)
 
@@ -17,18 +17,18 @@
 
 | Time | Event | Detail |
 |------|-------|--------|
-| 22:28:31 | Init purge (agentic-lib@7.4.29) | [#23270174178](https://github.com/xn-intenton-z2a/repository0/actions/runs/23270174178). Includes W9 `dispatch-workflow` job. |
+| 22:28:31 | Init purge (agentic-lib@7.4.29) | [#23270174178](https://github.com/polycode-public/repository0/actions/runs/23270174178). Includes W9 `dispatch-workflow` job. |
 | 22:29:49 | Init `dispatch-workflow` completes | Auto-dispatched `agentic-lib-workflow` (W9 feature). |
-| 22:29:56 | **Workflow run #1 starts** | [#23270223104](https://github.com/xn-intenton-z2a/repository0/actions/runs/23270223104). `workflow_dispatch` from init. |
+| 22:29:56 | **Workflow run #1 starts** | [#23270223104](https://github.com/polycode-public/repository0/actions/runs/23270223104). `workflow_dispatch` from init. |
 | 22:30–22:35 | maintain | Pushed features + library docs (`e5b69ed79`). |
 | 22:35–22:37 | director | Decision: **in-progress** — all Hamming functions missing. |
-| 22:37–22:39 | supervisor | Created issue [#3119](https://github.com/xn-intenton-z2a/repository0/issues/3119) "feat: implement Hamming distance functions, tests, and README". |
-| 22:39–22:42 | dev | Transformed #3119 → merged PR [#3120](https://github.com/xn-intenton-z2a/repository0/pull/3120) (`87a073971`). |
+| 22:37–22:39 | supervisor | Created issue [#3119](https://github.com/polycode-public/repository0/issues/3119) "feat: implement Hamming distance functions, tests, and README". |
+| 22:39–22:42 | dev | Transformed #3119 → merged PR [#3120](https://github.com/polycode-public/repository0/pull/3120) (`87a073971`). |
 | 22:42–22:43 | post-merge director | Decision: **in-progress** — used stale review context from 22:30 (pre-transform). |
 | 22:43–22:44 | post-commit-test | All tests pass. |
 | 22:44:26 | **Workflow run #1 ends** | SUCCESS. Schedule still "off". |
 | 22:44–23:08 | **24-minute gap** | No workflow runs. Schedule=off, no auto-dispatch of next cycle. |
-| 23:08:56 | **Workflow run #2 starts** | [#23271517639](https://github.com/xn-intenton-z2a/repository0/actions/runs/23271517639). Manual `workflow_dispatch`. |
+| 23:08:56 | **Workflow run #2 starts** | [#23271517639](https://github.com/polycode-public/repository0/actions/runs/23271517639). Manual `workflow_dispatch`. |
 | 23:09:27 | Schedule set to continuous | Manual dispatch. |
 | 23:09–23:16 | maintain | Pushed features + library docs (`3de0153fa`). |
 | 23:16–23:19 | director | Decision: **mission-complete**. Dispatched schedule-off + bot. |

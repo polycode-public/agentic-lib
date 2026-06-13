@@ -2,7 +2,7 @@
 
 **Date**: 2026-03-06
 **Operator**: Claude Code (claude-opus-4-6)
-**Target**: `xn-intenton-z2a/repository0`
+**Target**: `polycode-public/repository0`
 **agentic-lib version**: 7.1.60
 **Previous report**: REPORT_WORKFLOW_VALIDATION_V3.md (19.5-hour autonomous run)
 
@@ -19,12 +19,12 @@ To resume or extend this validation in a new Claude Code session:
 1. Read this file: `agentic-lib/_developers/REPORT_WORKFLOW_VALIDATION_V4.md`
 2. Find the **Current State** section — it shows which scenario is active and what iteration we're on
 3. Pick up from the last recorded iteration:
-   - If a workflow run is in progress, check its status: `gh run list -R xn-intenton-z2a/repository0 -L 5`
+   - If a workflow run is in progress, check its status: `gh run list -R polycode-public/repository0 -L 5`
    - If the last scenario completed, start the next one from the **Scenarios** table
    - If all scenarios are done, write the **Conclusions** section
 4. For each iteration:
-   - Dispatch: `gh workflow run agentic-lib-workflow -R xn-intenton-z2a/repository0 -f mode=full -f model=MODEL`
-   - Wait: poll `gh run view RUN_ID -R xn-intenton-z2a/repository0 --json status,conclusion` until completed
+   - Dispatch: `gh workflow run agentic-lib-workflow -R polycode-public/repository0 -f mode=full -f model=MODEL`
+   - Wait: poll `gh run view RUN_ID -R polycode-public/repository0 --json status,conclusion` until completed
    - Record: check commits, test status, what changed, LLM message
    - Update the iteration table and current state in this report
 5. Stop condition per scenario: no new transform for 2 consecutive iterations (mission accomplished), OR 10 iterations with continued churn
@@ -33,21 +33,21 @@ To resume or extend this validation in a new Claude Code session:
 
 ```bash
 # Init with purge (reset to seed code for a mission)
-gh workflow run agentic-lib-init -R xn-intenton-z2a/repository0 \
+gh workflow run agentic-lib-init -R polycode-public/repository0 \
   -f mode=purge -f mission-seed=MISSION_NAME -f schedule=off
 
 # Run one iteration (full pipeline: supervisor -> maintain/transform/review/fix)
-gh workflow run agentic-lib-workflow -R xn-intenton-z2a/repository0 \
+gh workflow run agentic-lib-workflow -R polycode-public/repository0 \
   -f mode=full -f model=MODEL
 
 # Check latest run status
-gh run list -R xn-intenton-z2a/repository0 -L 3
+gh run list -R polycode-public/repository0 -L 3
 
 # Read current source code
-gh api repos/xn-intenton-z2a/repository0/contents/src/lib/main.js --jq '.content' | base64 -d
+gh api repos/polycode-public/repository0/contents/src/lib/main.js --jq '.content' | base64 -d
 
 # Check commit log
-gh api repos/xn-intenton-z2a/repository0/commits --jq '.[0:5] | .[] | .sha[0:8] + " " + (.commit.message | split("\n")[0])'
+gh api repos/polycode-public/repository0/commits --jq '.[0:5] | .[] | .sha[0:8] + " " + (.commit.message | split("\n")[0])'
 ```
 
 ### Planned Scenarios
@@ -73,7 +73,7 @@ gh api repos/xn-intenton-z2a/repository0/commits --jq '.[0:5] | .[] | .sha[0:8] 
 
 **Mission**: FizzBuzz — simplest possible mission (2 functions)
 **Model**: gpt-5-mini
-**Init run**: [22747760043](https://github.com/xn-intenton-z2a/repository0/actions/runs/22747760043) (22s)
+**Init run**: [22747760043](https://github.com/polycode-public/repository0/actions/runs/22747760043) (22s)
 **Started**: 2026-03-06T03:30Z
 
 ### Pre-Init State
@@ -85,9 +85,9 @@ gh api repos/xn-intenton-z2a/repository0/commits --jq '.[0:5] | .[] | .sha[0:8] 
 
 | # | Run ID | Duration | Result | What Happened |
 |---|--------|----------|--------|---------------|
-| 1 | [22747779251](https://github.com/xn-intenton-z2a/repository0/actions/runs/22747779251) | ~7min | PASS | Created `fizzbuzz.js` (49 lines) with `fizzBuzz` + `fizzBuzzSingle`. 11 tests, all passing. PR #2579 auto-merged. |
-| 2 | [22748002518](https://github.com/xn-intenton-z2a/repository0/actions/runs/22748002518) | ~7min | PASS | Found TypeError test failure, fixed it. Added CLI + cli.test.js. PR #2582 auto-merged. |
-| 3 | [22748183000](https://github.com/xn-intenton-z2a/repository0/actions/runs/22748183000) | ~6min | STABLE | Maintain-only commit. No transform needed — dev job ran in 20s. Mission accomplished. |
+| 1 | [22747779251](https://github.com/polycode-public/repository0/actions/runs/22747779251) | ~7min | PASS | Created `fizzbuzz.js` (49 lines) with `fizzBuzz` + `fizzBuzzSingle`. 11 tests, all passing. PR #2579 auto-merged. |
+| 2 | [22748002518](https://github.com/polycode-public/repository0/actions/runs/22748002518) | ~7min | PASS | Found TypeError test failure, fixed it. Added CLI + cli.test.js. PR #2582 auto-merged. |
+| 3 | [22748183000](https://github.com/polycode-public/repository0/actions/runs/22748183000) | ~6min | STABLE | Maintain-only commit. No transform needed — dev job ran in 20s. Mission accomplished. |
 
 ### Final State
 
@@ -102,8 +102,8 @@ gh api repos/xn-intenton-z2a/repository0/commits --jq '.[0:5] | .[] | .sha[0:8] 
 ## Scenario 2: fizz-buzz / claude-sonnet-4 — BLOCKED
 
 **Attempted**: 2026-03-06T03:42Z
-**Init run**: [22748339507](https://github.com/xn-intenton-z2a/repository0/actions/runs/22748339507)
-**Iteration run**: [22748367490](https://github.com/xn-intenton-z2a/repository0/actions/runs/22748367490) — FAILED
+**Init run**: [22748339507](https://github.com/polycode-public/repository0/actions/runs/22748339507)
+**Iteration run**: [22748367490](https://github.com/polycode-public/repository0/actions/runs/22748367490) — FAILED
 
 ### Error
 
@@ -113,7 +113,7 @@ Model 'claude-sonnet-4' does not support reasoning effort configuration.
 Use models.list to check which models support reasoning effort.
 ```
 
-**Also tried gpt-4.1**: Same error — [run 22748525443](https://github.com/xn-intenton-z2a/repository0/actions/runs/22748525443)
+**Also tried gpt-4.1**: Same error — [run 22748525443](https://github.com/polycode-public/repository0/actions/runs/22748525443)
 
 ### Finding
 
@@ -129,16 +129,16 @@ This blocks all multi-model comparison testing.
 
 **Mission**: Roman numeral conversion — medium complexity (2 functions, strict validation, round-trip property)
 **Model**: gpt-5-mini
-**Init run**: [22748660838](https://github.com/xn-intenton-z2a/repository0/actions/runs/22748660838) (~60s)
+**Init run**: [22748660838](https://github.com/polycode-public/repository0/actions/runs/22748660838) (~60s)
 **Started**: 2026-03-06T04:07Z
 
 ### Iterations
 
 | # | Run ID | Duration | Result | What Happened |
 |---|--------|----------|--------|---------------|
-| 1 | [22748692277](https://github.com/xn-intenton-z2a/repository0/actions/runs/22748692277) | ~9min | PASS | Created `toRoman` + `fromRoman` in main.js (94 lines). Strict regex validation. Tests include full 1-3999 round-trip check. PR #2588 auto-merged. |
-| 2 | [22748918029](https://github.com/xn-intenton-z2a/repository0/actions/runs/22748918029) | ~7min | PASS | Added lenient parsing (lowercase, whitespace trimming). PR #2590 auto-merged. |
-| 3 | [22749090849](https://github.com/xn-intenton-z2a/repository0/actions/runs/22749090849) | ~6min | STABLE | Maintain-only commit. Review resolved issues ("toRoman and fromRoman implemented correctly"). |
+| 1 | [22748692277](https://github.com/polycode-public/repository0/actions/runs/22748692277) | ~9min | PASS | Created `toRoman` + `fromRoman` in main.js (94 lines). Strict regex validation. Tests include full 1-3999 round-trip check. PR #2588 auto-merged. |
+| 2 | [22748918029](https://github.com/polycode-public/repository0/actions/runs/22748918029) | ~7min | PASS | Added lenient parsing (lowercase, whitespace trimming). PR #2590 auto-merged. |
+| 3 | [22749090849](https://github.com/polycode-public/repository0/actions/runs/22749090849) | ~6min | STABLE | Maintain-only commit. Review resolved issues ("toRoman and fromRoman implemented correctly"). |
 
 ### Final State
 
@@ -153,17 +153,17 @@ This blocks all multi-model comparison testing.
 
 **Mission**: Cron expression parser — high complexity (5 functions, DST handling, special strings)
 **Model**: gpt-5-mini
-**Init run**: [22749244382](https://github.com/xn-intenton-z2a/repository0/actions/runs/22749244382) (~60s)
+**Init run**: [22749244382](https://github.com/polycode-public/repository0/actions/runs/22749244382) (~60s)
 **Started**: 2026-03-06T04:36Z
 
 ### Iterations
 
 | # | Run ID | Duration | Result | What Happened |
 |---|--------|----------|--------|---------------|
-| 1 | [22749275109](https://github.com/xn-intenton-z2a/repository0/actions/runs/22749275109) | ~9min | PARTIAL | Created `cron.js` (91 lines) with `parseCron` only. Tests for parsing. PR #2594 auto-merged. 4 of 5 functions missing. |
-| 2 | [22749504090](https://github.com/xn-intenton-z2a/repository0/actions/runs/22749504090) | ~9min | PASS | Rewrote main.js (318 lines) with ALL 5 functions: parseCron, nextRun, nextRuns, matches, toString. PR #2596 auto-merged. |
-| 3 | [22749725666](https://github.com/xn-intenton-z2a/repository0/actions/runs/22749725666) | ~9min | PASS | Continued transforming (still producing commits). PR #2598 auto-merged. |
-| 4 | [22749945210](https://github.com/xn-intenton-z2a/repository0/actions/runs/22749945210) | ~8min | PASS | Rewrote main.js (209 lines, down from 318). PR #2600 auto-merged. Still finding issues to work on. |
+| 1 | [22749275109](https://github.com/polycode-public/repository0/actions/runs/22749275109) | ~9min | PARTIAL | Created `cron.js` (91 lines) with `parseCron` only. Tests for parsing. PR #2594 auto-merged. 4 of 5 functions missing. |
+| 2 | [22749504090](https://github.com/polycode-public/repository0/actions/runs/22749504090) | ~9min | PASS | Rewrote main.js (318 lines) with ALL 5 functions: parseCron, nextRun, nextRuns, matches, toString. PR #2596 auto-merged. |
+| 3 | [22749725666](https://github.com/polycode-public/repository0/actions/runs/22749725666) | ~9min | PASS | Continued transforming (still producing commits). PR #2598 auto-merged. |
+| 4 | [22749945210](https://github.com/polycode-public/repository0/actions/runs/22749945210) | ~8min | PASS | Rewrote main.js (209 lines, down from 318). PR #2600 auto-merged. Still finding issues to work on. |
 
 ### Observations
 

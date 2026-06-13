@@ -10,7 +10,7 @@ description: "Configure .npmrc for GitHub Packages authentication"
 
 inputs:
   npm-auth-organisation:
-    description: "npm scope (e.g. @xn-intenton-z2a). If empty, skip setup."
+    description: "npm scope (e.g. @polycode-public). If empty, skip setup."
     required: false
     default: ""
   token:

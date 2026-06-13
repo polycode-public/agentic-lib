@@ -1,5 +1,5 @@
 {
-  "name": "@xn-intenton-z2a/agentic-step",
+  "name": "@polycode-public/agentic-step",
   "version": "0.1.0",
   "description": "GitHub Action wrapping the Copilot SDK for autonomous code evolution",
   "type": "module",
@@ -24,6 +24,6 @@
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xn-intenton-z2a/agentic-lib"
+    "url": "https://github.com/polycode-public/agentic-lib"
   }
 }

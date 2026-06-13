@@ -252,7 +252,7 @@ Add `implementation-review` job to `agentic-lib-workflow.yml` that runs concurre
 
       - name: Run implementation review
         id: review
-        if: github.repository != 'xn-intenton-z2a/agentic-lib'
+        if: github.repository != 'polycode-public/agentic-lib'
         uses: ./.github/agentic-lib/actions/agentic-step
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

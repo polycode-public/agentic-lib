@@ -13,8 +13,8 @@ Track pipeline performance across different missions and LLM models. Each run st
 | Schedule | continuous (*/15 cron) |
 | agentic-lib | 7.1.46 |
 | Start | 2026-03-05T00:11Z |
-| Init run | [#527](https://github.com/xn-intenton-z2a/repository0/actions/runs/22695724027) |
-| Init PR | [#2499](https://github.com/xn-intenton-z2a/repository0/pull/2499) |
+| Init run | [#527](https://github.com/polycode-public/repository0/actions/runs/22695724027) |
+| Init PR | [#2499](https://github.com/polycode-public/repository0/pull/2499) |
 
 ### Observations
 
@@ -38,8 +38,8 @@ Track pipeline performance across different missions and LLM models. Each run st
 |-----------|-------|
 | agentic-lib | 7.1.48 |
 | Re-init | 2026-03-05T01:17Z |
-| Init run | [#527](https://github.com/xn-intenton-z2a/repository0/actions/runs/22697591217) |
-| Init PR | [#2515](https://github.com/xn-intenton-z2a/repository0/pull/2515) |
+| Init run | [#527](https://github.com/polycode-public/repository0/actions/runs/22697591217) |
+| Init PR | [#2515](https://github.com/polycode-public/repository0/pull/2515) |
 
 - **01:17** — Init --purge dispatched with agentic-lib@7.1.48
 - **01:18** — Init PR #2515 created with `automerge` label

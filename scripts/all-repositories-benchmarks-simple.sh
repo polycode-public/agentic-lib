@@ -25,28 +25,28 @@ generate_report=true
 
 # S1: repository0-random — roman-numerals / max (target: 1 run)
 date
-time gh workflow run agentic-lib-flow -R xn-intenton-z2a/repository0-random \
+time gh workflow run agentic-lib-flow -R polycode-public/repository0-random \
   -f mode=${mode?} -f schedule=${schedule?} -f workflow-runs=${workflow_runs?} \
   -f skipMaintain=${skipMaintain} -f create-seed-issues=${create_seed_issues?} -f generate-report=${generate_report?} \
   -f mission-seed=6-kyu-understand-roman-numerals -f model=gpt-5-mini -f profile=max
 
 # S2: repository0-string-utils — string-utils / max (target: 3 runs)
 date
-time gh workflow run agentic-lib-flow -R xn-intenton-z2a/repository0-string-utils \
+time gh workflow run agentic-lib-flow -R polycode-public/repository0-string-utils \
   -f mode=${mode?} -f schedule=${schedule?} -f workflow-runs=${workflow_runs?} \
   -f skipMaintain=${skipMaintain} -f create-seed-issues=${create_seed_issues?} -f generate-report=${generate_report?} \
   -f mission-seed=5-kyu-apply-string-utils -f model=gpt-5-mini -f profile=max
 
 # S3: repository0-dense-encoder — hamming-distance / max (target: 1 run)
 date
-time gh workflow run agentic-lib-flow -R xn-intenton-z2a/repository0-dense-encoder \
+time gh workflow run agentic-lib-flow -R polycode-public/repository0-dense-encoder \
   -f mode=${mode?} -f schedule=${schedule?} -f workflow-runs=${workflow_runs?} \
   -f skipMaintain=${skipMaintain} -f create-seed-issues=${create_seed_issues?} -f generate-report=${generate_report?} \
   -f mission-seed=6-kyu-understand-hamming-distance -f model=gpt-5-mini -f profile=max
 
 # S4: repository0-plot-code-lib — roman-numerals / max (target: 1 run)
 date
-time gh workflow run agentic-lib-flow -R xn-intenton-z2a/repository0-plot-code-lib \
+time gh workflow run agentic-lib-flow -R polycode-public/repository0-plot-code-lib \
   -f mode=${mode?} -f schedule=${schedule?} -f workflow-runs=${workflow_runs?} \
   -f skipMaintain=${skipMaintain} -f create-seed-issues=${create_seed_issues?} -f generate-report=${generate_report?} \
   -f mission-seed=6-kyu-understand-roman-numerals -f model=gpt-5-mini -f profile=max

@@ -627,7 +627,7 @@ In `tasks/direct.js`, when writing `MISSION_FAILED.md`:
 3. **Mission metrics**: Update the metrics table to show new metrics (source lines, test count, feature specs, acceptance criteria)
 4. **Task handlers**: Update count from 10 to reflect current reality; verify the list matches actual code
 5. **Workflow list**: Verify the 8 workflow names and descriptions match the current files
-6. **Code examples**: Ensure any CLI examples (`npx @xn-intenton-z2a/agentic-lib init`, `iterate`, etc.) produce output matching what the README claims
+6. **Code examples**: Ensure any CLI examples (`npx @polycode-public/agentic-lib init`, `iterate`, etc.) produce output matching what the README claims
 7. **Init parameters**: Document `create-seed-issues` parameter (default off)
 
 **Approach:** Read the current README, run the CLI commands to verify output, update discrepancies.
@@ -686,7 +686,7 @@ After all changes:
 
 1. Run `npm test` — all existing tests pass plus new tests for state.js, updated telemetry, updated guards
 2. Run `npm run lint:workflows` — all workflow YAML is valid
-3. Run `npx @xn-intenton-z2a/agentic-lib init --dry-run` — verify state.toml is included in init output
+3. Run `npx @polycode-public/agentic-lib init --dry-run` — verify state.toml is included in init output
 4. Manually verify one end-to-end cycle:
    - Init purge creates clean `agentic-lib-state.toml` on logs branch
    - First workflow run reads state, writes updated state

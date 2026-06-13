@@ -11,24 +11,24 @@
 # repository0
 date
 time gh workflow run agentic-lib-update \
-  -R xn-intenton-z2a/repository0
+  -R polycode-public/repository0
 
 # repository0-string-utils
 date
 time gh workflow run agentic-lib-update \
-  -R xn-intenton-z2a/repository0-string-utils
+  -R polycode-public/repository0-string-utils
 
 # repository0-dense-encoder
 date
 time gh workflow run agentic-lib-update \
-  -R xn-intenton-z2a/repository0-dense-encoder
+  -R polycode-public/repository0-dense-encoder
 
 # repository0-random
 date
 time gh workflow run agentic-lib-update \
-  -R xn-intenton-z2a/repository0-random
+  -R polycode-public/repository0-random
 
 # repository0-plot-code-lib
 date
 time gh workflow run agentic-lib-update \
-  -R xn-intenton-z2a/repository0-plot-code-lib
+  -R polycode-public/repository0-plot-code-lib

@@ -46,11 +46,11 @@ Stopped active schedules on 5 repos at ~02:00 UTC before benchmark init:
 
 | Repo | Schedule Stopped | Run ID |
 |------|-----------------|--------|
-| repository0-string-utils | hourly → off | [23369235241](https://github.com/xn-intenton-z2a/repository0-string-utils/actions/runs/23369235241) |
-| repository0-dense-encoder | hourly → off | [23369235918](https://github.com/xn-intenton-z2a/repository0-dense-encoder/actions/runs/23369235918) |
-| repository0-random | hourly → off | [23369236731](https://github.com/xn-intenton-z2a/repository0-random/actions/runs/23369236731) |
-| repository0-crucible | hourly → off | [23369237484](https://github.com/xn-intenton-z2a/repository0-crucible/actions/runs/23369237484) |
-| repository0-plot-code-lib | continuous → off | [23369238132](https://github.com/xn-intenton-z2a/repository0-plot-code-lib/actions/runs/23369238132) |
+| repository0-string-utils | hourly → off | [23369235241](https://github.com/polycode-public/repository0-string-utils/actions/runs/23369235241) |
+| repository0-dense-encoder | hourly → off | [23369235918](https://github.com/polycode-public/repository0-dense-encoder/actions/runs/23369235918) |
+| repository0-random | hourly → off | [23369236731](https://github.com/polycode-public/repository0-random/actions/runs/23369236731) |
+| repository0-crucible | hourly → off | [23369237484](https://github.com/polycode-public/repository0-crucible/actions/runs/23369237484) |
+| repository0-plot-code-lib | continuous → off | [23369238132](https://github.com/polycode-public/repository0-plot-code-lib/actions/runs/23369238132) |
 
 ### Init Dispatches
 
@@ -58,12 +58,12 @@ Stopped active schedules on 5 repos at ~02:00 UTC before benchmark init:
 
 | Repo | Init Run | Status | Notes |
 |------|---------|--------|-------|
-| repository0 | [23369636561](https://github.com/xn-intenton-z2a/repository0/actions/runs/23369636561) | SUCCESS | Auto-dispatched workflow run |
-| repository0-string-utils | [23369639091](https://github.com/xn-intenton-z2a/repository0-string-utils/actions/runs/23369639091) | PARTIAL | Init OK, dispatch-workflow FAILED |
-| repository0-dense-encoder | [23369665081](https://github.com/xn-intenton-z2a/repository0-dense-encoder/actions/runs/23369665081) | PARTIAL | Init OK, dispatch-workflow FAILED |
-| repository0-random | [23369667623](https://github.com/xn-intenton-z2a/repository0-random/actions/runs/23369667623) | PARTIAL | Init OK, dispatch-workflow FAILED |
-| repository0-crucible | [23369669571](https://github.com/xn-intenton-z2a/repository0-crucible/actions/runs/23369669571) | PARTIAL | Init OK, dispatch-workflow FAILED |
-| repository0-plot-code-lib | [23369670756](https://github.com/xn-intenton-z2a/repository0-plot-code-lib/actions/runs/23369670756) | PARTIAL | Init OK, dispatch-workflow FAILED |
+| repository0 | [23369636561](https://github.com/polycode-public/repository0/actions/runs/23369636561) | SUCCESS | Auto-dispatched workflow run |
+| repository0-string-utils | [23369639091](https://github.com/polycode-public/repository0-string-utils/actions/runs/23369639091) | PARTIAL | Init OK, dispatch-workflow FAILED |
+| repository0-dense-encoder | [23369665081](https://github.com/polycode-public/repository0-dense-encoder/actions/runs/23369665081) | PARTIAL | Init OK, dispatch-workflow FAILED |
+| repository0-random | [23369667623](https://github.com/polycode-public/repository0-random/actions/runs/23369667623) | PARTIAL | Init OK, dispatch-workflow FAILED |
+| repository0-crucible | [23369669571](https://github.com/polycode-public/repository0-crucible/actions/runs/23369669571) | PARTIAL | Init OK, dispatch-workflow FAILED |
+| repository0-plot-code-lib | [23369670756](https://github.com/polycode-public/repository0-plot-code-lib/actions/runs/23369670756) | PARTIAL | Init OK, dispatch-workflow FAILED |
 
 **dispatch-workflow failure cause**: The schedule-off dispatch (pre-benchmark cleanup) and init purge created a **duplicate `schedule:` block** in `agentic-lib-workflow.yml`. GitHub rejected the workflow dispatch with: `'schedule' is already defined`. The init itself completed successfully — missions, configs, and seed files were all written correctly. Only the auto-dispatch of the first workflow run failed.
 
@@ -73,11 +73,11 @@ Stopped active schedules on 5 repos at ~02:00 UTC before benchmark init:
 
 | Repo | Init Run | Status |
 |------|---------|--------|
-| repository0-string-utils | [23369845898](https://github.com/xn-intenton-z2a/repository0-string-utils/actions/runs/23369845898) | SUCCESS |
-| repository0-dense-encoder | [23369846559](https://github.com/xn-intenton-z2a/repository0-dense-encoder/actions/runs/23369846559) | SUCCESS |
-| repository0-random | [23369847242](https://github.com/xn-intenton-z2a/repository0-random/actions/runs/23369847242) | SUCCESS |
-| repository0-crucible | [23369847943](https://github.com/xn-intenton-z2a/repository0-crucible/actions/runs/23369847943) | SUCCESS |
-| repository0-plot-code-lib | [23369848517](https://github.com/xn-intenton-z2a/repository0-plot-code-lib/actions/runs/23369848517) | SUCCESS |
+| repository0-string-utils | [23369845898](https://github.com/polycode-public/repository0-string-utils/actions/runs/23369845898) | SUCCESS |
+| repository0-dense-encoder | [23369846559](https://github.com/polycode-public/repository0-dense-encoder/actions/runs/23369846559) | SUCCESS |
+| repository0-random | [23369847242](https://github.com/polycode-public/repository0-random/actions/runs/23369847242) | SUCCESS |
+| repository0-crucible | [23369847943](https://github.com/polycode-public/repository0-crucible/actions/runs/23369847943) | SUCCESS |
+| repository0-plot-code-lib | [23369848517](https://github.com/polycode-public/repository0-plot-code-lib/actions/runs/23369848517) | SUCCESS |
 
 ### Workflow Dispatches
 
@@ -85,12 +85,12 @@ All 6 workflows dispatched at ~02:08 UTC:
 
 | Repo | Scenario | Workflow Run | Status |
 |------|----------|-------------|--------|
-| repository0 | S1: fizz-buzz / min | [23369665694](https://github.com/xn-intenton-z2a/repository0/actions/runs/23369665694) | IN PROGRESS |
-| repository0-string-utils | S2: string-utils / med | [23369898537](https://github.com/xn-intenton-z2a/repository0-string-utils/actions/runs/23369898537) | IN PROGRESS |
-| repository0-dense-encoder | S3: hamming / min | [23369899179](https://github.com/xn-intenton-z2a/repository0-dense-encoder/actions/runs/23369899179) | IN PROGRESS |
-| repository0-random | S4: hamming / med | [23369899809](https://github.com/xn-intenton-z2a/repository0-random/actions/runs/23369899809) | IN PROGRESS |
-| repository0-crucible | S5: roman / med | [23369900442](https://github.com/xn-intenton-z2a/repository0-crucible/actions/runs/23369900442) | IN PROGRESS |
-| repository0-plot-code-lib | S6: roman / max | [23369901158](https://github.com/xn-intenton-z2a/repository0-plot-code-lib/actions/runs/23369901158) | IN PROGRESS |
+| repository0 | S1: fizz-buzz / min | [23369665694](https://github.com/polycode-public/repository0/actions/runs/23369665694) | IN PROGRESS |
+| repository0-string-utils | S2: string-utils / med | [23369898537](https://github.com/polycode-public/repository0-string-utils/actions/runs/23369898537) | IN PROGRESS |
+| repository0-dense-encoder | S3: hamming / min | [23369899179](https://github.com/polycode-public/repository0-dense-encoder/actions/runs/23369899179) | IN PROGRESS |
+| repository0-random | S4: hamming / med | [23369899809](https://github.com/polycode-public/repository0-random/actions/runs/23369899809) | IN PROGRESS |
+| repository0-crucible | S5: roman / med | [23369900442](https://github.com/polycode-public/repository0-crucible/actions/runs/23369900442) | IN PROGRESS |
+| repository0-plot-code-lib | S6: roman / max | [23369901158](https://github.com/polycode-public/repository0-plot-code-lib/actions/runs/23369901158) | IN PROGRESS |
 
 ---
 
@@ -122,7 +122,7 @@ Option 4 is simplest and what the benchmark guide already does. The issue arose 
 
 **Evidence**: `buildMetricAssessment(ctx, config)` at line 506 succeeded (printed metric assessment), then 3ms later the error fired — `buildPrompt` is the next call at line 511.
 
-**Fix**: Added `config` as 4th parameter to `buildPrompt()` signature and call site. PR [#1978](https://github.com/xn-intenton-z2a/agentic-lib/pull/1978), released in v7.4.34.
+**Fix**: Added `config` as 4th parameter to `buildPrompt()` signature and call site. PR [#1978](https://github.com/polycode-public/agentic-lib/pull/1978), released in v7.4.34.
 
 ### v7.4.33 Workflow Run Results (before fix)
 
@@ -143,12 +143,12 @@ After fixing both bugs and releasing v7.4.34, all 6 repos were re-init'd with `r
 
 | Repo | Scenario | Init Run | Workflow Status | Mission Complete |
 |------|----------|---------|----------------|-----------------|
-| repository0 | S1: fizz-buzz/min | [23370412361](https://github.com/xn-intenton-z2a/repository0/actions/runs/23370412361) | SUCCESS | YES |
-| repository0-string-utils | S2: string-utils/med | [23370412830](https://github.com/xn-intenton-z2a/repository0-string-utils/actions/runs/23370412830) | SUCCESS | YES |
-| repository0-dense-encoder | S3: hamming/min | [23370413251](https://github.com/xn-intenton-z2a/repository0-dense-encoder/actions/runs/23370413251) | SUCCESS | YES |
-| repository0-random | S4: hamming/med | [23370413688](https://github.com/xn-intenton-z2a/repository0-random/actions/runs/23370413688) | SUCCESS | YES |
-| repository0-crucible | S5: roman/med | [23370414139](https://github.com/xn-intenton-z2a/repository0-crucible/actions/runs/23370414139) | SUCCESS | YES |
-| repository0-plot-code-lib | S6: roman/max | [23370414532](https://github.com/xn-intenton-z2a/repository0-plot-code-lib/actions/runs/23370414532) | SUCCESS | YES |
+| repository0 | S1: fizz-buzz/min | [23370412361](https://github.com/polycode-public/repository0/actions/runs/23370412361) | SUCCESS | YES |
+| repository0-string-utils | S2: string-utils/med | [23370412830](https://github.com/polycode-public/repository0-string-utils/actions/runs/23370412830) | SUCCESS | YES |
+| repository0-dense-encoder | S3: hamming/min | [23370413251](https://github.com/polycode-public/repository0-dense-encoder/actions/runs/23370413251) | SUCCESS | YES |
+| repository0-random | S4: hamming/med | [23370413688](https://github.com/polycode-public/repository0-random/actions/runs/23370413688) | SUCCESS | YES |
+| repository0-crucible | S5: roman/med | [23370414139](https://github.com/polycode-public/repository0-crucible/actions/runs/23370414139) | SUCCESS | YES |
+| repository0-plot-code-lib | S6: roman/max | [23370414532](https://github.com/polycode-public/repository0-plot-code-lib/actions/runs/23370414532) | SUCCESS | YES |
 
 ---
 

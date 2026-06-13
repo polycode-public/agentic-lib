@@ -479,7 +479,7 @@ The Copilot SDK (v0.1.30) exposes `client.listModels()` with `supportedReasoning
 
 Distributable workflows (`agentic-lib-workflow.yml`, `agentic-lib-bot.yml`, `agentic-lib-init.yml`, `agentic-lib-schedule.yml`) had active `workflow_dispatch` triggers in agentic-lib. The supervisor or other dispatchers could trigger real write operations (PR merges, git pushes, workflow dispatches) in the source repo.
 
-**Fix**: Added `github.repository != 'xn-intenton-z2a/agentic-lib'` guards at **step level** on all write/dispatch steps (12 step guards + 1 job guard). Jobs themselves still run their read-only parts (checkout, npm ci, telemetry gathering, stuck PR detection) in agentic-lib — only the mutation steps are blocked.
+**Fix**: Added `github.repository != 'polycode-public/agentic-lib'` guards at **step level** on all write/dispatch steps (12 step guards + 1 job guard). Jobs themselves still run their read-only parts (checkout, npm ci, telemetry gathering, stuck PR detection) in agentic-lib — only the mutation steps are blocked.
 
 **Files changed**: `agentic-lib-workflow.yml` (7 guards), `agentic-lib-bot.yml` (1 guard), `agentic-lib-init.yml` (3 guards), `agentic-lib-schedule.yml` (1 guard)
 

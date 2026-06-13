@@ -57,7 +57,7 @@ However, the resulting `agentic-lib.toml` in the consumer repo retains `profile 
 | Model | gpt-5-mini |
 | Profile | min (recalibrated) |
 | Budget | 32 |
-| Init run | [22837434544](https://github.com/xn-intenton-z2a/repository0/actions/runs/22837434544) |
+| Init run | [22837434544](https://github.com/polycode-public/repository0/actions/runs/22837434544) |
 | Init time | 03:44 UTC |
 | Schedule | off |
 
@@ -65,12 +65,12 @@ However, the resulting `agentic-lib.toml` in the consumer repo retains `profile 
 
 | # | Run ID | Time | Transform? | PR | Tests | What Happened |
 |---|--------|------|------------|-----|-------|---------------|
-| 1 | [22837472918](https://github.com/xn-intenton-z2a/repository0/actions/runs/22837472918) | 03:46 | **YES** | [#2758](https://github.com/xn-intenton-z2a/repository0/pull/2758) | PASS | Supervisor created #2756. Dev transformed: `fizzBuzz()` and `fizzBuzzSingle()` implemented correctly. Function names match spec. Profile=min confirmed in logs. Post-commit tests pass. **Run overall: SUCCESS.** |
-| 2 | [22837669755](https://github.com/xn-intenton-z2a/repository0/actions/runs/22837669755) | 03:55 | **YES** | [#2760](https://github.com/xn-intenton-z2a/repository0/pull/2760) | FAIL | Supervisor created #2759 "Ensure FizzBuzz matches MISSION acceptance (negative/edge handling)". Dev transformed — introduced `assertNonNegative` (throws RangeError for negatives) but test expects `fizzBuzz(-3)` to return array. Error message mismatch: code says "n must be an integer", tests expect "n must be a finite integer". |
-| 3 | [22837859633](https://github.com/xn-intenton-z2a/repository0/actions/runs/22837859633) | 04:04 | **YES** | [#2762](https://github.com/xn-intenton-z2a/repository0/pull/2762) | FAIL | Supervisor created #2761 "Fix fizzBuzz negative handling". Dev transformed but same code/test inconsistency persists. |
-| 4 | [22838068860](https://github.com/xn-intenton-z2a/repository0/actions/runs/22838068860) | 04:13 | **YES** | [#2764](https://github.com/xn-intenton-z2a/repository0/pull/2764) | FAIL | Supervisor created #2763 plus attempted a second action (skipped: workflow-already-running). Dev transformed but code/test mismatch continues. |
-| 5 | [22838221213](https://github.com/xn-intenton-z2a/repository0/actions/runs/22838221213) | 04:20 | **YES** | [#2766](https://github.com/xn-intenton-z2a/repository0/pull/2766) | FAIL | Supervisor created #2765. Dev transformed. Same persistent failures: 3 of 7 fizzbuzz tests fail. |
-| 6 | [22838402349](https://github.com/xn-intenton-z2a/repository0/actions/runs/22838402349) | 04:28 | NO | -- | FAIL | Supervisor tried to create issue but **dedup guard blocked** (similar to recently closed #2765). Review-features: nop. Dev: "No ready issues found". Fix-stuck: PR #2757 already open. Pipeline stalled. |
+| 1 | [22837472918](https://github.com/polycode-public/repository0/actions/runs/22837472918) | 03:46 | **YES** | [#2758](https://github.com/polycode-public/repository0/pull/2758) | PASS | Supervisor created #2756. Dev transformed: `fizzBuzz()` and `fizzBuzzSingle()` implemented correctly. Function names match spec. Profile=min confirmed in logs. Post-commit tests pass. **Run overall: SUCCESS.** |
+| 2 | [22837669755](https://github.com/polycode-public/repository0/actions/runs/22837669755) | 03:55 | **YES** | [#2760](https://github.com/polycode-public/repository0/pull/2760) | FAIL | Supervisor created #2759 "Ensure FizzBuzz matches MISSION acceptance (negative/edge handling)". Dev transformed — introduced `assertNonNegative` (throws RangeError for negatives) but test expects `fizzBuzz(-3)` to return array. Error message mismatch: code says "n must be an integer", tests expect "n must be a finite integer". |
+| 3 | [22837859633](https://github.com/polycode-public/repository0/actions/runs/22837859633) | 04:04 | **YES** | [#2762](https://github.com/polycode-public/repository0/pull/2762) | FAIL | Supervisor created #2761 "Fix fizzBuzz negative handling". Dev transformed but same code/test inconsistency persists. |
+| 4 | [22838068860](https://github.com/polycode-public/repository0/actions/runs/22838068860) | 04:13 | **YES** | [#2764](https://github.com/polycode-public/repository0/pull/2764) | FAIL | Supervisor created #2763 plus attempted a second action (skipped: workflow-already-running). Dev transformed but code/test mismatch continues. |
+| 5 | [22838221213](https://github.com/polycode-public/repository0/actions/runs/22838221213) | 04:20 | **YES** | [#2766](https://github.com/polycode-public/repository0/pull/2766) | FAIL | Supervisor created #2765. Dev transformed. Same persistent failures: 3 of 7 fizzbuzz tests fail. |
+| 6 | [22838402349](https://github.com/polycode-public/repository0/actions/runs/22838402349) | 04:28 | NO | -- | FAIL | Supervisor tried to create issue but **dedup guard blocked** (similar to recently closed #2765). Review-features: nop. Dev: "No ready issues found". Fix-stuck: PR #2757 already open. Pipeline stalled. |
 
 ### Final Code State (after iteration 5 transform)
 
@@ -120,12 +120,12 @@ it('throws for invalid inputs', () => {
 
 | Issue | State | Title | Created By | Closed By |
 |-------|-------|-------|------------|-----------|
-| [#2756](https://github.com/xn-intenton-z2a/repository0/issues/2756) | closed | Implement FizzBuzz library with tests, docs, and README examples | Supervisor (iter 1) | Dev PR #2758 (iter 1) |
-| [#2759](https://github.com/xn-intenton-z2a/repository0/issues/2759) | closed | Ensure FizzBuzz matches MISSION acceptance (negative/edge handling, tests, README) | Supervisor (iter 2) | Dev PR #2760 (iter 2) |
-| [#2761](https://github.com/xn-intenton-z2a/repository0/issues/2761) | closed | Fix fizzBuzz negative handling and complete mission acceptance | Supervisor (iter 3) | Dev PR #2762 (iter 3) |
-| [#2763](https://github.com/xn-intenton-z2a/repository0/issues/2763) | closed | Implement FizzBuzz library and tests per MISSION.md | Supervisor (iter 4) | Dev PR #2764 (iter 4) |
-| [#2765](https://github.com/xn-intenton-z2a/repository0/issues/2765) | closed | Implement FizzBuzz library, tests, docs, and README per MISSION.md | Supervisor (iter 5) | Dev PR #2766 (iter 5) |
-| [#2757](https://github.com/xn-intenton-z2a/repository0/issues/2757) | open | fix: auto-fix broken main build | Fix-stuck | -- |
+| [#2756](https://github.com/polycode-public/repository0/issues/2756) | closed | Implement FizzBuzz library with tests, docs, and README examples | Supervisor (iter 1) | Dev PR #2758 (iter 1) |
+| [#2759](https://github.com/polycode-public/repository0/issues/2759) | closed | Ensure FizzBuzz matches MISSION acceptance (negative/edge handling, tests, README) | Supervisor (iter 2) | Dev PR #2760 (iter 2) |
+| [#2761](https://github.com/polycode-public/repository0/issues/2761) | closed | Fix fizzBuzz negative handling and complete mission acceptance | Supervisor (iter 3) | Dev PR #2762 (iter 3) |
+| [#2763](https://github.com/polycode-public/repository0/issues/2763) | closed | Implement FizzBuzz library and tests per MISSION.md | Supervisor (iter 4) | Dev PR #2764 (iter 4) |
+| [#2765](https://github.com/polycode-public/repository0/issues/2765) | closed | Implement FizzBuzz library, tests, docs, and README per MISSION.md | Supervisor (iter 5) | Dev PR #2766 (iter 5) |
+| [#2757](https://github.com/polycode-public/repository0/issues/2757) | open | fix: auto-fix broken main build | Fix-stuck | -- |
 
 ### Scenario Summary
 
@@ -295,7 +295,7 @@ The benchmark reached mission-complete after ~22 transformations. The pipeline s
 
 ### Changes Not Yet Released
 
-All W9-W14 fixes were applied directly to repository0 main (for fast feedback) and to agentic-lib branch `claude/fix-stuck-incremental` (PR [#1892](https://github.com/xn-intenton-z2a/agentic-lib/pull/1892)). These changes are NOT yet released to npm or distributed via init. They need:
+All W9-W14 fixes were applied directly to repository0 main (for fast feedback) and to agentic-lib branch `claude/fix-stuck-incremental` (PR [#1892](https://github.com/polycode-public/agentic-lib/pull/1892)). These changes are NOT yet released to npm or distributed via init. They need:
 
 1. PR #1892 merged to agentic-lib main
 2. Release to npm (auto-bumps version)

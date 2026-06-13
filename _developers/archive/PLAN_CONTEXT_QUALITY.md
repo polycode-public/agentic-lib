@@ -106,7 +106,7 @@ Track transformation count per workflow run. When the budget is consumed:
 - **Detected by:** transform
 - **Reason:** All acceptance criteria satisfied, all issues resolved
 
-This file was created automatically. To restart transformations, delete this file or run `npx @xn-intenton-z2a/agentic-lib init --reseed`.
+This file was created automatically. To restart transformations, delete this file or run `npx @polycode-public/agentic-lib init --reseed`.
 ```
 
 **How the signal gets set:**

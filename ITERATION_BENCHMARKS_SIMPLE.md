@@ -109,7 +109,7 @@ REPOS="repository0-random repository0-string-utils repository0-dense-encoder rep
 
 for REPO in $REPOS; do
   echo -n "$REPO: "
-  gh run list -R xn-intenton-z2a/$REPO -w agentic-lib-flow -L 1 \
+  gh run list -R polycode-public/$REPO -w agentic-lib-flow -L 1 \
     --json status,conclusion --jq '.[0] | "\(.status) \(.conclusion)"'
 done
 ```

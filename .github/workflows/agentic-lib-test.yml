@@ -130,7 +130,7 @@ jobs:
             core.summary.addRaw(summary).write();
 
   behaviour:
-    if: github.repository != 'xn-intenton-z2a/agentic-lib'
+    if: github.repository != 'polycode-public/agentic-lib'
     continue-on-error: true
     runs-on: ubuntu-latest
     container: mcr.microsoft.com/playwright:v1.58.2-noble
@@ -176,7 +176,7 @@ jobs:
       - name: Push screenshot to log branch
         if: |
           github.ref == 'refs/heads/main' &&
-          github.repository != 'xn-intenton-z2a/agentic-lib' &&
+          github.repository != 'polycode-public/agentic-lib' &&
           (github.event_name == 'schedule' || inputs.push-screenshot == 'true' || inputs.push-screenshot == true)
         env:
           LOG_BRANCH: ${{ inputs.log-branch || 'agentic-lib-logs' }}
@@ -197,7 +197,7 @@ jobs:
       !cancelled()
       && github.ref == 'refs/heads/main'
       && (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_call')
-      && github.repository != 'xn-intenton-z2a/agentic-lib'
+      && github.repository != 'polycode-public/agentic-lib'
       && needs.test.result == 'failure'
     runs-on: ubuntu-latest
     steps:
@@ -238,7 +238,7 @@ jobs:
     if: >-
       !cancelled()
       && github.ref == 'refs/heads/main'
-      && github.repository != 'xn-intenton-z2a/agentic-lib'
+      && github.repository != 'polycode-public/agentic-lib'
       && needs.test.result == 'failure'
     runs-on: ubuntu-latest
     steps:
@@ -353,7 +353,7 @@ jobs:
     if: >-
       !cancelled()
       && github.ref == 'refs/heads/main'
-      && github.repository != 'xn-intenton-z2a/agentic-lib'
+      && github.repository != 'polycode-public/agentic-lib'
       && needs.behaviour.outputs.tests-failed == 'true'
     runs-on: ubuntu-latest
     container: mcr.microsoft.com/playwright:v1.58.2-noble

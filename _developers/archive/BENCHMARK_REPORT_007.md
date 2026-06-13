@@ -27,7 +27,7 @@
 | Model | gpt-5-mini |
 | Profile | recommended |
 | Budget | 32 |
-| Init run | [22884994782](https://github.com/xn-intenton-z2a/repository0/actions/runs/22884994782) |
+| Init run | [22884994782](https://github.com/polycode-public/repository0/actions/runs/22884994782) |
 | Init time | 02:58 UTC |
 | Schedule | off |
 
@@ -35,12 +35,12 @@
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | What Happened |
 |---|--------|------|----------|------------|-----|-------------|---------------|
-| 1 | [22885016288](https://github.com/xn-intenton-z2a/repository0/actions/runs/22885016288) | 02:59 | 9m27s | **YES** | [#2793](https://github.com/xn-intenton-z2a/repository0/pull/2793) | 104 | Supervisor created #2792. Dev transformed: `toRoman()` and `fromRoman()` fully implemented with subtractive notation, canonical validation regex, range checking (1-3999). README updated. Post-commit tests pass. |
-| 2 | [22885262994](https://github.com/xn-intenton-z2a/repository0/actions/runs/22885262994) | 03:09 | 7m28s | NO | -- | 104 | Maintain-only. Behaviour test failed (Playwright). Instability issue #2794 created. |
-| 3 | [22885448418](https://github.com/xn-intenton-z2a/repository0/actions/runs/22885448418) | 03:17 | 5m58s | NO | -- | 104 | Maintain-only. Behaviour test failed again. Instability issue #2795 created, #2794 closed. |
-| 4 | [22885597126](https://github.com/xn-intenton-z2a/repository0/actions/runs/22885597126) | 03:23 | 9m40s | **YES** | [#2796](https://github.com/xn-intenton-z2a/repository0/pull/2796) | 104 | Dev transformed to fix behaviour test instability (#2795). Behaviour test failed on post-commit. |
-| 5 | [22885830804](https://github.com/xn-intenton-z2a/repository0/actions/runs/22885830804) | 03:33 | 7m20s | **YES** | [#2798](https://github.com/xn-intenton-z2a/repository0/pull/2798) | 104 | Dev transformed to fix behaviour test instability (#2797). Post-commit tests pass. |
-| 6 | [22886008281](https://github.com/xn-intenton-z2a/repository0/actions/runs/22886008281) | 03:41 | 5m30s | NO | -- | 104 | Supervisor declared **mission-complete**. |
+| 1 | [22885016288](https://github.com/polycode-public/repository0/actions/runs/22885016288) | 02:59 | 9m27s | **YES** | [#2793](https://github.com/polycode-public/repository0/pull/2793) | 104 | Supervisor created #2792. Dev transformed: `toRoman()` and `fromRoman()` fully implemented with subtractive notation, canonical validation regex, range checking (1-3999). README updated. Post-commit tests pass. |
+| 2 | [22885262994](https://github.com/polycode-public/repository0/actions/runs/22885262994) | 03:09 | 7m28s | NO | -- | 104 | Maintain-only. Behaviour test failed (Playwright). Instability issue #2794 created. |
+| 3 | [22885448418](https://github.com/polycode-public/repository0/actions/runs/22885448418) | 03:17 | 5m58s | NO | -- | 104 | Maintain-only. Behaviour test failed again. Instability issue #2795 created, #2794 closed. |
+| 4 | [22885597126](https://github.com/polycode-public/repository0/actions/runs/22885597126) | 03:23 | 9m40s | **YES** | [#2796](https://github.com/polycode-public/repository0/pull/2796) | 104 | Dev transformed to fix behaviour test instability (#2795). Behaviour test failed on post-commit. |
+| 5 | [22885830804](https://github.com/polycode-public/repository0/actions/runs/22885830804) | 03:33 | 7m20s | **YES** | [#2798](https://github.com/polycode-public/repository0/pull/2798) | 104 | Dev transformed to fix behaviour test instability (#2797). Post-commit tests pass. |
+| 6 | [22886008281](https://github.com/polycode-public/repository0/actions/runs/22886008281) | 03:41 | 5m30s | NO | -- | 104 | Supervisor declared **mission-complete**. |
 
 ### Acceptance Criteria
 
@@ -81,7 +81,7 @@
 | Model | gpt-5-mini |
 | Profile | recommended |
 | Budget | 32 |
-| Init run | [22886149497](https://github.com/xn-intenton-z2a/repository0/actions/runs/22886149497) |
+| Init run | [22886149497](https://github.com/polycode-public/repository0/actions/runs/22886149497) |
 | Init time | 03:47 UTC |
 | Schedule | off |
 
@@ -89,9 +89,9 @@
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | What Happened |
 |---|--------|------|----------|------------|-----|-------------|---------------|
-| 1 | [22886172146](https://github.com/xn-intenton-z2a/repository0/actions/runs/22886172146) | 03:48 | 7m55s | **YES** | [#2802](https://github.com/xn-intenton-z2a/repository0/pull/2802) | 48+180=228 | Supervisor created #2801. Dev transformed: ALL 10 functions implemented in src/lib/browser.js (180 lines), re-exported from main.js (48 lines). Includes slugify, truncate, camelCase, kebabCase, titleCase, wordWrap, stripHtml, escapeRegex, pluralize, levenshteinDistance. README updated. Post-commit tests pass. |
-| 2 | [22886372823](https://github.com/xn-intenton-z2a/repository0/actions/runs/22886372823) | 03:56 | 7m17s | NO | -- | 228 | Maintain-only. Supervisor created #2803, review-features closed it as resolved. No transform needed. |
-| 3 | [22886549737](https://github.com/xn-intenton-z2a/repository0/actions/runs/22886549737) | 04:04 | 5m56s | NO | -- | 228 | Supervisor declared **mission-complete**: "0 open issues, 2+ recently-closed issues resolved by review". |
+| 1 | [22886172146](https://github.com/polycode-public/repository0/actions/runs/22886172146) | 03:48 | 7m55s | **YES** | [#2802](https://github.com/polycode-public/repository0/pull/2802) | 48+180=228 | Supervisor created #2801. Dev transformed: ALL 10 functions implemented in src/lib/browser.js (180 lines), re-exported from main.js (48 lines). Includes slugify, truncate, camelCase, kebabCase, titleCase, wordWrap, stripHtml, escapeRegex, pluralize, levenshteinDistance. README updated. Post-commit tests pass. |
+| 2 | [22886372823](https://github.com/polycode-public/repository0/actions/runs/22886372823) | 03:56 | 7m17s | NO | -- | 228 | Maintain-only. Supervisor created #2803, review-features closed it as resolved. No transform needed. |
+| 3 | [22886549737](https://github.com/polycode-public/repository0/actions/runs/22886549737) | 04:04 | 5m56s | NO | -- | 228 | Supervisor declared **mission-complete**: "0 open issues, 2+ recently-closed issues resolved by review". |
 
 ### Acceptance Criteria
 
@@ -131,7 +131,7 @@
 | Model | gpt-5-mini |
 | Profile | recommended |
 | Budget | 32 |
-| Init run | [22886699266](https://github.com/xn-intenton-z2a/repository0/actions/runs/22886699266) |
+| Init run | [22886699266](https://github.com/polycode-public/repository0/actions/runs/22886699266) |
 | Init time | 04:12 UTC |
 | Schedule | off |
 
@@ -139,15 +139,15 @@
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | What Happened |
 |---|--------|------|----------|------------|-----|-------------|---------------|
-| 1 | [22886723892](https://github.com/xn-intenton-z2a/repository0/actions/runs/22886723892) | 04:14 | ~9min | **YES** | [#2806](https://github.com/xn-intenton-z2a/repository0/pull/2806) | 53+165=218 | Supervisor created #2805. Dev transformed: all 5 cron functions implemented in src/lib/cron.js (165 lines). parseCron with 5/6-field support, ranges, steps, wildcards, special strings. nextRun with 5-year search. Supervisor annotation: "Unknown action: Requirements" — benign parsing issue. |
-| 2 | [22887032988](https://github.com/xn-intenton-z2a/repository0/actions/runs/22887032988) | 04:24 | 15min | **YES** | [#2808](https://github.com/xn-intenton-z2a/repository0/pull/2808) | 53+177=230 | Supervisor created #2807 "complete cron-engine (tests, docs, DST handling)". Dev transformed: expanded cron.js to 177 lines. Behaviour test failed. |
-| 3 | [22887402761](https://github.com/xn-intenton-z2a/repository0/actions/runs/22887402761) | 04:39 | 9m23s | **YES** | [#2811](https://github.com/xn-intenton-z2a/repository0/pull/2811) | 230 | Dev transformed to fix behaviour test instability (#2809). Behaviour test failed again. |
-| 3a | [22887525625](https://github.com/xn-intenton-z2a/repository0/actions/runs/22887525625) | 04:44 | 14min | **YES** | [#2813](https://github.com/xn-intenton-z2a/repository0/pull/2813) | 230 | Auto-dispatched by dispatch-fix. fix-stuck PR for broken main build. |
-| 4 | [22887637527](https://github.com/xn-intenton-z2a/repository0/actions/runs/22887637527) | 04:49 | 22min | **YES** | [#2812](https://github.com/xn-intenton-z2a/repository0/pull/2812) | 230 | Dev transformed to fix instability #2810 ("both test failure"). Behaviour test still failing. Safety check blocked path-writable for scripts/run-behaviour.js. |
-| 5 | [22888162931](https://github.com/xn-intenton-z2a/repository0/actions/runs/22888162931) | 05:11 | 12m29s | **YES** | [#2812](https://github.com/xn-intenton-z2a/repository0/pull/2812) | 230 | Dev transformed instability #2810. Behaviour test failed. |
-| 6 | [22888460286](https://github.com/xn-intenton-z2a/repository0/actions/runs/22888460286) | 05:24 | 8m05s | NO | -- | 230 | Maintain-only. All open instability issues closed. |
-| 7 | [22888674992](https://github.com/xn-intenton-z2a/repository0/actions/runs/22888674992) | 05:32 | 7m13s | NO | -- | 230 | Maintain-only. No open issues. |
-| 8 | [22888865710](https://github.com/xn-intenton-z2a/repository0/actions/runs/22888865710) | 05:40 | 5m24s | NO | -- | 230 | Supervisor declared **mission-complete**. |
+| 1 | [22886723892](https://github.com/polycode-public/repository0/actions/runs/22886723892) | 04:14 | ~9min | **YES** | [#2806](https://github.com/polycode-public/repository0/pull/2806) | 53+165=218 | Supervisor created #2805. Dev transformed: all 5 cron functions implemented in src/lib/cron.js (165 lines). parseCron with 5/6-field support, ranges, steps, wildcards, special strings. nextRun with 5-year search. Supervisor annotation: "Unknown action: Requirements" — benign parsing issue. |
+| 2 | [22887032988](https://github.com/polycode-public/repository0/actions/runs/22887032988) | 04:24 | 15min | **YES** | [#2808](https://github.com/polycode-public/repository0/pull/2808) | 53+177=230 | Supervisor created #2807 "complete cron-engine (tests, docs, DST handling)". Dev transformed: expanded cron.js to 177 lines. Behaviour test failed. |
+| 3 | [22887402761](https://github.com/polycode-public/repository0/actions/runs/22887402761) | 04:39 | 9m23s | **YES** | [#2811](https://github.com/polycode-public/repository0/pull/2811) | 230 | Dev transformed to fix behaviour test instability (#2809). Behaviour test failed again. |
+| 3a | [22887525625](https://github.com/polycode-public/repository0/actions/runs/22887525625) | 04:44 | 14min | **YES** | [#2813](https://github.com/polycode-public/repository0/pull/2813) | 230 | Auto-dispatched by dispatch-fix. fix-stuck PR for broken main build. |
+| 4 | [22887637527](https://github.com/polycode-public/repository0/actions/runs/22887637527) | 04:49 | 22min | **YES** | [#2812](https://github.com/polycode-public/repository0/pull/2812) | 230 | Dev transformed to fix instability #2810 ("both test failure"). Behaviour test still failing. Safety check blocked path-writable for scripts/run-behaviour.js. |
+| 5 | [22888162931](https://github.com/polycode-public/repository0/actions/runs/22888162931) | 05:11 | 12m29s | **YES** | [#2812](https://github.com/polycode-public/repository0/pull/2812) | 230 | Dev transformed instability #2810. Behaviour test failed. |
+| 6 | [22888460286](https://github.com/polycode-public/repository0/actions/runs/22888460286) | 05:24 | 8m05s | NO | -- | 230 | Maintain-only. All open instability issues closed. |
+| 7 | [22888674992](https://github.com/polycode-public/repository0/actions/runs/22888674992) | 05:32 | 7m13s | NO | -- | 230 | Maintain-only. No open issues. |
+| 8 | [22888865710](https://github.com/polycode-public/repository0/actions/runs/22888865710) | 05:40 | 5m24s | NO | -- | 230 | Supervisor declared **mission-complete**. |
 
 ### Acceptance Criteria
 
@@ -166,11 +166,11 @@
 
 | Issue | State | Title | Type |
 |-------|-------|-------|------|
-| [#2805](https://github.com/xn-intenton-z2a/repository0/issues/2805) | closed | feat: implement cron-engine core functions and tests | mission |
-| [#2807](https://github.com/xn-intenton-z2a/repository0/issues/2807) | closed | feat: complete cron-engine (implement tests, docs, README, DST handling) | mission |
-| [#2809](https://github.com/xn-intenton-z2a/repository0/issues/2809) | closed | instability: behaviour test failure on main | instability |
-| [#2810](https://github.com/xn-intenton-z2a/repository0/issues/2810) | closed | instability: both test failure on main | instability |
-| [#2814](https://github.com/xn-intenton-z2a/repository0/issues/2814) | closed | instability: behaviour test failure on main | instability |
+| [#2805](https://github.com/polycode-public/repository0/issues/2805) | closed | feat: implement cron-engine core functions and tests | mission |
+| [#2807](https://github.com/polycode-public/repository0/issues/2807) | closed | feat: complete cron-engine (implement tests, docs, README, DST handling) | mission |
+| [#2809](https://github.com/polycode-public/repository0/issues/2809) | closed | instability: behaviour test failure on main | instability |
+| [#2810](https://github.com/polycode-public/repository0/issues/2810) | closed | instability: both test failure on main | instability |
+| [#2814](https://github.com/polycode-public/repository0/issues/2814) | closed | instability: behaviour test failure on main | instability |
 
 ### Scenario Summary
 

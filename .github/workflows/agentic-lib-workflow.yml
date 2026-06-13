@@ -245,7 +245,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: PR cleanup
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && needs.params.outputs.dry-run != 'true'
+        if: github.repository != 'polycode-public/agentic-lib' && needs.params.outputs.dry-run != 'true'
         uses: actions/github-script@v8
         with:
           script: |
@@ -747,7 +747,7 @@ jobs:
 
       - name: Check health for commit message
         id: health
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && needs.params.outputs.dry-run != 'true'
+        if: github.repository != 'polycode-public/agentic-lib' && needs.params.outputs.dry-run != 'true'
         run: |
           if npm ci --ignore-scripts 2>/dev/null; then
             TEST_OUTPUT=$(npm test 2>&1) || true
@@ -765,7 +765,7 @@ jobs:
           fi
 
       - name: Commit and push changes
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && needs.params.outputs.dry-run != 'true'
+        if: github.repository != 'polycode-public/agentic-lib' && needs.params.outputs.dry-run != 'true'
         uses: ./.github/agentic-lib/actions/commit-if-changed
         with:
           commit-message: "${{ steps.health.outputs.summary || 'agentic-step: maintain features and library' }}"
@@ -777,7 +777,7 @@ jobs:
         run: echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
       - name: Push log to log branch
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && needs.params.outputs.dry-run != 'true'
+        if: github.repository != 'polycode-public/agentic-lib' && needs.params.outputs.dry-run != 'true'
         env:
           LOG_BRANCH: ${{ needs.params.outputs.log-branch }}
         run: bash .github/agentic-lib/scripts/push-to-logs.sh agent-log-*.md agentic-lib-state.toml
@@ -832,7 +832,7 @@ jobs:
 
       - name: Run implementation review
         id: review
-        if: github.repository != 'xn-intenton-z2a/agentic-lib'
+        if: github.repository != 'polycode-public/agentic-lib'
         timeout-minutes: 10
         uses: ./.github/agentic-lib/actions/agentic-step
         env:
@@ -846,7 +846,7 @@ jobs:
 
       # Commit MISSION.md checkbox updates (from Fix #6) so downstream jobs see them
       - name: Commit acceptance criteria updates
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && needs.params.outputs.dry-run != 'true'
+        if: github.repository != 'polycode-public/agentic-lib' && needs.params.outputs.dry-run != 'true'
         run: |
           if git diff --quiet MISSION.md 2>/dev/null; then
             echo "No MISSION.md changes to commit"
@@ -860,7 +860,7 @@ jobs:
           fi
 
       - name: Push log to log branch
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && needs.params.outputs.dry-run != 'true'
+        if: github.repository != 'polycode-public/agentic-lib' && needs.params.outputs.dry-run != 'true'
         env:
           LOG_BRANCH: ${{ needs.params.outputs.log-branch }}
         run: bash .github/agentic-lib/scripts/push-to-logs.sh agent-log-*.md agentic-lib-state.toml
@@ -910,7 +910,7 @@ jobs:
 
       - name: Run director
         id: director
-        if: github.repository != 'xn-intenton-z2a/agentic-lib'
+        if: github.repository != 'polycode-public/agentic-lib'
         timeout-minutes: 10
         uses: ./.github/agentic-lib/actions/agentic-step
         env:
@@ -925,7 +925,7 @@ jobs:
           model: ${{ needs.params.outputs.model }}
 
       - name: Push log to log branch
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && needs.params.outputs.dry-run != 'true'
+        if: github.repository != 'polycode-public/agentic-lib' && needs.params.outputs.dry-run != 'true'
         env:
           LOG_BRANCH: ${{ needs.params.outputs.log-branch }}
         run: bash .github/agentic-lib/scripts/push-to-logs.sh agent-log-*.md agentic-lib-state.toml
@@ -998,7 +998,7 @@ jobs:
           fi
 
       - name: Run supervisor
-        if: github.repository != 'xn-intenton-z2a/agentic-lib'
+        if: github.repository != 'polycode-public/agentic-lib'
         timeout-minutes: 10
         uses: ./.github/agentic-lib/actions/agentic-step
         env:
@@ -1014,7 +1014,7 @@ jobs:
           model: ${{ needs.params.outputs.model }}
 
       - name: Push log to log branch
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && needs.params.outputs.dry-run != 'true'
+        if: github.repository != 'polycode-public/agentic-lib' && needs.params.outputs.dry-run != 'true'
         env:
           LOG_BRANCH: ${{ needs.params.outputs.log-branch }}
         run: bash .github/agentic-lib/scripts/push-to-logs.sh agent-log-*.md agentic-lib-state.toml
@@ -1319,7 +1319,7 @@ jobs:
           npm run --if-present test:behaviour || echo "Behaviour tests failed (non-blocking for fix)"
 
       - name: Commit and push fixes
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && env.FIX_PR_NUMBER != '' && steps.fix-mission-check.outputs.mission-complete != 'true'
+        if: github.repository != 'polycode-public/agentic-lib' && env.FIX_PR_NUMBER != '' && steps.fix-mission-check.outputs.mission-complete != 'true'
         run: |
           git config user.email 'action@github.com'
           git config user.name 'GitHub Actions[bot]'
@@ -1339,7 +1339,7 @@ jobs:
       # W20: Immediately attempt merge after fix-stuck resolves conflicts
       - name: "W20: Immediate merge attempt after fix"
         if: |
-          github.repository != 'xn-intenton-z2a/agentic-lib' &&
+          github.repository != 'polycode-public/agentic-lib' &&
           env.FIX_PR_NUMBER != '' &&
           steps.fix-mission-check.outputs.mission-complete != 'true' &&
           needs.params.outputs.dry-run != 'true'
@@ -1398,7 +1398,7 @@ jobs:
             core.info(`W20: PR #${prNumber} left open for next cycle`);
 
       - name: Commit, push, and open PR for main build fix
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && env.FIX_MAIN_BUILD == 'true' && steps.fix-mission-check.outputs.mission-complete != 'true'
+        if: github.repository != 'polycode-public/agentic-lib' && env.FIX_MAIN_BUILD == 'true' && steps.fix-mission-check.outputs.mission-complete != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -1673,7 +1673,7 @@ jobs:
 #          echo "Behaviour tests passed"
 
       - name: Sync lockfile if package.json changed
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && steps.issue.outputs.issue-number != '' && needs.params.outputs.dry-run != 'true'
+        if: github.repository != 'polycode-public/agentic-lib' && steps.issue.outputs.issue-number != '' && needs.params.outputs.dry-run != 'true'
         run: |
           if git diff --name-only | grep -q 'package.json'; then
             echo "package.json changed — syncing lockfile"
@@ -1682,20 +1682,20 @@ jobs:
           fi
 
       - name: Commit and push
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && steps.issue.outputs.issue-number != '' && needs.params.outputs.dry-run != 'true' && steps.pre-commit-test.outputs.tests-passed == 'true' && steps.pre-commit-behaviour-test.outputs.tests-passed != 'false'
+        if: github.repository != 'polycode-public/agentic-lib' && steps.issue.outputs.issue-number != '' && needs.params.outputs.dry-run != 'true' && steps.pre-commit-test.outputs.tests-passed == 'true' && steps.pre-commit-behaviour-test.outputs.tests-passed != 'false'
         uses: ./.github/agentic-lib/actions/commit-if-changed
         with:
           commit-message: "agentic-step: transform issue #${{ steps.issue.outputs.issue-number }}"
           push-ref: ${{ steps.branch.outputs.branchName }}
 
       - name: Push log to log branch
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && needs.params.outputs.dry-run != 'true'
+        if: github.repository != 'polycode-public/agentic-lib' && needs.params.outputs.dry-run != 'true'
         env:
           LOG_BRANCH: ${{ needs.params.outputs.log-branch }}
         run: bash .github/agentic-lib/scripts/push-to-logs.sh agent-log-*.md agentic-lib-state.toml
 
       - name: Create PR and attempt merge
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && steps.issue.outputs.issue-number != '' && needs.params.outputs.dry-run != 'true' && steps.pre-commit-test.outputs.tests-passed == 'true' && steps.pre-commit-behaviour-test.outputs.tests-passed != 'false'
+        if: github.repository != 'polycode-public/agentic-lib' && steps.issue.outputs.issue-number != '' && needs.params.outputs.dry-run != 'true' && steps.pre-commit-test.outputs.tests-passed == 'true' && steps.pre-commit-behaviour-test.outputs.tests-passed != 'false'
         uses: actions/github-script@v8
         with:
           script: |
@@ -1826,7 +1826,7 @@ jobs:
           needs.params.outputs.dry-run != 'true' &&
           needs.director.outputs.decision != 'mission-complete' &&
           needs.director.outputs.decision != 'mission-failed' &&
-          github.repository != 'xn-intenton-z2a/agentic-lib'
+          github.repository != 'polycode-public/agentic-lib'
         run: git pull origin main --ff-only 2>/dev/null || true
 
       - name: Fetch log and screenshot from log branch (post-merge director)
@@ -1835,7 +1835,7 @@ jobs:
           needs.params.outputs.dry-run != 'true' &&
           needs.director.outputs.decision != 'mission-complete' &&
           needs.director.outputs.decision != 'mission-failed' &&
-          github.repository != 'xn-intenton-z2a/agentic-lib'
+          github.repository != 'polycode-public/agentic-lib'
         env:
           LOG_BRANCH: ${{ needs.params.outputs.log-branch }}
           SCREENSHOT_FILE: ${{ needs.params.outputs.screenshot-file }}
@@ -1850,7 +1850,7 @@ jobs:
           needs.params.outputs.dry-run != 'true' &&
           needs.director.outputs.decision != 'mission-complete' &&
           needs.director.outputs.decision != 'mission-failed' &&
-          github.repository != 'xn-intenton-z2a/agentic-lib'
+          github.repository != 'polycode-public/agentic-lib'
         with:
           node-version: "24"
 
@@ -1869,7 +1869,7 @@ jobs:
           needs.params.outputs.dry-run != 'true' &&
           needs.director.outputs.decision != 'mission-complete' &&
           needs.director.outputs.decision != 'mission-failed' &&
-          github.repository != 'xn-intenton-z2a/agentic-lib'
+          github.repository != 'polycode-public/agentic-lib'
         working-directory: .github/agentic-lib/actions/agentic-step
         run: |
           npm ci
@@ -1884,7 +1884,7 @@ jobs:
           needs.params.outputs.dry-run != 'true' &&
           needs.director.outputs.decision != 'mission-complete' &&
           needs.director.outputs.decision != 'mission-failed' &&
-          github.repository != 'xn-intenton-z2a/agentic-lib'
+          github.repository != 'polycode-public/agentic-lib'
         timeout-minutes: 10
         uses: ./.github/agentic-lib/actions/agentic-step
         env:
@@ -1904,7 +1904,7 @@ jobs:
           needs.params.outputs.dry-run != 'true' &&
           needs.director.outputs.decision != 'mission-complete' &&
           needs.director.outputs.decision != 'mission-failed' &&
-          github.repository != 'xn-intenton-z2a/agentic-lib'
+          github.repository != 'polycode-public/agentic-lib'
         env:
           LOG_BRANCH: ${{ needs.params.outputs.log-branch }}
         run: bash .github/agentic-lib/scripts/push-to-logs.sh agent-log-*.md agentic-lib-state.toml

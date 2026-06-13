@@ -64,7 +64,7 @@ the subprocess env so the Copilot CLI auto-login picks up the PAT.
 
 #### `agentic-lib-init.yml` — Init/update
 
-- Runs `npx @xn-intenton-z2a/agentic-lib init` to pull latest actions,
+- Runs `npx @polycode-public/agentic-lib init` to pull latest actions,
   workflows, agents from the npm package
 - Distributes the agentic-step action (including Copilot SDK code) to the repo
 
@@ -78,7 +78,7 @@ GitHub's built-in Copilot SWE agent. Not affected by this plan.
 ### 1.4 MCP Server (local iteration)
 
 The agentic-lib npm package includes an MCP server
-(`npx @xn-intenton-z2a/agentic-lib mcp`) for local iteration:
+(`npx @polycode-public/agentic-lib mcp`) for local iteration:
 
 | Tool | Copilot involvement |
 |------|-------------------|

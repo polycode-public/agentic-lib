@@ -9,7 +9,7 @@ REPOS="repository0 repository0-string-utils repository0-dense-encoder repository
 for REPO in $REPOS; do
   echo "=== $REPO ==="
   date
-  WORKFLOWS=$(gh api "repos/xn-intenton-z2a/$REPO/actions/workflows" \
+  WORKFLOWS=$(gh api "repos/polycode-public/$REPO/actions/workflows" \
     --jq '.workflows[] | select(.name | startswith("agentic-lib-")) | "\(.id) \(.name) \(.state)"')
   while IFS= read -r line; do
     [ -z "$line" ] && continue
@@ -20,7 +20,7 @@ for REPO in $REPOS; do
       echo "  $WF_NAME — already disabled"
     else
       echo "  $WF_NAME — disabling..."
-      time gh api "repos/xn-intenton-z2a/$REPO/actions/workflows/$WF_ID/disable" -X PUT
+      time gh api "repos/polycode-public/$REPO/actions/workflows/$WF_ID/disable" -X PUT
     fi
   done <<< "$WORKFLOWS"
   echo ""

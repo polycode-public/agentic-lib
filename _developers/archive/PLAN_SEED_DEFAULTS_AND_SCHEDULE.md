@@ -210,7 +210,7 @@ Also needs to add/update `schedule:` blocks in init and test workflow files (may
 - Include how to initialise using both the init workflow and CLI:
   ```bash
   # CLI
-  npx @xn-intenton-z2a/agentic-lib init --purge --mission 7-kyu-understand-fizz-buzz
+  npx @polycode-public/agentic-lib init --purge --mission 7-kyu-understand-fizz-buzz
 
   # Workflow (from GitHub Actions tab)
   # Run "agentic-lib-init" with mode=purge, mission-seed=7-kyu-understand-fizz-buzz

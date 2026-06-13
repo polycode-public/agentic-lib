@@ -6,7 +6,7 @@
 
 ```bash
 # In your repository:
-npx @xn-intenton-z2a/agentic-lib init
+npx @polycode-public/agentic-lib init
 
 # Write your mission:
 echo "# Build a CLI tool that converts CSV to JSON" > MISSION.md
@@ -15,7 +15,7 @@ echo "# Build a CLI tool that converts CSV to JSON" > MISSION.md
 git add -A && git commit -m "Initialise agentic workflows" && git push
 ```
 
-Or start from the [repository0 template](https://github.com/xn-intenton-z2a/repository0) which comes pre-initialised.
+Or start from the [repository0 template](https://github.com/polycode-public/repository0) which comes pre-initialised.
 
 ## How It Works
 
@@ -40,16 +40,16 @@ An LLM supervisor runs on a configurable schedule, gathers full repository conte
 
 ## Initialisation
 
-### `npx @xn-intenton-z2a/agentic-lib init`
+### `npx @polycode-public/agentic-lib init`
 
 Populates your repository with the agentic infrastructure. Run it once to set up, or again to update to the latest version.
 
 ```bash
-npx @xn-intenton-z2a/agentic-lib init           # install/update infrastructure
-npx @xn-intenton-z2a/agentic-lib init --purge    # also reset source files to seed state
-npx @xn-intenton-z2a/agentic-lib init --dry-run  # preview without writing
-npx @xn-intenton-z2a/agentic-lib reset           # alias for init --purge
-npx @xn-intenton-z2a/agentic-lib version         # show installed version
+npx @polycode-public/agentic-lib init           # install/update infrastructure
+npx @polycode-public/agentic-lib init --purge    # also reset source files to seed state
+npx @polycode-public/agentic-lib init --dry-run  # preview without writing
+npx @polycode-public/agentic-lib reset           # alias for init --purge
+npx @polycode-public/agentic-lib version         # show installed version
 ```
 
 ### What `init` Installs
@@ -94,7 +94,7 @@ your-repo/
 - **[USER]** -- Your files. `init` never touches these. `init --purge` resets them to seed state.
 - **[GENERATED]** -- Created by the agentic workflows during operation.
 
-The `init.yml` workflow is distributed from seeds (like `test.yml`) and runs `npx @xn-intenton-z2a/agentic-lib init --purge` on a daily schedule to keep infrastructure up to date.
+The `init.yml` workflow is distributed from seeds (like `test.yml`) and runs `npx @polycode-public/agentic-lib init --purge` on a daily schedule to keep infrastructure up to date.
 
 ### What You Need Before Running `init`
 
@@ -237,11 +237,11 @@ Each task calls the GitHub Copilot SDK with context assembled from your reposito
 Run Copilot SDK transformations locally from the command line. These are the same operations the GitHub Actions workflows perform, but you can run them interactively to see what happens.
 
 ```bash
-npx @xn-intenton-z2a/agentic-lib transform            # advance code toward the mission
-npx @xn-intenton-z2a/agentic-lib maintain-features     # generate feature files from mission
-npx @xn-intenton-z2a/agentic-lib maintain-library      # update library docs from SOURCES.md
-npx @xn-intenton-z2a/agentic-lib fix-code              # fix failing tests
-npx @xn-intenton-z2a/agentic-lib iterate               # run N cycles with budget tracking
+npx @polycode-public/agentic-lib transform            # advance code toward the mission
+npx @polycode-public/agentic-lib maintain-features     # generate feature files from mission
+npx @polycode-public/agentic-lib maintain-library      # update library docs from SOURCES.md
+npx @polycode-public/agentic-lib fix-code              # fix failing tests
+npx @polycode-public/agentic-lib iterate               # run N cycles with budget tracking
 ```
 
 All task commands accept these flags:
@@ -259,7 +259,7 @@ All task commands accept these flags:
 ```bash
 # 1. Start with a fresh repository
 mkdir my-project && cd my-project && git init
-npx @xn-intenton-z2a/agentic-lib init --purge
+npx @polycode-public/agentic-lib init --purge
 
 # 2. Write your mission
 cat > MISSION.md <<'EOF'
@@ -271,7 +271,7 @@ EOF
 cd .github/agentic-lib/actions/agentic-step && npm ci && cd -
 
 # 4. Generate features from your mission
-npx @xn-intenton-z2a/agentic-lib maintain-features
+npx @polycode-public/agentic-lib maintain-features
 # Output:
 #   === agentic-lib maintain-features ===
 #   [config] Loading agentic-lib.toml
@@ -282,7 +282,7 @@ npx @xn-intenton-z2a/agentic-lib maintain-features
 #   === maintain-features completed in 12.3s ===
 
 # 5. Transform code toward the mission
-npx @xn-intenton-z2a/agentic-lib transform
+npx @polycode-public/agentic-lib transform
 # Output:
 #   === agentic-lib transform ===
 #   [context] Mission: # Mission: CSV to JSON Converter...
@@ -302,7 +302,7 @@ git add -A && git commit -m "Initial transform" && git push
 Use `--dry-run` to see what prompt would be sent without calling the SDK:
 
 ```bash
-npx @xn-intenton-z2a/agentic-lib transform --dry-run
+npx @polycode-public/agentic-lib transform --dry-run
 ```
 
 ### Iterator
@@ -311,13 +311,13 @@ The `iterate` command runs a single persistent Copilot SDK session that autonomo
 
 ```bash
 # Init a mission and iterate
-npx @xn-intenton-z2a/agentic-lib iterate --mission 6-kyu-understand-hamming-distance --model gpt-5-mini
+npx @polycode-public/agentic-lib iterate --mission 6-kyu-understand-hamming-distance --model gpt-5-mini
 
 # Iterate on an existing workspace
-npx @xn-intenton-z2a/agentic-lib iterate --target /path/to/workspace
+npx @polycode-public/agentic-lib iterate --target /path/to/workspace
 
 # With a longer timeout (10 minutes)
-npx @xn-intenton-z2a/agentic-lib iterate --mission 7-kyu-understand-fizz-buzz --timeout 600000
+npx @polycode-public/agentic-lib iterate --mission 7-kyu-understand-fizz-buzz --timeout 600000
 ```
 
 The session uses SDK hooks for observability (tool call tracking, error recovery) and infinite sessions for context management. The agent drives its own read-write-test loop until the mission is complete or the timeout is reached.
@@ -369,15 +369,15 @@ source .env
 
 ```bash
 # Quick: hamming-distance with gpt-5-mini (6 kyu, ~1-2 min)
-npx @xn-intenton-z2a/agentic-lib iterate \
+npx @polycode-public/agentic-lib iterate \
   --mission 6-kyu-understand-hamming-distance --model gpt-5-mini --timeout 300000
 
 # Medium: roman-numerals with claude-sonnet-4
-npx @xn-intenton-z2a/agentic-lib iterate \
+npx @polycode-public/agentic-lib iterate \
   --mission 6-kyu-understand-roman-numerals --model claude-sonnet-4
 
 # Complex: string-utils with gpt-4.1 (5 kyu, 10 functions, longer timeout)
-npx @xn-intenton-z2a/agentic-lib iterate \
+npx @polycode-public/agentic-lib iterate \
   --mission 5-kyu-apply-string-utils --model gpt-4.1 --timeout 600000
 ```
 
@@ -433,8 +433,8 @@ If `COPILOT_GITHUB_TOKEN` is not set, the CLI falls back to local `gh` CLI authe
 
 | Method | How | Best for |
 |--------|-----|----------|
-| **Template** | Use [repository0](https://github.com/xn-intenton-z2a/repository0) as a GitHub template | New projects -- comes pre-initialised |
-| **CLI** | `npx @xn-intenton-z2a/agentic-lib init` in any repo | Existing projects -- adds agentic workflows |
+| **Template** | Use [repository0](https://github.com/polycode-public/repository0) as a GitHub template | New projects -- comes pre-initialised |
+| **CLI** | `npx @polycode-public/agentic-lib init` in any repo | Existing projects -- adds agentic workflows |
 | **Website** | [xn--intenton-z2a.com](https://xn--intenton-z2a.com) | Guided setup with a web form |
 
 ## Safety
@@ -454,7 +454,7 @@ Built-in safety mechanisms:
 To update to the latest version of the agentic infrastructure:
 
 ```bash
-npx @xn-intenton-z2a/agentic-lib@latest init
+npx @polycode-public/agentic-lib@latest init
 git add -A && git commit -m "Update agentic-lib" && git push
 ```
 
@@ -462,7 +462,7 @@ This overwrites `.github/workflows/` and `.github/agentic-lib/` with the latest 
 
 ## Development
 
-This repository is the source for the `@xn-intenton-z2a/agentic-lib` npm package. All distributed content lives in `src/`:
+This repository is the source for the `@polycode-public/agentic-lib` npm package. All distributed content lives in `src/`:
 
 ```
 src/
@@ -504,7 +504,7 @@ Both auto and manual publishing are handled by `release.yml`:
 
 ## Links
 
-- [repository0 template](https://github.com/xn-intenton-z2a/repository0) -- start here
-- [Getting Started Guide](https://github.com/xn-intenton-z2a/repository0/blob/main/GETTING-STARTED.md)
+- [repository0 template](https://github.com/polycode-public/repository0) -- start here
+- [Getting Started Guide](https://github.com/polycode-public/repository0/blob/main/GETTING-STARTED.md)
 - [API Reference](API.md)
 - [Website](https://xn--intenton-z2a.com)

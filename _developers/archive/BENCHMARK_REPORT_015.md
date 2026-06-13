@@ -30,7 +30,7 @@
 | Model | gpt-5-mini |
 | Profile | min |
 | Budget | 16 |
-| Init run | [#23276709376](https://github.com/xn-intenton-z2a/repository0/actions/runs/23276709376) |
+| Init run | [#23276709376](https://github.com/polycode-public/repository0/actions/runs/23276709376) |
 | Init time | 02:20 UTC |
 | Schedule | off |
 
@@ -38,11 +38,11 @@
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [23276748537](https://github.com/xn-intenton-z2a/repository0/actions/runs/23276748537) | 02:22 | ~8min | YES | #3142 | 83 | 2 | Supervisor: #3141. Transform: hamming impl + tests. Director: in-progress (0/7 criteria). |
-| 2 | [23276981750](https://github.com/xn-intenton-z2a/repository0/actions/runs/23276981750) | 02:31 | ~7min | YES | #3144 | 84 | 3 | Supervisor: #3143 (add tests). Transform: hamming.test.js. Director: in-progress. |
-| 3 | [23277179606](https://github.com/xn-intenton-z2a/repository0/actions/runs/23277179606) | 02:38 | ~6min | YES | -- | 84 | 3 | Supervisor: #3145 (more tests). Director: in-progress ("open issue blocks"). |
-| 4 | [23277343910](https://github.com/xn-intenton-z2a/repository0/actions/runs/23277343910) | 02:45 | ~8min | YES | #3146 | 98 | 3 | Transform: resolved #3145. Director: in-progress. |
-| 5 | [23277548044](https://github.com/xn-intenton-z2a/repository0/actions/runs/23277548044) | 02:53 | ~4min | NO | -- | 98 | 3 | Maintain only. Director: **mission-complete** ~02:56. |
+| 1 | [23276748537](https://github.com/polycode-public/repository0/actions/runs/23276748537) | 02:22 | ~8min | YES | #3142 | 83 | 2 | Supervisor: #3141. Transform: hamming impl + tests. Director: in-progress (0/7 criteria). |
+| 2 | [23276981750](https://github.com/polycode-public/repository0/actions/runs/23276981750) | 02:31 | ~7min | YES | #3144 | 84 | 3 | Supervisor: #3143 (add tests). Transform: hamming.test.js. Director: in-progress. |
+| 3 | [23277179606](https://github.com/polycode-public/repository0/actions/runs/23277179606) | 02:38 | ~6min | YES | -- | 84 | 3 | Supervisor: #3145 (more tests). Director: in-progress ("open issue blocks"). |
+| 4 | [23277343910](https://github.com/polycode-public/repository0/actions/runs/23277343910) | 02:45 | ~8min | YES | #3146 | 98 | 3 | Transform: resolved #3145. Director: in-progress. |
+| 5 | [23277548044](https://github.com/polycode-public/repository0/actions/runs/23277548044) | 02:53 | ~4min | NO | -- | 98 | 3 | Maintain only. Director: **mission-complete** ~02:56. |
 
 ### Acceptance Criteria
 
@@ -80,7 +80,7 @@
 | Model | gpt-5-mini |
 | Profile | min |
 | Budget | 16 |
-| Init run | [#23277665073](https://github.com/xn-intenton-z2a/repository0/actions/runs/23277665073) |
+| Init run | [#23277665073](https://github.com/polycode-public/repository0/actions/runs/23277665073) |
 | Init time | 02:57 UTC |
 | Schedule | off |
 
@@ -88,8 +88,8 @@
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [23277708037](https://github.com/xn-intenton-z2a/repository0/actions/runs/23277708037) | 02:59 | ~10min | YES | #3149 | ~120 | 2 | Supervisor: #3148. Transform: encoding APIs + built-ins + tests. Director: in-progress. |
-| 2 | [23277983312](https://github.com/xn-intenton-z2a/repository0/actions/runs/23277983312) | 03:09 | ~12min | YES | #3151 | 173 | 4 | Supervisor: #3150 (dedicated tests). Transform: encoding.test.js + encodings.dedicated.test.js. Director: **mission-complete** ~03:21. |
+| 1 | [23277708037](https://github.com/polycode-public/repository0/actions/runs/23277708037) | 02:59 | ~10min | YES | #3149 | ~120 | 2 | Supervisor: #3148. Transform: encoding APIs + built-ins + tests. Director: in-progress. |
+| 2 | [23277983312](https://github.com/polycode-public/repository0/actions/runs/23277983312) | 03:09 | ~12min | YES | #3151 | 173 | 4 | Supervisor: #3150 (dedicated tests). Transform: encoding.test.js + encodings.dedicated.test.js. Director: **mission-complete** ~03:21. |
 
 ### Acceptance Criteria
 
@@ -127,7 +127,7 @@
 | Model | gpt-5-mini |
 | Profile | med |
 | Budget | 32 |
-| Init run | [#23278275239](https://github.com/xn-intenton-z2a/repository0/actions/runs/23278275239) |
+| Init run | [#23278275239](https://github.com/polycode-public/repository0/actions/runs/23278275239) |
 | Init time | 03:21 UTC |
 | Schedule | off |
 
@@ -135,9 +135,9 @@
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1 | [23278315724](https://github.com/xn-intenton-z2a/repository0/actions/runs/23278315724) | 03:23 | ~22min | YES | merged | ~180 | 3 | Transform: encoding APIs. Director: in-progress. Instability issue created. |
-| 2 | [23278831689](https://github.com/xn-intenton-z2a/repository0/actions/runs/23278831689) | 03:45 | ~25min | YES | merged | ~230 | 4 | Transform: tests + fixes. Director: in-progress. Instability issue. |
-| 3 | [23279435455](https://github.com/xn-intenton-z2a/repository0/actions/runs/23279435455) | 04:10 | ~25min | YES | merged | 261 | 4+ | Transform: more tests. Director: in-progress. dispatch-fix triggered. |
+| 1 | [23278315724](https://github.com/polycode-public/repository0/actions/runs/23278315724) | 03:23 | ~22min | YES | merged | ~180 | 3 | Transform: encoding APIs. Director: in-progress. Instability issue created. |
+| 2 | [23278831689](https://github.com/polycode-public/repository0/actions/runs/23278831689) | 03:45 | ~25min | YES | merged | ~230 | 4 | Transform: tests + fixes. Director: in-progress. Instability issue. |
+| 3 | [23279435455](https://github.com/polycode-public/repository0/actions/runs/23279435455) | 04:10 | ~25min | YES | merged | 261 | 4+ | Transform: more tests. Director: in-progress. dispatch-fix triggered. |
 
 ### Scenario Summary
 
@@ -164,7 +164,7 @@ Note: S3 would likely complete in 4-5 runs based on the pattern. Instability iss
 | Model | gpt-5-mini |
 | Profile | max |
 | Budget | 128 |
-| Init run | [#23280024166](https://github.com/xn-intenton-z2a/repository0/actions/runs/23280024166) |
+| Init run | [#23280024166](https://github.com/polycode-public/repository0/actions/runs/23280024166) |
 | Init time | 04:36 UTC |
 | Schedule | off |
 
@@ -172,7 +172,7 @@ Note: S3 would likely complete in 4-5 runs based on the pattern. Instability iss
 
 | # | Run ID | Time | Duration | Transform? | PR | Source Lines | Tests | What Happened |
 |---|--------|------|----------|------------|-----|-------------|-------|---------------|
-| 1* | [23280067186](https://github.com/xn-intenton-z2a/repository0/actions/runs/23280067186) | 04:38 | ~30min | YES | merged | 252 | 4 | Transform + maintain. Director: **mission-complete** at 05:02. |
+| 1* | [23280067186](https://github.com/polycode-public/repository0/actions/runs/23280067186) | 04:38 | ~30min | YES | merged | 252 | 4 | Transform + maintain. Director: **mission-complete** at 05:02. |
 
 *Overlapping dispatch-fix run from S3 was active concurrently (23279900260). The state file shows cumulative metrics across S3+S4 (seq 24, transforms 10).
 

@@ -300,7 +300,7 @@ jobs:
             }
 
       - name: Commit and push
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && inputs.dry-run != 'true' && inputs.dry-run != true
+        if: github.repository != 'polycode-public/agentic-lib' && inputs.dry-run != 'true' && inputs.dry-run != true
         env:
           GH_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
         run: |
@@ -364,7 +364,7 @@ jobs:
           fi
 
       - name: "Problem 2 fix: Verify schedule registered with GitHub"
-        if: github.repository != 'xn-intenton-z2a/agentic-lib' && inputs.dry-run != 'true' && inputs.dry-run != true
+        if: github.repository != 'polycode-public/agentic-lib' && inputs.dry-run != 'true' && inputs.dry-run != true
         env:
           GH_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
         run: |

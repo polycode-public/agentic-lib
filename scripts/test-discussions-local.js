@@ -9,7 +9,7 @@
 //
 // Usage:
 //   node scripts/test-discussions-local.js [discussion-url]
-//   node scripts/test-discussions-local.js https://github.com/xn-intenton-z2a/repository0/discussions/2401
+//   node scripts/test-discussions-local.js https://github.com/polycode-public/repository0/discussions/2401
 //
 // Auth: Uses local gh auth (OAuth token). Requires gh CLI to be logged in.
 
@@ -36,7 +36,7 @@ if (!sdkPath) {
 }
 const { CopilotClient, approveAll } = await import(sdkPath);
 
-const DEFAULT_DISCUSSION = "https://github.com/xn-intenton-z2a/repository0/discussions/2401";
+const DEFAULT_DISCUSSION = "https://github.com/polycode-public/repository0/discussions/2401";
 const discussionUrl = process.argv[2] || DEFAULT_DISCUSSION;
 const model = process.argv[3] || "claude-sonnet-4";
 

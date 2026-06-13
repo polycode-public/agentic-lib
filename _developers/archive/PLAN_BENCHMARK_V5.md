@@ -14,17 +14,17 @@ This plan defines the next benchmark round to validate these changes and produce
 
 | Time | Event | Run |
 |------|-------|-----|
-| 20:48 | init --purge (v7.1.61) | [#13](https://github.com/xn-intenton-z2a/repository0/actions/runs/22781401265) |
-| 20:56 | workflow #44 — transform #2605 merged | [#44](https://github.com/xn-intenton-z2a/repository0/actions/runs/22781639068) |
-| 21:13 | workflow #45 — maintain only (dev skipped) | [#45](https://github.com/xn-intenton-z2a/repository0/actions/runs/22782211296) |
-| 21:31 | workflow #46 — maintain only (dev skipped) | [#46](https://github.com/xn-intenton-z2a/repository0/actions/runs/22782790265) |
-| 21:54 | workflow #47 — maintain only (dev skipped) | [#47](https://github.com/xn-intenton-z2a/repository0/actions/runs/22783517332) |
-| 22:11 | workflow #48 — transform #2611 merged | [#48](https://github.com/xn-intenton-z2a/repository0/actions/runs/22784060804) |
-| 22:28 | workflow #49 — maintain only (dev skipped) | [#49](https://github.com/xn-intenton-z2a/repository0/actions/runs/22784575871) |
-| 22:47 | workflow #50 — maintain only (dev skipped) | [#50](https://github.com/xn-intenton-z2a/repository0/actions/runs/22785123698) |
-| 23:11 | workflow #51 — maintain only (dev skipped) | [#51](https://github.com/xn-intenton-z2a/repository0/actions/runs/22785816706) |
-| 23:28 | workflow #52 — maintain only (dev skipped) | [#52](https://github.com/xn-intenton-z2a/repository0/actions/runs/22786279503) |
-| 23:38 | init --purge (v7.1.62) | [#14](https://github.com/xn-intenton-z2a/repository0/actions/runs/22786522033) |
+| 20:48 | init --purge (v7.1.61) | [#13](https://github.com/polycode-public/repository0/actions/runs/22781401265) |
+| 20:56 | workflow #44 — transform #2605 merged | [#44](https://github.com/polycode-public/repository0/actions/runs/22781639068) |
+| 21:13 | workflow #45 — maintain only (dev skipped) | [#45](https://github.com/polycode-public/repository0/actions/runs/22782211296) |
+| 21:31 | workflow #46 — maintain only (dev skipped) | [#46](https://github.com/polycode-public/repository0/actions/runs/22782790265) |
+| 21:54 | workflow #47 — maintain only (dev skipped) | [#47](https://github.com/polycode-public/repository0/actions/runs/22783517332) |
+| 22:11 | workflow #48 — transform #2611 merged | [#48](https://github.com/polycode-public/repository0/actions/runs/22784060804) |
+| 22:28 | workflow #49 — maintain only (dev skipped) | [#49](https://github.com/polycode-public/repository0/actions/runs/22784575871) |
+| 22:47 | workflow #50 — maintain only (dev skipped) | [#50](https://github.com/polycode-public/repository0/actions/runs/22785123698) |
+| 23:11 | workflow #51 — maintain only (dev skipped) | [#51](https://github.com/polycode-public/repository0/actions/runs/22785816706) |
+| 23:28 | workflow #52 — maintain only (dev skipped) | [#52](https://github.com/polycode-public/repository0/actions/runs/22786279503) |
+| 23:38 | init --purge (v7.1.62) | [#14](https://github.com/polycode-public/repository0/actions/runs/22786522033) |
 
 ### Key Observations
 
@@ -71,34 +71,34 @@ This plan defines the next benchmark round to validate these changes and produce
 
 ```bash
 # Step 1: Init with purge for each scenario
-gh workflow run agentic-lib-init -R xn-intenton-z2a/repository0 \
+gh workflow run agentic-lib-init -R polycode-public/repository0 \
   -f mode=purge -f mission-seed=MISSION_NAME -f schedule=off
 
 # Step 2: Wait for init to complete
-gh run list -R xn-intenton-z2a/repository0 -L 3 -w agentic-lib-init
+gh run list -R polycode-public/repository0 -L 3 -w agentic-lib-init
 
 # Step 3: Manually set profile in agentic-lib.toml (if not default)
 # Edit via gh api or commit directly
 
 # Step 4: Run iterations (one at a time, observe results)
-gh workflow run agentic-lib-workflow -R xn-intenton-z2a/repository0 \
+gh workflow run agentic-lib-workflow -R polycode-public/repository0 \
   -f mode=full -f model=MODEL_NAME
 
 # Step 5: Check status
-gh run list -R xn-intenton-z2a/repository0 -L 3
+gh run list -R polycode-public/repository0 -L 3
 
 # Step 6: After each run, record:
 # - Commits on main
-gh api repos/xn-intenton-z2a/repository0/commits -q '.[0:5] | .[] | .sha[0:8] + " " + (.commit.message | split("\n")[0])'
+gh api repos/polycode-public/repository0/commits -q '.[0:5] | .[] | .sha[0:8] + " " + (.commit.message | split("\n")[0])'
 # - Source code state
-gh api repos/xn-intenton-z2a/repository0/contents/src/lib/main.js -q '.content' | base64 -d | wc -l
+gh api repos/polycode-public/repository0/contents/src/lib/main.js -q '.content' | base64 -d | wc -l
 # - Test results (check workflow logs)
 # - Issues created/closed
-gh api 'repos/xn-intenton-z2a/repository0/issues?state=all&per_page=10&sort=created&direction=desc' -q '.[] | select(.pull_request == null) | "#\(.number) \(.state) \(.title)"'
+gh api 'repos/polycode-public/repository0/issues?state=all&per_page=10&sort=created&direction=desc' -q '.[] | select(.pull_request == null) | "#\(.number) \(.state) \(.title)"'
 # - PRs merged
-gh api 'repos/xn-intenton-z2a/repository0/pulls?state=all&per_page=10&sort=created&direction=desc' -q '.[] | "#\(.number) \(.state) merged=\(.merged_at // "no") \(.title)"'
+gh api 'repos/polycode-public/repository0/pulls?state=all&per_page=10&sort=created&direction=desc' -q '.[] | "#\(.number) \(.state) merged=\(.merged_at // "no") \(.title)"'
 # - MISSION_COMPLETE.md presence
-gh api repos/xn-intenton-z2a/repository0/contents/MISSION_COMPLETE.md -q '.name' 2>/dev/null || echo "not yet"
+gh api repos/polycode-public/repository0/contents/MISSION_COMPLETE.md -q '.name' 2>/dev/null || echo "not yet"
 ```
 
 ### Stop Conditions per Scenario
