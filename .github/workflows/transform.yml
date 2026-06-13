@@ -140,6 +140,7 @@ jobs:
           WI: ${{ steps.prompt.outputs.wi }}
         run: |
           set -euo pipefail
+          rm -rf .engine   # the engine checkout was only needed for the prompt; keep it out of the diff
           if [ -z "$(git status --porcelain)" ]; then
             echo "No file changes produced — nothing to propose."; exit 0
           fi
