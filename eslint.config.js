@@ -43,6 +43,7 @@ export default [
       "sonarjs/pseudo-random": "warn",
       "sonarjs/sonar-no-fallthrough": "off",
       "sonarjs/os-command": "off",
+      "sonarjs/no-os-command-from-path": "off",
       "sonarjs/todo-tag": "off",
       "sonarjs/no-commented-code": "off",
 
@@ -78,7 +79,7 @@ export default [
     },
   },
   {
-    files: ["bin/**/*.js", "scripts/**/*.js", "src/actions/**/*.js", "src/scripts/**/*.js"],
+    files: ["bin/**/*.js", "scripts/**/*.js"],
     rules: {
       "security/detect-non-literal-fs-filename": "off",
       "security/detect-object-injection": "off",
@@ -86,6 +87,6 @@ export default [
     },
   },
   {
-    ignores: ["build/", "coverage/", "dist/", "exports/", "node_modules/", "eslint.config.js"],
+    ignores: ["build/", "coverage/", "dist/", "exports/", "node_modules/", "_developers/", "eslint.config.js"],
   },
 ];

@@ -1,34 +1,23 @@
 {
   "name": "@polycode-public/agentic-lib",
-  "version": "7.4.60-0",
-  "description": "Agentic-lib Agentic Coding Systems SDK powering automated GitHub workflows.",
+  "version": "8.0.0",
+  "description": "The intentïon delivery engine — a thin wrapper over claude -p + Bedrock that runs one whole transformation per trigger and opens a draft PR.",
   "type": "module",
   "scripts": {
     "build": "echo \"Nothing to build\"",
     "formatting": "prettier --check '**/*.{js,json,yml,md}'",
     "formatting-fix": "prettier --write '**/*.{js,json,yml,md}'",
     "linting": "eslint",
-    "linting-json": "eslint --format=@microsoft/eslint-formatter-sarif",
     "linting-fix": "eslint --fix",
-    "update-to-minor": "npx npm-check-updates --upgrade --enginesNode --target minor --verbose --install always",
-    "update-to-greatest": "npx npm-check-updates --upgrade --enginesNode --target greatest --verbose --install always --reject \"alpha\"",
     "lint:workflows": "node scripts/validate-workflows.js",
     "security": "npm audit --audit-level=high",
     "test": "vitest --run",
-    "test:smoke": "node scripts/smoke-test-connectivity.js",
-    "test:copilot": "node scripts/test-copilot-local.js",
-    "test:discussions": "node scripts/test-discussions-local.js",
-    "test:transform": "node scripts/test-transform-local.js ../repository0",
-    "test:system": "bash scripts/system-test.sh --init-only",
-    "test:system:dry-run": "bash scripts/system-test.sh --dry-run",
-    "test:system:live": "bash scripts/system-test.sh",
     "start": "echo \"agentic-lib is a workflow SDK — see README.md\""
   },
   "keywords": [],
   "author": "https://github.com/polycode-public",
-  "license": "GPL-3.0, MIT",
+  "license": "(AGPL-3.0-only OR MIT)",
   "devDependencies": {
-    "@microsoft/eslint-formatter-sarif": "^3.1.0",
     "eslint": "^9.39.3",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^10.1.8",
@@ -38,8 +27,6 @@
     "eslint-plugin-security": "^4.0.0",
     "eslint-plugin-sonarjs": "^4.0.1",
     "js-yaml": "^4.1.1",
-    "markdown-it": "^14.1.1",
-    "markdown-it-github": "^0.5.0",
     "prettier": "^3.8.1",
     "vitest": "^4.0.18"
   },
@@ -50,43 +37,20 @@
     "agentic-lib": "bin/agentic-lib.js"
   },
   "exports": {
-    ".": "./bin/agentic-lib.js",
-    "./config": "./src/actions/agentic-step/config-loader.js",
-    "./copilot": "./src/actions/agentic-step/copilot.js",
-    "./safety": "./src/actions/agentic-step/safety.js",
-    "./logging": "./src/actions/agentic-step/logging.js",
-    "./tools": "./src/actions/agentic-step/tools.js",
-    "./tasks/transform": "./src/actions/agentic-step/tasks/transform.js",
-    "./tasks/maintain-features": "./src/actions/agentic-step/tasks/maintain-features.js",
-    "./tasks/maintain-library": "./src/actions/agentic-step/tasks/maintain-library.js",
-    "./tasks/fix-code": "./src/actions/agentic-step/tasks/fix-code.js",
-    "./tasks/resolve-issue": "./src/actions/agentic-step/tasks/resolve-issue.js",
-    "./tasks/discussions": "./src/actions/agentic-step/tasks/discussions.js",
-    "./tasks/enhance-issue": "./src/actions/agentic-step/tasks/enhance-issue.js",
-    "./tasks/review-issue": "./src/actions/agentic-step/tasks/review-issue.js"
+    ".": "./bin/agentic-lib.js"
   },
   "files": [
     "package.json",
     "bin/",
-    "src/dist-transform.js",
-    "src/iterate.js",
-    "src/copilot/",
-    ".github/workflows/agentic-lib-*.yml",
-    "agentic-lib.toml",
-    "src/actions/agentic-step/*.js",
-    "src/actions/agentic-step/*.yml",
-    "src/actions/agentic-step/*.json",
-    "src/actions/agentic-step/tasks/",
-    "src/actions/commit-if-changed/",
-    "src/actions/setup-npmrc/",
-    ".github/agents/",
-    "src/seeds/",
-    "src/scripts/"
+    ".github/workflows/transform.yml",
+    "components/",
+    "missions/",
+    "seeds/",
+    "scripts/",
+    "MODELS.md",
+    "LICENSE",
+    "LICENSE-MIT"
   ],
-  "overrides": {
-    "minimatch": ">=10.2.3",
-    "@github/copilot": ">=0.0.423"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/polycode-public/agentic-lib.git"
@@ -97,10 +61,6 @@
     "provenance": true
   },
   "dependencies": {
-    "@actions/core": "^3.0.0",
-    "@actions/github": "^9.0.0",
-    "@github/copilot-sdk": "^0.1.31-unstable.0",
-    "@modelcontextprotocol/sdk": "^1.27.1",
     "smol-toml": "^1.6.0"
   }
 }

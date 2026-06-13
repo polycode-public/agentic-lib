@@ -1,0 +1,25 @@
+# on-intent.yml — deliver an intent as one transformation.
+# Fires when a work item is assigned/labelled to the agent, or INTENT.md changes.
+name: on-intent
+concurrency:
+  group: transform-${{ github.event.issue.number || github.ref }}
+  cancel-in-progress: false
+on:
+  issues:
+    types: [assigned, labeled]
+  push:
+    paths: ["INTENT.md"]
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+jobs:
+  deliver:
+    if: github.event_name == 'push' || github.event.label.name == 'ready' || github.event.assignee.login == 'agentic-lib[bot]'
+    uses: polycode-public/agentic-lib/.github/workflows/transform.yml@v8
+    with:
+      type: deliver-intent
+      work_item: ${{ github.event.issue.number || 0 }}
+      max_turns: 30
+      model: sonnet
+    secrets: inherit

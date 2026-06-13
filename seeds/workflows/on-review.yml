@@ -1,0 +1,26 @@
+# on-review.yml — address all review threads on a PR as one revision.
+name: on-review
+concurrency:
+  group: transform-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: false
+on:
+  pull_request_review:
+    types: [submitted]
+  issue_comment:
+    types: [created]
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+jobs:
+  revise:
+    if: |
+      (github.event_name == 'pull_request_review' && github.event.review.state == 'changes_requested') ||
+      (github.event.issue.pull_request && contains(github.event.comment.body, '@agentic-lib'))
+    uses: polycode-public/agentic-lib/.github/workflows/transform.yml@v8
+    with:
+      type: address-review
+      work_item: ${{ github.event.pull_request.number || github.event.issue.number }}
+      max_turns: 30
+      model: sonnet
+    secrets: inherit

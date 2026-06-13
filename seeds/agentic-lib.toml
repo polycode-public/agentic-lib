@@ -1,0 +1,22 @@
+# agentic-lib.toml — engine configuration for this intentïon repository.
+# Consumed by the shared transform.yml workflow and read machine-readably by the
+# marginalia supervisor to size work items to the one-shot envelope.
+
+[engine]
+# Provider is selected purely by environment variables in CI:
+#   Anthropic lane : ANTHROPIC_API_KEY
+#   Bedrock lane   : CLAUDE_CODE_USE_BEDROCK=1 + OIDC AWS creds + AWS_REGION
+#                    + ANTHROPIC_MODEL=<inference-profile-id>
+# See agentic-lib MODELS.md for the full matrix.
+engine = "claude"          # claude (claude -p, Path B) — the selected engine
+hosted = "C"               # A=Claude Cloud, B=Copilot coding agent, C=self-hosted runner
+model = "sonnet"           # opus | sonnet | haiku | fable — one word to upgrade
+
+[caps]
+max_turns = 30             # per-run --max-turns ceiling (one-shot envelope)
+daily = 24                 # max transformations dispatched per day
+
+[paths]
+intent = "INTENT.md"
+source = "src/lib/"
+tests = "tests/"

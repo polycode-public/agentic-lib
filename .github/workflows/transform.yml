@@ -1,0 +1,148 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2025-2026 Polycode Limited
+#
+# transform.yml — THE reusable dispatch for the intentïon delivery loop.
+#
+# One trigger -> one headless `claude -p` run -> one draft PR (or nothing).
+# This is the only abstraction agentic-lib still owns: a thin wrapper that selects
+# a provider purely by environment variable, assembles a prompt from the trigger
+# context plus components/prompts/<type>.md, runs the engine under a turn cap, gates
+# on a `fixes #N` trailer, and opens / revises a PR.
+#
+# Provider lanes (selected by which secrets are present — no code branch):
+#   Anthropic lane : ANTHROPIC_API_KEY
+#   Bedrock lane   : CLAUDE_CODE_USE_BEDROCK=1 + OIDC-vended AWS creds
+#                    + AWS_REGION=eu-west-2 + ANTHROPIC_MODEL=<inference-profile-id>
+# See MODELS.md for the env-var matrix.
+
+name: transform
+
+on:
+  workflow_call:
+    inputs:
+      type:
+        description: "deliver-intent | address-review | fix-ci | tend"
+        required: true
+        type: string
+      work_item:
+        description: "issue or PR number (0 for none)"
+        required: false
+        default: 0
+        type: number
+      max_turns:
+        description: "per-run --max-turns ceiling"
+        required: false
+        default: 30
+        type: number
+      model:
+        description: "opus | sonnet | haiku | fable"
+        required: false
+        default: sonnet
+        type: string
+
+# C8 idempotency: one in-flight transformation per work item.
+concurrency:
+  group: transform-${{ inputs.type }}-${{ inputs.work_item }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  transform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      CLAUDE_CODE_USE_BEDROCK: ${{ secrets.CLAUDE_CODE_USE_BEDROCK }}
+      AWS_REGION: ${{ vars.AWS_REGION || 'eu-west-2' }}
+      ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
+      GH_TOKEN: ${{ github.token }}
+      TYPE: ${{ inputs.type }}
+      WORK_ITEM: ${{ inputs.work_item }}
+      MAX_TURNS: ${{ inputs.max_turns }}
+      MODEL: ${{ inputs.model }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      # Bedrock lane: vend short-lived AWS creds via GitHub OIDC. No-op on the
+      # Anthropic lane (the role secret is simply absent).
+      - name: Configure AWS credentials (Bedrock lane)
+        if: ${{ env.CLAUDE_CODE_USE_BEDROCK == '1' && secrets.AWS_OIDC_ROLE != '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE }}
+          aws-region: ${{ vars.AWS_REGION || 'eu-west-2' }}
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Assemble prompt
+        id: prompt
+        env:
+          PROMPT_REF: ${{ github.action_ref }}
+        run: |
+          set -euo pipefail
+          # The transformation prompt ships with this workflow's repo. When invoked
+          # via `uses:`, GITHUB_ACTION_PATH points at agentic-lib's checkout.
+          BASE="${GITHUB_ACTION_PATH:-.}/.."
+          PROMPT_FILE="$BASE/../components/prompts/${TYPE}.md"
+          if [ ! -f "$PROMPT_FILE" ]; then PROMPT_FILE="components/prompts/${TYPE}.md"; fi
+          {
+            sed "s/{{work_item}}/${WORK_ITEM}/g" "$PROMPT_FILE"
+            echo
+            echo "## Work item context"
+            if [ "${WORK_ITEM}" != "0" ]; then
+              gh issue view "${WORK_ITEM}" --json title,body,comments 2>/dev/null \
+                || gh pr view "${WORK_ITEM}" --json title,body,comments,reviews 2>/dev/null \
+                || echo "(no work item #${WORK_ITEM} found)"
+            else
+              echo "(no work item — scheduled/standalone run)"
+            fi
+          } > /tmp/prompt.md
+          echo "path=/tmp/prompt.md" >> "$GITHUB_OUTPUT"
+
+      - name: Run claude -p (one transformation)
+        run: |
+          set -euo pipefail
+          claude -p "$(cat ${{ steps.prompt.outputs.path }})" \
+            --max-turns "${MAX_TURNS}" \
+            --model "${MODEL}" \
+            --permission-mode acceptEdits \
+            --output-format json \
+            > /tmp/result.json
+          cat /tmp/result.json
+
+      # C3 provenance gate: refuse to open/revise a PR without a fixes #N trailer.
+      - name: Gate on fixes-#N trailer
+        id: gate
+        run: |
+          set -euo pipefail
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No changes produced — nothing to propose."; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if ! git log -1 --format='%B' | grep -qiE 'fixes #[0-9]+'; then
+            echo "::error::commit is missing a 'fixes #N' / 'Fixes #N' closure trailer (C3)."
+            exit 1
+          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Open or revise pull request
+        if: ${{ steps.gate.outputs.changed == 'true' }}
+        run: |
+          set -euo pipefail
+          BRANCH="agentic-lib/${TYPE}-${WORK_ITEM}"
+          git push -u origin "HEAD:${BRANCH}" --force-with-lease
+          if [ "${TYPE}" = "address-review" ] || [ "${TYPE}" = "fix-ci" ]; then
+            echo "Revision pushed to ${BRANCH}."
+          else
+            gh pr create --draft --head "${BRANCH}" \
+              --title "$(git log -1 --format='%s')" \
+              --body "$(git log -1 --format='%b')" \
+              || echo "PR already exists for ${BRANCH}."
+          fi

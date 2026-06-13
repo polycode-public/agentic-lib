@@ -1,0 +1,28 @@
+# on-schedule.yml — a scheduled tend pass (one small improvement, or nothing).
+name: on-schedule
+concurrency:
+  group: transform-tend
+  cancel-in-progress: false
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+    inputs:
+      type:
+        description: "transformation type"
+        type: choice
+        default: tend
+        options: [tend, fix-ci]
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+jobs:
+  tend:
+    uses: polycode-public/agentic-lib/.github/workflows/transform.yml@v8
+    with:
+      type: ${{ inputs.type || 'tend' }}
+      work_item: 0
+      max_turns: 20
+      model: sonnet
+    secrets: inherit

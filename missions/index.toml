@@ -1,0 +1,98 @@
+# missions/index.toml — the kyu/INTENT mission library
+# Each mission is a plain-content INTENT seed graded on the Codewars kyu/dan scale.
+# `npx @polycode-public/agentic-lib init --mission <name>` lays one down as INTENT.md.
+
+[missions.1-dan-create-c64-emulator]
+file = "1-dan-create-c64-emulator.md"
+grade = "1-dan"
+summary = "A JavaScript Commodore 64 emulator that runs in the browser, capable of playing the classic game 'The Lords of Midnight' (1984, Mike Singleton)."
+
+[missions.1-dan-create-planning-engine]
+file = "1-dan-create-planning-engine.md"
+grade = "1-dan"
+summary = "A JavaScript planning engine that implements partial-order planning with constraint satisfaction and belief revision. The engine reads a committed plan file, finds proceedable actions, assembles agents from capabilities, executes them, witnesses the results, and iterates — all within a budget of compute."
+
+[missions.1-kyu-create-ray-tracer]
+file = "1-kyu-create-ray-tracer.md"
+grade = "1-kyu"
+summary = "Build a ray tracer library that renders 3D scenes to PPM image files."
+
+[missions.2-dan-create-self-hosted]
+file = "2-dan-create-self-hosted.md"
+grade = "2-dan"
+summary = "A JavaScript test framework that proves a code transformation system can manage its own source code — the software engineering equivalent of a compiler that compiles itself."
+
+[missions.2-kyu-create-markdown-compiler]
+file = "2-kyu-create-markdown-compiler.md"
+grade = "2-kyu"
+summary = "Build a Markdown-to-HTML compiler library that converts GitHub Flavored Markdown (GFM) to semantic HTML."
+
+[missions.2-kyu-create-plot-code-lib]
+file = "2-kyu-create-plot-code-lib.md"
+grade = "2-kyu"
+summary = "A JavaScript library and CLI tool for generating plots from mathematical expressions and time series data. Produces SVG and PNG output files."
+
+[missions.3-kyu-analyze-lunar-lander]
+file = "3-kyu-analyze-lunar-lander.md"
+grade = "3-kyu"
+summary = "A JavaScript library that simulates a lunar lander descent and provides an autopilot controller."
+
+[missions.3-kyu-evaluate-time-series-lab]
+file = "3-kyu-evaluate-time-series-lab.md"
+grade = "3-kyu"
+summary = "A JavaScript library for generating, normalising, forecasting, and correlating time series data. Uses deterministic data generators rather than external APIs, making results reproducible."
+
+[missions.4-kyu-analyze-json-schema-diff]
+file = "4-kyu-analyze-json-schema-diff.md"
+grade = "4-kyu"
+summary = "A JavaScript library that computes structured diffs between two JSON Schema (Draft-07) documents, helping API developers track and validate schema changes across versions."
+
+[missions.4-kyu-apply-cron-engine]
+file = "4-kyu-apply-cron-engine.md"
+grade = "4-kyu"
+summary = "A JavaScript library that parses cron expressions, computes next run times, and checks schedule matches."
+
+[missions.4-kyu-apply-dense-encoding]
+file = "4-kyu-apply-dense-encoding.md"
+grade = "4-kyu"
+summary = "A JavaScript library that explores the frontier of binary-to-text encoding density using printable characters. The benchmark: produce the shortest possible printable representation of a v7 UUID."
+
+[missions.4-kyu-apply-owl-ontology]
+file = "4-kyu-apply-owl-ontology.md"
+grade = "4-kyu"
+summary = "A JavaScript library that manages a simple OWL-like ontology stored as JSON-LD files in a `data/` directory at the project root."
+
+[missions.5-kyu-apply-ascii-face]
+file = "5-kyu-apply-ascii-face.md"
+grade = "5-kyu"
+summary = "A JavaScript library and CLI that renders emotion as ASCII art faces. Supports a fixed set of emotions, each with a distinct facial expression."
+
+[missions.5-kyu-apply-string-utils]
+file = "5-kyu-apply-string-utils.md"
+grade = "5-kyu"
+summary = "A JavaScript library of string utility functions. This is a bag-of-functions problem — each function is independent."
+
+[missions.6-kyu-understand-hamming-distance]
+file = "6-kyu-understand-hamming-distance.md"
+grade = "6-kyu"
+summary = "A JavaScript library for computing Hamming distances — between equal-length strings (character positions that differ) and between non-negative integers (differing bits)."
+
+[missions.6-kyu-understand-roman-numerals]
+file = "6-kyu-understand-roman-numerals.md"
+grade = "6-kyu"
+summary = "A JavaScript library for converting between integers and Roman numeral strings."
+
+[missions.7-kyu-understand-fizz-buzz]
+file = "7-kyu-understand-fizz-buzz.md"
+grade = "7-kyu"
+summary = "A JavaScript library exporting FizzBuzz functions. This is the simplest possible mission — if the pipeline can't complete this and stop, something is fundamentally broken."
+
+[missions.8-kyu-remember-empty]
+file = "8-kyu-remember-empty.md"
+grade = "8-kyu"
+summary = "Describe your project's mission here. The agentic workflows will evolve `src/lib/main.js` to fulfil this mission."
+
+[missions.8-kyu-remember-hello-world]
+file = "8-kyu-remember-hello-world.md"
+grade = "8-kyu"
+summary = "Deliver the traditional first program to write in a new language, the 'Hello World!' message."

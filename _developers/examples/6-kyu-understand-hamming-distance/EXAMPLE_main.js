@@ -47,7 +47,7 @@ export function hammingString(a, b) {
 
 // Hamming distance for non-negative integers (bit differences).
 export function hammingBits(a, b) {
-  const okNumber = (v) => (typeof v === "number" && Number.isInteger(v));
+  const okNumber = (v) => typeof v === "number" && Number.isInteger(v);
   const okBigInt = (v) => typeof v === "bigint";
 
   if (!(okNumber(a) || okBigInt(a))) {
