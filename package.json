@@ -1,6 +1,6 @@
 {
   "name": "@polycode-public/agentic-lib",
-  "version": "8.0.0",
+  "version": "8.1.0",
   "description": "The intentïon delivery engine — a thin wrapper over claude -p + Bedrock that runs one whole transformation per trigger and opens a draft PR.",
   "type": "module",
   "scripts": {
