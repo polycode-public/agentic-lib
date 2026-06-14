@@ -1,0 +1,69 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2025-2026 Polycode Limited
+#
+# summary-export.yml — pull the repo's marginalia graph summary and publish it as
+# the showcase seed. Reusable; no-ops until the repo is bound to a graph
+# (MARGINALIA_GRAPH_ID + MARGINALIA_API_KEY secrets set by the operator/marginalia).
+#
+# Writes agentic-lib-logs/summary.json — the exact file the intentïon.com embed
+# fetches: embed.html?seed=https://raw.githubusercontent.com/<owner>/<slug>/agentic-lib-logs/summary.json
+
+name: summary-export
+
+on:
+  workflow_call:
+    inputs:
+      marginalia_url:
+        type: string
+        required: false
+        default: "https://marginalia.polycode.co.uk"
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    env:
+      GID: ${{ secrets.MARGINALIA_GRAPH_ID }}
+      KEY: ${{ secrets.MARGINALIA_API_KEY }}
+      MARGINALIA_URL: ${{ inputs.marginalia_url }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Guard — skip if not bound to a graph
+        id: guard
+        run: |
+          if [ -z "${KEY}" ] || [ -z "${GID}" ]; then
+            echo "Not bound to a marginalia graph (MARGINALIA_GRAPH_ID/API_KEY unset) — skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        if: steps.guard.outputs.skip != 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch summary → publish to agentic-lib-logs/summary.json
+        if: steps.guard.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o /tmp/summary.json -w '%{http_code}' \
+            -H "X-API-Key: ${KEY}" "${MARGINALIA_URL}/api/graph/${GID}/summary")
+          if [ "$code" != "200" ]; then
+            echo "::warning::marginalia summary fetch returned HTTP $code — skipping"; head -c 400 /tmp/summary.json || true; exit 0
+          fi
+          python3 -c "import json,sys; json.load(open('/tmp/summary.json'))" \
+            || { echo "::warning::summary is not valid JSON — skipping"; exit 0; }
+          git config user.name "intention-agentic-lib[bot]"
+          git config user.email "intention-agentic-lib[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin agentic-lib-logs >/dev/null 2>&1; then
+            git fetch --depth 1 origin agentic-lib-logs && git checkout agentic-lib-logs
+          else
+            git checkout --orphan agentic-lib-logs && git rm -rf . >/dev/null 2>&1 || true
+          fi
+          cp /tmp/summary.json summary.json
+          git add summary.json
+          git commit -m "chore: refresh marginalia summary.json" || { echo "no change"; exit 0; }
+          git push origin agentic-lib-logs
+          echo "Published agentic-lib-logs/summary.json"
