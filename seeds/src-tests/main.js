@@ -1,11 +1,48 @@
+#!/usr/bin/env node
 // SPDX-License-Identifier: MIT
-// src/lib/main.js — product entry point (seed). Replaced as the intent is delivered.
+// Copyright (C) 2025-2026 Polycode Limited
+// src/lib/main.js
 
-/**
- * Placeholder export so the repository has a green test from the first commit.
- * Delete or replace as you deliver INTENT.md.
- * @returns {string} a friendly greeting
- */
-export function hello() {
-  return "Hello, intentïon!";
+const isNode = typeof process !== "undefined" && !!process.versions?.node;
+
+let pkg;
+if (isNode) {
+  const { createRequire } = await import("module");
+  const requireFn = createRequire(import.meta.url);
+  pkg = requireFn("../../package.json");
+} else {
+  try {
+    const resp = await fetch(new URL("../../package.json", import.meta.url));
+    pkg = await resp.json();
+  } catch {
+    pkg = { name: document.title, version: "0.0.0", description: "" };
+  }
+}
+
+export const name = pkg.name;
+export const version = pkg.version;
+export const description = pkg.description;
+
+export function getIdentity() {
+  return { name, version, description };
+}
+
+export function main(args) {
+  if (args?.includes("--version")) {
+    console.log(version);
+    return;
+  }
+  if (args?.includes("--identity")) {
+    console.log(JSON.stringify(getIdentity(), null, 2));
+    return;
+  }
+  console.log(`${name}@${version}`);
+}
+
+if (isNode) {
+  const { fileURLToPath } = await import("url");
+  if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    const args = process.argv.slice(2);
+    main(args);
+  }
 }

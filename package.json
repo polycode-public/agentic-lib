@@ -18,17 +18,17 @@
   "author": "https://github.com/polycode-public",
   "license": "(AGPL-3.0-only OR MIT)",
   "devDependencies": {
-    "eslint": "^9.39.3",
+    "eslint": "^9.39.4",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-prettier": "^5.5.5",
-    "eslint-plugin-promise": "^7.2.1",
-    "eslint-plugin-security": "^4.0.0",
-    "eslint-plugin-sonarjs": "^4.0.1",
-    "js-yaml": "^4.1.1",
-    "prettier": "^3.8.1",
-    "vitest": "^4.0.18"
+    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-promise": "^7.3.0",
+    "eslint-plugin-security": "^4.0.1",
+    "eslint-plugin-sonarjs": "^4.0.3",
+    "js-yaml": "^4.2.0",
+    "prettier": "^3.8.4",
+    "vitest": "^4.1.8"
   },
   "engines": {
     "node": ">=24.0.0"
@@ -61,6 +61,6 @@
     "provenance": true
   },
   "dependencies": {
-    "smol-toml": "^1.6.0"
+    "smol-toml": "^1.6.1"
   }
 }

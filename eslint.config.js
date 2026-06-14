@@ -13,6 +13,10 @@ delete modifiedGoogleConfig.rules["require-jsdoc"];
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
+  // Seed payloads are delivered verbatim into consumer repos and linted there in
+  // their own browser+node context (the seed library is browser-aware). Don't lint
+  // them with agentic-lib's node-only config.
+  { ignores: ["seeds/src-tests/**"] },
   js.configs.recommended,
   modifiedGoogleConfig,
   eslintPluginPrettierRecommended,

@@ -36,8 +36,18 @@ describe("seeds (what init lays into a consumer repo)", () => {
     }
   });
 
-  it("ships zero src + test seeds", () => {
-    expect(existsSync(join(SEEDS, "src-tests/main.js"))).toBe(true);
-    expect(existsSync(join(SEEDS, "src-tests/main.test.js"))).toBe(true);
+  it("ships the clean product skeleton seeds (library + browser demo + behaviour)", () => {
+    for (const f of [
+      "src-tests/main.js",
+      "src-tests/main.test.js",
+      "src-tests/web-lib.js",
+      "src-tests/web-index.html",
+      "src-tests/web.test.js",
+      "src-tests/homepage.test.js",
+    ]) {
+      expect(existsSync(join(SEEDS, f))).toBe(true);
+    }
+    // The skeleton carries no delivered example (e.g. fizz-buzz) — purge stays clean.
+    expect(readFileSync(join(SEEDS, "src-tests/main.js"), "utf8")).not.toMatch(/fizzBuzz/i);
   });
 });

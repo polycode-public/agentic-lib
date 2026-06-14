@@ -66,6 +66,11 @@ jobs:
       WORK_ITEM: ${{ inputs.work_item }}
       MAX_TURNS: ${{ inputs.max_turns }}
       MODEL: ${{ inputs.model }}
+      # Marginalia SEON MCP (this repo's graph memory). Same secrets as summary-export;
+      # unset = the MCP is simply not attached (graceful, see the run step).
+      MARGINALIA_API_KEY: ${{ secrets.MARGINALIA_API_KEY }}
+      MARGINALIA_GRAPH_ID: ${{ secrets.MARGINALIA_GRAPH_ID }}
+      MARGINALIA_BASE_URL: ${{ vars.MARGINALIA_BASE_URL || 'https://marginalia.polycode.co.uk' }}
     steps:
       - name: Checkout caller repo
         uses: actions/checkout@v4
@@ -122,10 +127,22 @@ jobs:
           # Least-privilege headless agent: auto-accept file edits, but keep the
           # permission gate ON for shell — only whitelist the build/test commands a
           # delivery needs. Anything else is denied (no human to approve, by design).
+          ALLOWED="Edit,Write,Read,Glob,Grep,Bash(npm install),Bash(npm ci),Bash(npm test),Bash(npm run test:unit),Bash(npx vitest run)"
+          # Marginalia SEON MCP: attach this repo's code-map/memory graph as read-only
+          # tools ONLY when a graph key is present and the repo ships a .mcp.json.
+          # Graceful — unset key or unreachable server just means the agent runs without
+          # it (claude -p continues; the MCP tools are simply unavailable).
+          MCP_ARGS=()
+          if [ -n "${MARGINALIA_API_KEY:-}" ] && [ -f .mcp.json ]; then
+            ALLOWED="${ALLOWED},mcp__marginalia-seon__seon_describe,mcp__marginalia-seon__seon_impact,mcp__marginalia-seon__seon_search"
+            MCP_ARGS=(--mcp-config .mcp.json)
+            echo "marginalia-seon MCP attached — graph memory available to the agent"
+          fi
           ARGS=(-p "$(cat ${{ steps.prompt.outputs.path }})"
                 --max-turns "${MAX_TURNS}"
                 --permission-mode acceptEdits
-                --allowedTools "Edit,Write,Read,Glob,Grep,Bash(npm install),Bash(npm ci),Bash(npm test),Bash(npm run test:unit),Bash(npx vitest run)"
+                --allowedTools "${ALLOWED}"
+                "${MCP_ARGS[@]}"
                 --output-format json)
           # On the Bedrock lane the model is selected by ANTHROPIC_MODEL; only pass
           # --model when an explicit alias was requested on the Anthropic lane.

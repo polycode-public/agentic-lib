@@ -12,7 +12,7 @@
 // distribution mechanism — it seeds a consumer repository and (with --purge)
 // resets its GitHub side to a clean slate.
 
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync } from "fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
@@ -108,6 +108,57 @@ function copy(src, dst, label) {
   changes++;
 }
 
+// On purge, the seed skeleton only overwrites the files it owns. Any example the
+// engine previously delivered on top (e.g. the fizz-buzz smoke test) is removed so
+// the reset is a clean, green template — never a mix of seed + stale delivery.
+function removeDeliveredExtras() {
+  const extras = ["tests/unit/fizzbuzz.test.js"];
+  for (const rel of extras) {
+    const p = resolve(target, rel);
+    if (!existsSync(p)) continue;
+    if (!dryRun) unlinkSync(p);
+    console.log(`  REMOVE: ${rel}`);
+    changes++;
+  }
+}
+
+// Keep package.json's engine-managed surface current: the standard scripts (incl.
+// the `init`/`reset`/`missions`/`engine:version` CLI shortcuts) + the tooling
+// devDependencies + engines. The repo's identity and any product deps are preserved.
+// On a fresh repo (or --purge) the seed is written wholesale.
+function seedPackageJson() {
+  const seedPath = resolve(seedsDir, "package.json");
+  if (!existsSync(seedPath)) {
+    console.log("  SKIP: package.json (seed missing)");
+    return;
+  }
+  const seed = JSON.parse(readFileSync(seedPath, "utf8"));
+  const dst = resolve(target, "package.json");
+
+  if (!existsSync(dst) || purge) {
+    if (!dryRun) writeFileSync(dst, JSON.stringify(seed, null, 2) + "\n");
+    console.log(`  ${existsSync(dst) ? "RESET" : "WRITE"}: package.json (seed)`);
+    changes++;
+    return;
+  }
+
+  const cur = JSON.parse(readFileSync(dst, "utf8"));
+  const merged = {
+    ...cur,
+    type: seed.type ?? cur.type,
+    scripts: { ...cur.scripts, ...seed.scripts },
+    devDependencies: { ...cur.devDependencies, ...seed.devDependencies },
+    engines: seed.engines ?? cur.engines,
+  };
+  if (JSON.stringify(merged) === JSON.stringify(cur)) {
+    console.log("  SKIP: package.json already current");
+    return;
+  }
+  if (!dryRun) writeFileSync(dst, JSON.stringify(merged, null, 2) + "\n");
+  console.log("  MERGE: package.json (scripts + devDependencies + engines)");
+  changes++;
+}
+
 function resolveMission(name) {
   const available = readdirSync(missionsDir)
     .filter((f) => f.endsWith(".md"))
@@ -156,6 +207,13 @@ function runInit() {
   } else {
     console.log("  SKIP: agentic-lib.toml already exists");
   }
+  // MCP config (engine-managed — always refreshed so the marginalia-seon graph
+  // tools stay wired for `claude -p` and future inits don't go backwards).
+  copy(resolve(seedsDir, ".mcp.json"), resolve(target, ".mcp.json"), ".mcp.json");
+
+  // package.json — keep the engine CLI scripts + the standard tooling deps current
+  // (so a re-init never goes backwards) without clobbering the repo's identity/product.
+  seedPackageJson();
 
   // Intent.
   console.log("\n--- Intent ---");
@@ -169,15 +227,30 @@ function runInit() {
     console.log("  SKIP: INTENT.md already exists");
   }
 
-  // Purge: reset the product source/tests to seeds and clean the GitHub repo.
+  // Purge: reset the product source/tests to the clean seed skeleton (library +
+  // browser demo + behaviour test, all on the package identity — no delivered
+  // example) and clean the GitHub repo.
   if (purge) {
     console.log("\n--- Purge: reset source + tests to seed ---");
     copy(resolve(seedsDir, "src-tests/main.js"), resolve(target, "src/lib/main.js"), "src/lib/main.js");
+    copy(resolve(seedsDir, "src-tests/web-lib.js"), resolve(target, "src/web/lib.js"), "src/web/lib.js");
+    copy(resolve(seedsDir, "src-tests/web-index.html"), resolve(target, "src/web/index.html"), "src/web/index.html");
     copy(
       resolve(seedsDir, "src-tests/main.test.js"),
       resolve(target, "tests/unit/main.test.js"),
       "tests/unit/main.test.js",
     );
+    copy(
+      resolve(seedsDir, "src-tests/web.test.js"),
+      resolve(target, "tests/unit/web.test.js"),
+      "tests/unit/web.test.js",
+    );
+    copy(
+      resolve(seedsDir, "src-tests/homepage.test.js"),
+      resolve(target, "tests/behaviour/homepage.test.js"),
+      "tests/behaviour/homepage.test.js",
+    );
+    removeDeliveredExtras();
     initPurgeGitHub();
   }
 

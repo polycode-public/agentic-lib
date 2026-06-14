@@ -170,11 +170,18 @@ merge PRs, push to main, delete branches, rewrite history, **move git tags** (th
 
 ## Inter-Session Communication (Claude Code ↔ Claude Code)
 
+The inbox files under `~/.claude/inboxes/` are **transient, ephemeral inter-agent
+messages** — a live back-channel to the other Claude session(s) running on this
+machine right now (e.g. `marginalia`). They are **not version-controlled** and not
+part of any repo; treat them as a chat with a peer agent, not as a durable record.
+When something there matters long-term, capture it in a `PLAN_*.md` / `INTENTION_ROADMAP.md`.
+
 Two channels coordinate concurrent sessions:
 
 - **Estate-wide inbox** — `~/.claude/inboxes/<handle>.md`, one file per session.
   Protocol in `~/.claude/inboxes/README.md`. Read your own inbox on start and
-  between tasks; append to another session's inbox to message it.
+  between tasks; append to another session's inbox to message it. The other session
+  is live — message it directly rather than waiting.
 - **Repo-local scratch** — `.claude/messages.md` for in-directory coordination
   (gitignored, ephemeral). **Read** at session start and before touching shared
   files; **append** (never edit/delete existing entries); claim files you're

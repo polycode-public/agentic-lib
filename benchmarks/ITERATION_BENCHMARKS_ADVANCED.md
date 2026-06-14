@@ -41,12 +41,48 @@ Set `ANTHROPIC_MODEL` (Bedrock lane). Fleet default is **Haiku 4.5**
 paired run at `sonnet` (`anthropic.claude-sonnet-4-6`) to quantify the trade. See
 [`MODELS.md`](../MODELS.md).
 
+## Current fleet (2026-06-14) — repo ↔ mission map + prerequisites
+
+The last advanced run (reports 019/020) used `repository0-random`,
+`repository0-string-utils`, `repository0-plot-code-lib` — **those repos no longer
+exist**. The estate moved to `polycode-public` and the fleet is now kyu-named repos,
+each carrying *its own* mission as `INTENT.md`. Map the advanced rungs onto the
+current fleet:
+
+| Rung | Repo (run target) | Mission (`--mission`) | Notes |
+|------|-------------------|-----------------------|-------|
+| 4-kyu | `sandbox` | `4-kyu-apply-dense-encoding` (or `4-kyu-analyze-json-schema-diff`) | **No dedicated 4-kyu repo** — `4-kyu-apply-cron-engine` was deleted; benchmark a 4-kyu mission on the scratch `sandbox` repo. |
+| 3-kyu | `3-kyu-analyze-lunar-lander` | `3-kyu-analyze-lunar-lander` | The repo IS its mission. |
+| 2-kyu | `2-kyu-create-markdown-compiler` | `2-kyu-create-markdown-compiler` | The repo IS its mission. |
+| 1-kyu / dan | `sandbox` | `1-kyu-create-ray-tracer` / `1-dan-*` | Beyond one shot — decompose via marginalia, or run on `sandbox` and record the stall. |
+
+The fleet repos already carry **delivered content** from earlier runs, so a
+benchmark must **reset each to a clean mission seed first** (`init --purge --mission`,
+which `scripts/benchmark-all.sh` does per repo). Use `sandbox` for any mission whose
+repo doesn't exist, so you never overwrite a "real" fleet repo's delivery.
+
+### Prerequisites (all currently met)
+
+1. **Bedrock Anthropic access** — enabled org-wide (eu-west-2 inference profiles).
+2. **Org setting** "Allow GitHub Actions to create and approve PRs" — **on**.
+3. **Per-repo CI config** (vars `CLAUDE_CODE_USE_BEDROCK=1`, `ANTHROPIC_MODEL`,
+   `AWS_REGION=eu-west-2`; secret `AWS_OIDC_ROLE` = `intention-fleet-bedrock-role`).
+   The fleet repos already have these; `sandbox` does too.
+4. **`gh` authenticated** with dispatch rights on `polycode-public/*`.
+5. **Cost budget**: ~$0.20–0.24 per substantial mission at the 20-turn cap; a full
+   4→3→2-kyu pass with a haiku/sonnet comparison is a few dollars. Honour the
+   one-repo/day Bedrock cadence (PLAN_CODING_AGENT §17) — crons stay disabled;
+   dispatch deliberately.
+
 ## Run it
 
 ```bash
 # scripts/benchmark-all.sh <owner> <mission> <repo> [repo ...]
+# 3-kyu on its own repo + a sandbox replica:
 scripts/benchmark-all.sh polycode-public 3-kyu-analyze-lunar-lander \
   3-kyu-analyze-lunar-lander sandbox
+# 4-kyu has no dedicated repo — run the mission on sandbox:
+scripts/benchmark-all.sh polycode-public 4-kyu-apply-dense-encoding sandbox
 ```
 
 Per repo this runs `npx @polycode-public/agentic-lib init --purge --mission

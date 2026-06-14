@@ -20,8 +20,8 @@ const files = readdirSync(WF)
   .sort();
 
 describe(".github/workflows", () => {
-  it("contains exactly transform, summary-export, test, release", () => {
-    expect(files).toEqual(["release.yml", "summary-export.yml", "test.yml", "transform.yml"]);
+  it("contains exactly transform, summary-export, screenshot-publish, test, release", () => {
+    expect(files).toEqual(["release.yml", "screenshot-publish.yml", "summary-export.yml", "test.yml", "transform.yml"]);
   });
 
   describe.each(files)("%s", (name) => {
