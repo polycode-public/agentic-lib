@@ -1,6 +1,14 @@
 # Plan: Publish agentic-step to GitHub Marketplace
 
-## Goal
+> **OBSOLETE (superseded by the 8.0.0 port).** The `agentic-step` action — and the
+> whole GitHub Copilot SDK loop it wrapped — was **deleted**. There is no longer a
+> composite action to publish. The reusable unit agentic-lib ships today is the
+> **`.github/workflows/transform.yml`** reusable workflow, consumed via
+> `polycode-public/agentic-lib/.github/workflows/transform.yml@v8` (a workflow ref,
+> not a Marketplace action). GitHub reusable workflows are not Marketplace listings,
+> so this plan does not apply. Retained below for history only.
+
+## Goal (historical)
 
 Publish the `agentic-step` GitHub Action to the GitHub Marketplace so it appears in search, has its own listing page, and can be referenced as `polycode-public/agentic-step@v1`.
 

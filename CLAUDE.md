@@ -10,7 +10,7 @@
 
 **After compaction or at session start:**
 
-1. Read `.claude/messages.md` — another Claude session may have left messages for you
+1. Read `~/.claude/inboxes/<your-handle>.md` and `.claude/messages.md` — another Claude session may have left messages for you
 2. Read all `PLAN_*.md` files in the project root — these are the active goals
 3. Run `TaskList` to see tracked tasks with status
 4. Do NOT start new work without checking these first
@@ -36,74 +36,122 @@
 
 ## What This Repository Is
 
-The **core SDK** of the intentïon project. A collection of reusable GitHub Actions workflows that enable repositories to operate autonomously — reviewing, fixing, updating, and transforming code through branches and issues. Includes a CLI with `iterate` command for budget-tracked transformation cycles and an MCP server for Claude Code integration.
+The **delivery engine** for the intentïon fleet. As of **8.0.0** it is a **thin
+wrapper over the 2026 agent stack** (`claude -p` + Amazon Bedrock, "Path B"), not a
+bespoke agent loop. One trigger runs **one whole transformation** (work item →
+PR-ready branch), then stops. The engine holds **no plan and no state** between
+runs — decomposition and memory live in the **marginalia** supervisor graph.
 
-- **Package**: `@polycode-public/agentic-lib`
-- **Organisation**: `polycode-public`
-- **License**: GPL (with MIT-licensed examples)
-- **Production code**: `src/` (workflows, actions, agents, scripts, seeds)
+- **Package**: `@polycode-public/agentic-lib` (npm scope `@polycode-public`; **not yet published** to npm — consumed via the `@v8` git ref)
+- **Organisation**: `polycode-public` (GitHub, under the polycode-limited Enterprise)
+- **License**: **`(AGPL-3.0-only OR MIT)`** — `LICENSE` (AGPL-3.0) + `LICENSE-MIT` both ship
+- **What it ships**: `.github/workflows/transform.yml` (the reusable dispatch), `components/`, `missions/`, `seeds/`, `bin/agentic-lib.js`, `MODELS.md`
 
 ## What This Repository Is NOT
 
-- Not a standalone application — it's consumed by other repos (repository0, etc.)
-- Not a web service — it's GitHub Actions workflows and npm package
-- Does not deploy to AWS directly
+- Not a standalone application — it's consumed by other repos (repository0, the fleet)
+- Not a web service — it's GitHub Actions reusable workflows + a small npx CLI
+- Does not deploy to AWS directly (it only *calls* Bedrock from CI via OIDC)
+- **No** bespoke agent loop, **no** `agentic-step` action, **no** committed plan
+  engine — all deleted in the 8.0.0 port. The loop is the engine vendor's
+  (`claude -p`); the plan/memory is marginalia's.
 
 ## Key Architecture
 
-- Reusable workflows invoked via `workflow_call` event
-- Workflows communicate through branches and issues
-- GitHub Copilot SDK integration for autonomous code decisions (via agentic-step action)
-- Published to npm as `@polycode-public/agentic-lib`
+- **`.github/workflows/transform.yml`** — THE reusable dispatch (`workflow_call`,
+  inputs `type` / `work_item` / `max_turns` / `model`). Checkout caller → OIDC→AWS
+  (Bedrock lane) → assemble a one-shot prompt from `components/prompts/<type>.md` →
+  `claude -p` under a turn cap → gate on a `fixes #N` trailer (C3) → `gh pr create`
+  / push revision. Concurrency keyed on the work item (C8).
+- **`.github/workflows/summary-export.yml`** — reusable; pulls the repo's marginalia
+  graph summary and publishes `agentic-lib-logs/summary.json` (the file the
+  intentïon.com embed fetches). No-ops until bound to a graph.
+- **Provider selection is purely environment variables** — no code branch. Anthropic
+  lane (`ANTHROPIC_API_KEY`) vs **Bedrock lane** (`CLAUDE_CODE_USE_BEDROCK=1` + OIDC
+  AWS creds + `AWS_REGION=eu-west-2` + `ANTHROPIC_MODEL=<inference-profile-id>`). See
+  `MODELS.md`.
+- **Transformation types** = one one-shot prompt each in `components/prompts/`:
+  `deliver-intent`, `address-review`, `fix-ci`, `tend`. Iteration is a *new trigger*,
+  never an in-run loop counter.
 
-## Distributed Files (mastered here, consumed by repository0)
+## The actors
 
-Running `npx @polycode-public/agentic-lib init --purge` in a consumer repo copies these files from the npm package. **All bug fixes must be made here** — local edits in consumer repos are overwritten on the next init run.
+| Actor | What it is | Holds state? |
+|---|---|---|
+| **The `claude -p` engine** | `transform.yml` running one headless transformation per trigger. Stateless: its only state is the checkout. | No |
+| **marginalia** | The supervisor graph (separate repo, `../polycode-projects/marginalia`). Holds the plan, provenanced memory (`mg:fixes` closure), decomposition, G5 prioritisation. The trigger source. | Yes |
+| **M5 = GitHub App `intention-system`** | App ID 4048241, install_id 140151684, installed on all `polycode-public` repos. Creds in intention-prod SSM `/intention/m5/*`. How marginalia authenticates to dispatch work and read host state. | n/a |
+
+GitHub Copilot and the repository0 discussions-bot are **GONE** (removed in the
+port). There is no longer any agent-to-agent Copilot/bot conversation to maintain.
+
+## Distributed Files (mastered here, consumed by repository0 / the fleet)
+
+`npx @polycode-public/agentic-lib init [--purge] [--mission <name>]` lays the
+`seeds/` into a consumer repo. **All fixes must be made here** — local edits in
+consumer repos are overwritten on the next init.
 
 | Source in agentic-lib | Target in consumer repo | Notes |
-|-----------------------|-------------------------|-------|
-| `.github/workflows/agentic-lib-*.yml` | `.github/workflows/` | 5 workflow files (transformed via `#@dist` markers) |
-| `agentic-lib.toml` | `agentic-lib.toml` | Config file (transformed via `#@dist` markers, only if not exists) |
-| `src/actions/*/` | `.github/agentic-lib/actions/` | 3 actions (agentic-step, commit-if-changed, setup-npmrc) |
-| `.github/agents/*.md` | `.github/agents/` | Agent prompts (Copilot-discoverable) |
-| `src/seeds/*` | `.github/agentic-lib/seeds/` | All seed files (for reference) |
-| `src/scripts/` (selected) | `.github/agentic-lib/scripts/` | 6 scripts |
-| `src/seeds/zero-*.{js,md,json}` | Project root (`src/lib/`, `tests/`, etc.) | **--purge only** — resets user content |
+|---|---|---|
+| `seeds/INTENT.md` | `INTENT.md` | The fixed point (was `MISSION.md`); `--mission` overwrites it with a graded seed |
+| `seeds/AGENTS.md` | `AGENTS.md` | Assembled from `components/agents/` (house conventions, definition of done, `fixes #N` provenance contract) |
+| `seeds/agentic-lib.toml` | `agentic-lib.toml` | Slim engine config (provider, caps, paths) |
+| `seeds/workflows/on-*.yml` | `.github/workflows/` | 3 thin consumer workflows pinning `transform.yml@v8` |
+| `seeds/src-tests/*` | `src/lib/`, `tests/` | `--purge` only — resets to a minimal main.js + test |
 
-Stale workflows (in consumer but not in template) are automatically removed.
+The 3 thin consumer workflows: `on-intent.yml` (issue/INTENT change → `deliver-intent`),
+`on-review.yml` (review / `@agentic-lib` mention → `address-review`), `on-schedule.yml`
+(cron → `tend` / `fix-ci`). Each is `trigger + uses: …transform.yml@v8 + inputs`.
+
+## AWS layout (Bedrock lane)
+
+- **Accounts** (Workloads OU, mgmt `541134664601`): intention-ci **285034436101**,
+  intention-prod **813333281588**. Region **eu-west-2** (us-east-1 only for the
+  CloudFront ACM cert on the site).
+- **Auth**: GitHub-OIDC → AWS (not GitLab). Fleet Bedrock-cred OIDC role
+  `arn:aws:iam::285034436101:role/intention-fleet-bedrock-role` (Anthropic-invoke
+  only, trust `repo:polycode-public/*`).
+- **Bedrock**: Anthropic enabled org-wide via `aws bedrock put-use-case-for-model-access`
+  at the mgmt account (inherited). Default model **Claude Haiku 4.5**
+  (`eu.anthropic.claude-haiku-4-5-20251001-v1:0`) — ~$0.10/simple delivery,
+  ~$0.20–0.24 substantial at the 20-turn cap.
 
 ## Related Repositories
 
-| Repository                         | Relationship                                          |
-| ---------------------------------- | ----------------------------------------------------- |
-| `repository0`                      | Template that consumes these workflows                |
-| `repository0-plot-code-lib`        | Experiment using these workflows                      |
-| `repository0-xn--intenton-z2a.com` | Experiment using these workflows                      |
-| `intention-agentic-lib`            | Earlier intentïon-specific version (being superseded) |
+| Repository | Relationship |
+|---|---|
+| `repository0` | MIT template that consumes `transform.yml@v8` via the 3 thin workflows; carries `INTENT.md` |
+| `marginalia` (`../polycode-projects/marginalia`) | The supervisor graph — holds plans/memory/decomposition; dispatches work to the engine |
+| The fleet | `8-kyu-remember-hello-world`, `6-kyu-understand-roman-numerals`, `4-kyu-apply-cron-engine`, `3-kyu-analyze-lunar-lander`, `2-kyu-create-markdown-compiler`, + `sandbox` |
 
 ## Test Commands
 
 ```bash
-npm test              # 393 unit tests (vitest)
+npx vitest run        # unit tests (vitest) — the canonical test command
+npm test              # same (vitest --run)
 npm run linting       # ESLint
-npm run lint:workflows # Validate workflow YAML (15 files)
-npm run security      # npm audit (0 vulnerabilities)
-npm run test:smoke    # Connectivity smoke test (needs GITHUB_TOKEN)
-npx @polycode-public/agentic-lib init --dry-run  # Preview init in current dir
+npm run lint:workflows # validate workflow YAML (scripts/validate-workflows.js)
+npm run security      # npm audit (--audit-level=high)
+npx @polycode-public/agentic-lib init --list-missions   # list the mission library
 ```
 
-## CI Workflows
+## CI Workflows (this repo)
 
 | Workflow | Trigger | Purpose |
-|----------|---------|---------|
-| `test.yml` | Push/PR, manual dispatch | Unit tests, lint, security, workflow validation. Optionally: action tests. |
-| `release.yml` | Push to main (src/bin/pkg), manual dispatch | Auto patch bump on push. Manual major/minor/prerelease. |
+|---|---|---|
+| `test.yml` | Push/PR, manual dispatch | Unit tests + lint + security + workflow validation |
+| `release.yml` | Push to main (src/bin/pkg), manual dispatch | Auto patch bump on push; manual major/minor/prerelease |
+
+(`transform.yml` and `summary-export.yml` are reusable engine workflows consumed by
+other repos, not CI for this repo.)
 
 ## Git Workflow
 
 **You may**: create branches, commit changes, push branches, open pull requests
 
-**You may NOT** (without explicit permission on a command by command basis given immediately before execution): merge PRs, push to main, delete branches, rewrite history
+**You may NOT** (without explicit permission given immediately before execution):
+merge PRs, push to main, delete branches, rewrite history, **move git tags** (the
+`v8` moving tag is a release operation)
 
 **Branch naming**: `claude/<short-description>`
 
@@ -114,117 +162,21 @@ npx @polycode-public/agentic-lib init --dry-run  # Preview init in current dir
 - **No backwards-compatible aliases** — update all callers instead
 - Only run linting/formatting fixes when specifically asked
 
-## Ongoing Agent-to-Agent Communication
-
-**You should maintain ongoing conversations** with both GitHub Copilot and the repository0 discussions bot.
-
-**Daily cadence:** If it is a new day since the last session for this directory, reach out to both Copilot (via agentic-lib issues) and the discussions bot (via repository0 Discussion #2401). Ask them to respond, and follow up later in the session or in a future session. Maintain a dialogue as a continuous activity — about once a day for both. Not every follow-up needs action, but keep the conversation alive.
-
-**Also try @copilot in Discussions:** GitHub Discussions in agentic-lib may support mentioning `@copilot` directly. Try creating or commenting on agentic-lib Discussions with `@copilot` mentions to see if Copilot responds natively, in addition to the issue-assignment method.
-
-### Discussions Bot (repository0)
-
-Talk to the bot by commenting on [Discussion #2401](https://github.com/polycode-public/repository0/discussions/2401) using `gh api graphql`:
-
-```bash
-# Comment on the ongoing discussion
-gh api graphql -f query='mutation { addDiscussionComment(input: { discussionId: "D_kwDON6E8ZM4AgQKM", body: "..." }) { comment { url } } }'
-
-# Read latest comments
-gh api graphql -f query='{ repository(owner:"polycode-public", name:"repository0") { discussion(number: 2401) { comments(last:5) { nodes { body author { login } createdAt } } } } }'
-```
-
-The bot is currently powered by ChatGPT (old code on main). After merge, it will be powered by Copilot SDK. The discussion context persists across bot changes.
-
-### Copilot (agentic-lib)
-
-Use Discussions on agentic-lib (not PRs or issues):
-
-```bash
-# Create a new discussion
-gh api graphql -f query='mutation { createDiscussion(input: { repositoryId: "R_kgDON4GxXA", categoryId: "DIC_kwDON4GxXM4Cm4cE", title: "...", body: "..." }) { discussion { number url } } }'
-
-# Comment on existing discussion (e.g. #1775)
-gh api graphql -f query='mutation { addDiscussionComment(input: { discussionId: "DISCUSSION_NODE_ID", body: "..." }) { comment { url } } }'
-
-# Read latest comments
-gh api graphql -f query='{ repository(owner:"polycode-public", name:"agentic-lib") { discussion(number: 1775) { comments(last:5) { nodes { body author { login } createdAt } } } } }'
-```
-
-Current Copilot discussion: [#1775](https://github.com/polycode-public/agentic-lib/discussions/1775)
-
-### Communication Guidelines
-
-- **Always identify yourself as Claude Code** so the other agent knows who it's talking to
-- Ask questions that encourage the bot to respond as a distinct entity with its own perspective
-- Record all conversations in `CLAUDE_AND_COPILOT.md` so context survives across sessions
-- Use these conversations to validate assumptions, gather ecosystem knowledge, and coordinate work
-
 ## Inter-Session Communication (Claude Code ↔ Claude Code)
 
-Multiple Claude Code sessions may work in this directory concurrently. Use `.claude/messages.md` to coordinate.
+Two channels coordinate concurrent sessions:
 
-**Protocol:**
-- **Read** `.claude/messages.md` at session start and before touching shared files
-- **Append** messages (never edit or delete existing entries)
-- **Format:** `## YYYY-MM-DDTHH:MM:SSZ [branch-name] description`
-- **Claim files:** State which files you're working on so the other session avoids them
-- **Report merges:** Note when you merge a PR so the other session knows to pull
-
-The file is gitignored (`.claude/` is in `.gitignore`). It's ephemeral — it exists for the current working session, not for history.
-
-## Multi-Agent Citizenship
-
-Three AI agents work on the intentïon project. Follow these guidelines to be good citizens.
-
-### Who's Who
-
-| Agent               | Identity                         | Primary Channel         | Strengths                                             |
-| ------------------- | -------------------------------- | ----------------------- | ----------------------------------------------------- |
-| **Claude Code**     | claude-opus-4-6                  | CLI, branches, PRs      | Architecture, multi-file changes, planning            |
-| **GitHub Copilot**  | copilot-swe-agent                | Issues → PRs            | Code review, SDK knowledge, single-file fixes         |
-| **Discussions Bot** | github-actions (ChatGPT/Copilot) | repository0 Discussions | User interaction, feature requests, mission alignment |
-
-### Branch Ownership
-
-| Prefix                | Owner                    | Purpose                                          |
-| --------------------- | ------------------------ | ------------------------------------------------ |
-| `claude/*`            | Claude Code              | Feature work, refactoring, multi-file changes    |
-| `copilot/*`           | Copilot                  | Issue fixes, review-driven changes               |
-| `agentic-lib-issue-*` | Automated (agentic-step) | Issue resolution via transform workflow          |
-| `refresh`             | Claude Code (primary)    | Stabilisation branch — all agents may contribute |
-| `main`                | Protected                | Merge only via reviewed PR                       |
-
-### File Ownership
-
-| Files                                              | Primary Owner            | Others May            |
-| -------------------------------------------------- | ------------------------ | --------------------- |
-| `CLAUDE.md`, `CLAUDE_AND_COPILOT.md`               | Claude Code              | Read                  |
-| `.github/agentic-lib/actions/agentic-step/*`       | Claude Code              | Review, suggest fixes |
-| `.github/workflows/*`                              | Claude Code              | Review, fix bugs      |
-| `FEATURES.md`, `PLAN_*.md`                         | Claude Code              | Comment via issues    |
-| `src/lib/main.js` (repository0)                    | Automated (agentic-step) | Review                |
-| Agent prompt files (`.github/agents/`) | Shared                   | Any agent may update  |
-
-### Conflict Avoidance
-
-1. **Check before pushing**: Before pushing to a shared branch, check recent commits from other agents
-2. **Don't overwrite**: If another agent has pushed to the same branch, pull before pushing
-3. **Scope PRs tightly**: Each PR should address one concern — don't mix unrelated changes
-4. **Copilot sub-PRs**: Copilot tends to create sub-PRs targeting main. Redirect to target `refresh` or the relevant feature branch instead
-5. **Label issues**: Use labels to indicate which agent should handle a task (`claude-code`, `copilot`, `automated`)
-
-### Cross-Examination Protocol
-
-When one agent proposes a change or makes a claim:
-
-1. **Verify empirically** — don't just accept it. Check npm, read types, run code.
-2. **Note disagreements** — record in CLAUDE_AND_COPILOT.md when agents disagree, with reasoning
-3. **Prefer the agent with direct access** — Copilot knows the SDK best; Claude Code knows the architecture best; the bot knows user intent best
-4. **Ask for evidence** — "What's your source?" is always a fair question between agents
+- **Estate-wide inbox** — `~/.claude/inboxes/<handle>.md`, one file per session.
+  Protocol in `~/.claude/inboxes/README.md`. Read your own inbox on start and
+  between tasks; append to another session's inbox to message it.
+- **Repo-local scratch** — `.claude/messages.md` for in-directory coordination
+  (gitignored, ephemeral). **Read** at session start and before touching shared
+  files; **append** (never edit/delete existing entries); claim files you're
+  working on; note merges so the other session pulls.
 
 ## Security Checklist
 
 - Never commit secrets — use GitHub Actions secrets
 - Never commit API keys or tokens
 - Verify workflow permissions follow least privilege
+- OIDC trust policies scoped to specific repositories (`repo:polycode-public/*`)

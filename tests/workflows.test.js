@@ -20,8 +20,8 @@ const files = readdirSync(WF)
   .sort();
 
 describe(".github/workflows", () => {
-  it("contains exactly transform, test, release", () => {
-    expect(files).toEqual(["release.yml", "test.yml", "transform.yml"]);
+  it("contains exactly transform, summary-export, test, release", () => {
+    expect(files).toEqual(["release.yml", "summary-export.yml", "test.yml", "transform.yml"]);
   });
 
   describe.each(files)("%s", (name) => {
@@ -53,7 +53,7 @@ describe("transform.yml — THE reusable dispatch", () => {
   it("runs claude -p and gates on a fixes #N trailer (C3)", () => {
     expect(raw).toMatch(/claude -p/);
     expect(raw).toMatch(/--max-turns/);
-    expect(raw).toMatch(/fixes #\[0-9\]\+/i);
+    expect(raw).toMatch(/fixes #\$\{WI\}/i);
   });
 
   it("selects the Bedrock lane by env var", () => {

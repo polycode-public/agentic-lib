@@ -17,7 +17,8 @@ agent stack. Feature inventory below; the deleted machinery is recorded for hist
 | 6 | **The benchmark harness + reports** | `benchmarks/ITERATION_BENCHMARKS_*.md`, `benchmarks/reports/` (018–020). Affordable again on metered Bedrock. |
 | 7 | **The `init` CLI** | `init [--purge] [--mission <name>]` lays seeds into a consumer repo and (with `--purge`) cleans its GitHub side. npx, not a runtime dependency. |
 | 8 | **Consumer seeds** | `INTENT.md`, assembled `AGENTS.md`, slim `agentic-lib.toml`, the 3 thin `on-*.yml` workflows pinning `transform.yml@v8`, zero src/tests (`seeds/`). |
-| 9 | **Distribution** | Versioned npm releases under `@polycode-public/agentic-lib`; the `v8` moving tag is the bill-of-materials pin. |
+| 9 | **The summary export** (`.github/workflows/summary-export.yml`) | Reusable `workflow_call`; pulls the repo's marginalia graph summary and publishes `agentic-lib-logs/summary.json` (the file the intentïon.com embed fetches). No-ops until bound to a graph. |
+| 10 | **Distribution** | Versioned releases under `@polycode-public/agentic-lib` (not yet on npm — consumed via the `@v8` git ref); the `v8` moving tag is the bill-of-materials pin. |
 
 ## C1–C8 conformance (the counterparty contract)
 

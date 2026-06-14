@@ -18,6 +18,7 @@ supervisor graph. As of **8.0.0** the bespoke agent loop is gone — agentic-lib
 | Piece | What it is |
 |---|---|
 | `.github/workflows/transform.yml` | **THE** reusable dispatch (`workflow_call`). The only abstraction agentic-lib still owns — a few hundred lines of YAML/bash. |
+| `.github/workflows/summary-export.yml` | Reusable export: pulls the repo's marginalia graph summary and publishes `agentic-lib-logs/summary.json` (what the intentïon.com embed fetches). No-ops until bound to a graph. |
 | `components/agents/` | AGENTS.md fragments (house conventions, definition of done, the `fixes #N` provenance contract). |
 | `components/prompts/` | One one-shot prompt per transformation type: `deliver-intent`, `address-review`, `fix-ci`, `tend`. |
 | `missions/` | The 19 kyu/dan-graded INTENT seeds + `index.toml` — the benchmark library. |
@@ -54,11 +55,12 @@ ANTHROPIC_API_KEY = sk-ant-...
 # Bedrock lane (the default — own daily caps, OIDC→AWS, no third party can freeze it)
 CLAUDE_CODE_USE_BEDROCK = 1
 AWS_REGION              = eu-west-2
-ANTHROPIC_MODEL         = eu.anthropic.claude-sonnet-4-6-<profile-suffix>
+ANTHROPIC_MODEL         = eu.anthropic.claude-haiku-4-5-20251001-v1:0
 ```
 
-The model upgrade is the value of one variable — `opus` → `fable` is just that
-word. Full matrix in [`MODELS.md`](MODELS.md).
+The fleet default is **Claude Haiku 4.5** on Bedrock (~$0.10 a simple delivery). The
+model upgrade is the value of one variable — `haiku` → `sonnet` → `fable` is just
+that word. Full matrix in [`MODELS.md`](MODELS.md).
 
 ## Quick start (a consumer repository)
 

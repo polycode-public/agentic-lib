@@ -26,21 +26,23 @@ The other providers exist behind the same pattern but are not used here:
 
 `claude -p --model` accepts the short word aliases (`opus`, `sonnet`, `haiku`) on
 the Anthropic lane; the Bedrock lane needs a full **inference-profile id** in
-`ANTHROPIC_MODEL`. Pick by capability/cost — `transform.yml` defaults to `sonnet`.
+`ANTHROPIC_MODEL`. Pick by capability/cost — the **fleet default is Haiku 4.5** on
+Bedrock (~$0.10 a simple delivery, ~$0.20–0.24 a substantial one at the 20-turn cap).
 
 | Tier | Anthropic lane (`ANTHROPIC_MODEL` / `--model`) | Bedrock model id | Bedrock **eu-west-2** inference profile |
 |---|---|---|---|
 | Most capable | `claude-fable-5` | `anthropic.claude-fable-5` | `eu.anthropic.claude-fable-5-*` |
 | Opus | `claude-opus-4-8` | `anthropic.claude-opus-4-8` | `eu.anthropic.claude-opus-4-8-*` |
-| Sonnet (default) | `claude-sonnet-4-6` | `anthropic.claude-sonnet-4-6` | `eu.anthropic.claude-sonnet-4-6-*` |
-| Haiku (cheap/fast) | `claude-haiku-4-5` | `anthropic.claude-haiku-4-5` | `eu.anthropic.claude-haiku-4-5-*` |
+| Sonnet | `claude-sonnet-4-6` | `anthropic.claude-sonnet-4-6` | `eu.anthropic.claude-sonnet-4-6-*` |
+| Haiku (fleet default — cheap/fast) | `claude-haiku-4-5` | `anthropic.claude-haiku-4-5` | `eu.anthropic.claude-haiku-4-5-20251001-v1:0` |
 
 Notes:
 
 - **Bedrock requires the cross-region inference profile**, not the bare model id,
   for these models. In `eu-west-2` the profile id carries the **`eu.`** prefix
-  (e.g. `eu.anthropic.claude-sonnet-4-6-...`). The exact version suffix (`-vN:M`)
-  varies — resolve it once per account with:
+  (e.g. `eu.anthropic.claude-haiku-4-5-20251001-v1:0`); some profiles use a
+  **`global.`** prefix instead. The exact version suffix (`-vN:M`) varies — resolve
+  it once per account with:
   `aws bedrock list-inference-profiles --region eu-west-2` and pin the returned
   `inferenceProfileId` into `ANTHROPIC_MODEL`.
 - **Bedrock model access** needs the one-time use-case form approved per AWS
@@ -50,13 +52,13 @@ Notes:
 
 ## Example CI configuration
 
-Bedrock lane (the §7.7 default), set as repo/org **variables** + OIDC secret:
+Bedrock lane (the default), set as repo/org **variables** + OIDC secret:
 
 ```
 CLAUDE_CODE_USE_BEDROCK = 1
 AWS_REGION              = eu-west-2
-ANTHROPIC_MODEL         = eu.anthropic.claude-sonnet-4-6-<resolved-suffix>
-AWS_OIDC_ROLE           = arn:aws:iam::<acct>:role/agentic-lib-bedrock   (secret)
+ANTHROPIC_MODEL         = eu.anthropic.claude-haiku-4-5-20251001-v1:0
+AWS_OIDC_ROLE           = arn:aws:iam::285034436101:role/intention-fleet-bedrock-role   (secret)
 ```
 
 Anthropic lane (the fallback / non-Bedrock path), set as a secret:

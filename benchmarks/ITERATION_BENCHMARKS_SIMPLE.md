@@ -1,225 +1,101 @@
 # Simple Iteration Benchmarks
 
-Benchmarks for simple missions (5-7 kyu) at `max` profile across 4 repositories using `agentic-lib-flow`. See `MODELS.md § Benchmarking` for shared definitions (target repos, mission seeds, profiles, monitoring commands, conventions).
+Repeatable delivery benchmarks for **simple missions (8–5 kyu)** on the 8.x engine
+(`claude -p` + Bedrock). The metric is the same one that matters operationally:
+**how many triggers (transformations) does it take to reach an acceptable PR for
+each kyu tier?** Each transformation is one `transform.yml` run; iteration is a new
+trigger, never an in-run loop. Results are tracked over time in
+[`reports/`](reports/).
 
-## Prompt
+The cost that stopped benchmarking on Copilot premium requests **inverts on metered
+Bedrock** — at the Haiku default a simple delivery is ~$0.10, so these run cheaply
+and repeatably. Pace dispatches slowly anyway (own daily caps).
 
-```text
-Please read ITERATION_BENCHMARKS_SIMPLE.md and MODELS.md § Benchmarking.
-Run scripts/all-repositories-benchmarks-simple.sh to dispatch the flow workflows.
-Once complete, collect the BENCHMARK_REPORT_NNN.md committed in each tested repository
-and synthesise them into a BENCHMARK_REPORT_SIMPLE_NNN.md in the agentic-lib project root.
-The session should run hands free but you can start working on a fix plan like
-_developers/archive/PLAN_BENCHMARK_015_FIXES.md and work on those fixes in a branch,
-test, merge then use your release and init skill to have all 4 repos use it.
-Re-use the same branch for multiple fixes as part of the same benchmarking session
-and keep updating what has been found and/or fixed in the fixes plan document.
-After benchmarks, restore repos to their default missions using scripts/all-repositories-init.sh.
-```
+## How a benchmark run works
 
-## Quick Start
+There is no budget counter, no profile, and **no agent "mission complete" signal**
+in 8.x. A scenario **passes** if an acceptable PR exists within the target trigger
+count for its tier; it **fails** if it exceeds that count. Completeness is judged by
+the operator (and, in production, the marginalia supervisor) reading the PR — never
+self-asserted by the engine.
 
-1. Read this file and `MODELS.md § Benchmarking`
-2. Run **Pre-flight check** (below)
-3. Execute `scripts/all-repositories-benchmarks-simple.sh`
-4. Monitor flows (see `MODELS.md § Monitoring Commands`)
-5. Collect committed reports from each repo (see `MODELS.md § Collecting Reports from Repos`)
-6. Pick the next report number (check for existing `BENCHMARK_REPORT_SIMPLE_NNN.md` files)
-7. Write consolidated report to `BENCHMARK_REPORT_SIMPLE_NNN.md` in the project root
-8. Restore repos (see `MODELS.md § Restore After Benchmarks`)
+| Kyu | Target triggers to an acceptable PR | Rationale |
+|-----|-------------------------------------|-----------|
+| 8, 7, 6 | **1** | Trivial-to-small; one transformation should land it. |
+| 5 | **2–3** | A review/revise cycle (`address-review`) or a second `deliver-intent` may be needed. |
 
----
+## Model
 
-## Objective
+Set per repo/org variable `ANTHROPIC_MODEL` (Bedrock lane) or pass `model:` to the
+consumer workflow. The fleet default is **Haiku 4.5**
+(`eu.anthropic.claude-haiku-4-5-20251001-v1:0`). Bump to `sonnet` to measure the
+capability/cost trade on a tier the cheaper model misses. See [`MODELS.md`](../MODELS.md).
 
-Establish "on-sight" doability benchmarks — the number of `agentic-lib-workflow` runs needed to reach mission-complete for each kyu tier, running all scenarios concurrently across 4 repos at `max` profile:
-
-| Kyu | Target runs to mission-complete | Rationale |
-|-----|--------------------------------|-----------|
-| 8, 7, 6 | **1 run** | Simple missions should complete in a single workflow cycle. |
-| 5, 4 | **3 runs** | Medium missions may need a review/maintain cycle and a second transform. |
-
-A scenario **passes** if it reaches mission-complete within the target run count. A scenario **fails** if it exceeds the target or hits budget exhaustion / mission-failed.
-
-**Note**: Simple missions (7-kyu, 6-kyu) often complete via bot/director direct commits to main rather than dev-job PRs. This is expected behaviour — the bot or director can implement trivial functions and declare mission-complete before the dev job's branch→PR→merge cycle fires. PR-less transforms in simple benchmarks are not a bug.
-
----
-
-## Scenario Matrix
-
-4 concurrent scenarios, one per repo. All use `gpt-5-mini` model and `max` profile.
-
-| ID | Repo | Mission | Profile | Budget | Target Runs | Purpose |
-|----|------|---------|---------|--------|-------------|---------|
-| S1 | repository0-random | 6-kyu-understand-roman-numerals | max | 128 | 1 | 6-kyu with round-trip property, subtractive notation |
-| S2 | repository0-string-utils | 5-kyu-apply-string-utils | max | 128 | 3 | Name affinity. 5-kyu medium complexity |
-| S3 | repository0-dense-encoder | 6-kyu-understand-hamming-distance | max | 128 | 1 | 6-kyu with Unicode/BigInt edge cases |
-| S4 | repository0-plot-code-lib | 6-kyu-understand-roman-numerals | max | 128 | 1 | 6-kyu with round-trip property |
-
----
-
-## Pre-Flight Check
-
-Before running the script, verify it matches the scenario matrix above and that restore will use the correct default missions.
-
-**1. Verify script ↔ doc alignment:**
-
-Read `scripts/all-repositories-benchmarks-simple.sh` and check each `gh workflow run` dispatch:
-
-| Scenario | Script should dispatch | Mission seed | Repo |
-|----------|----------------------|--------------|------|
-| S1 | `repository0-random` | `6-kyu-understand-roman-numerals` | repository0-random |
-| S2 | `repository0-string-utils` | `5-kyu-apply-string-utils` | repository0-string-utils |
-| S3 | `repository0-dense-encoder` | `6-kyu-understand-hamming-distance` | repository0-dense-encoder |
-| S4 | `repository0-plot-code-lib` | `6-kyu-understand-roman-numerals` | repository0-plot-code-lib |
-
-If the script doesn't match, prompt the user: _"The script dispatches `<mission>` to `<repo>` but the doc says `<other-mission>`. Update the script, update the doc, or proceed as-is?"_
-
-**2. Verify restore script uses default missions** (from `MODELS.md § Target Repositories`):
-
-| Repo | Default Mission (restore target) |
-|------|----------------------------------|
-| repository0-random | `random` |
-| repository0-string-utils | `5-kyu-apply-string-utils` |
-| repository0-dense-encoder | `4-kyu-apply-dense-encoding` |
-| repository0-plot-code-lib | `2-kyu-create-plot-code-lib` |
-
-Check that `scripts/all-repositories-init.sh` dispatches these missions.
-
-**3. Verify script common parameters:**
-
-The benchmark script should use: `mode=purge`, `schedule=off`, `generate_report=true`.
-
----
-
-## Execution
+## Run it
 
 ```bash
-scripts/all-repositories-benchmarks-simple.sh
+# Seed each repo with a mission and dispatch the engine:
+#   scripts/benchmark-all.sh <owner> <mission> <repo> [repo ...]
+scripts/benchmark-all.sh polycode-public 6-kyu-understand-roman-numerals \
+  6-kyu-understand-roman-numerals sandbox
 ```
 
-This dispatches `agentic-lib-flow` to all 4 repos concurrently. Each flow runs: update → init (purge) → (test + bot + N×workflow) × rounds → verify → report.
+`benchmark-all.sh` runs, per repo: `npx @polycode-public/agentic-lib init --purge
+--mission <mission>` (lays down `INTENT.md` + the 3 thin workflows) then dispatches
+the engine. Each dispatch produces one draft PR (or nothing).
 
-**Monitor progress** using the commands in `MODELS.md § Monitoring Commands`.
-
-**Wait for completion** — check flow run status:
+**Monitor** the resulting runs and PRs:
 
 ```bash
-REPOS="repository0-random repository0-string-utils repository0-dense-encoder repository0-plot-code-lib"
-
-for REPO in $REPOS; do
+for REPO in 6-kyu-understand-roman-numerals sandbox; do
   echo -n "$REPO: "
-  gh run list -R polycode-public/$REPO -w agentic-lib-flow -L 1 \
-    --json status,conclusion --jq '.[0] | "\(.status) \(.conclusion)"'
+  gh run list -R polycode-public/$REPO -L 1 --json status,conclusion \
+    --jq '.[0] | "\(.status) \(.conclusion)"'
+  gh pr list -R polycode-public/$REPO --state all -L 3 --json number,title,isDraft \
+    --jq '.[] | "  #\(.number) \(.title) draft=\(.isDraft)"'
 done
 ```
 
----
+Re-trigger (a new `on-intent` dispatch, a review comment, or a `tend` schedule) to
+add a transformation when the first PR is incomplete; count the triggers to an
+acceptable PR.
 
-## Report Collection
+## Record the result
 
-Once all flows complete, each repo will have a `BENCHMARK_REPORT_NNN.md` committed to its main branch. Collect and synthesise these into the consolidated report using the procedure in `MODELS.md § Collecting Reports from Repos`.
-
----
-
-## Restore
-
-After collecting all benchmark data, restore repos to their default missions:
-
-```bash
-scripts/all-repositories-init.sh
-```
-
-Then verify using the commands in `MODELS.md § Restore After Benchmarks`.
-
----
-
-## Report Template
-
-Reports are saved as `BENCHMARK_REPORT_SIMPLE_NNN.md` in the project root.
+Write a consolidated report to `benchmarks/reports/BENCHMARK_REPORT_SIMPLE_NNN.md`
+(next free number; current baselines: `BENCHMARK_REPORT_SIMPLE_018.md`,
+`BENCHMARK_REPORT_ADVANCED_019.md`, `BENCHMARK_REPORT_ADVANCED_020.md`). Capture per
+scenario: repo, mission, model, triggers-to-acceptable-PR, pass/fail vs target,
+token/cost estimate, and notable findings.
 
 ```markdown
-
-# Benchmark Report NNN
+# Benchmark Report NNN (Simple)
 
 **Date**: YYYY-MM-DD
 **Operator**: Claude Code (model-id)
-**agentic-lib version**: X.Y.Z
+**agentic-lib version**: X.Y.Z · **engine**: claude -p + Bedrock (model: …)
 **Previous report**: BENCHMARK_REPORT_SIMPLE_MMM.md (or "none")
-**Method**: `scripts/all-repositories-benchmarks-simple.sh` → per-repo `agentic-lib-report` enrichment
 
----
-
-## Dashboard
-
-| ID | Repo | Mission | Profile | Transforms | Budget | Outcome | Tokens |
-|----|------|---------|---------|------------|--------|---------|--------|
-| S1 | repository0-random | roman-numerals | max | N | N/128 | ... | N |
-| S2 | repository0-string-utils | string-utils | max | N | N/128 | ... | N |
-| S3 | repository0-dense-encoder | hamming | max | N | N/128 | ... | N |
-| S4 | repository0-plot-code-lib | roman | max | N | N/128 | ... | N |
-
----
-
-## Scenario S?: mission-name / repo / profile
-
-### Summary
-
-Brief description of outcome.
-
-### Acceptance Criteria
-
-| Criterion | Status | Evidence |
-|-----------|--------|----------|
-| criterion text | PASS / FAIL / NOT TESTED | file:line or description |
-
-### Findings
-
-- **FINDING-N (POSITIVE / CONCERN / REGRESSION)**: Description.
-
-### Scenario Summary
-
-| Metric | Value |
-|--------|-------|
-| Transforms | N |
-| Budget | N/128 |
-| Mission complete | YES / NO |
-| Acceptance criteria | N/M PASS |
-| Total tokens | N |
-
----
+| ID | Repo | Mission | Model | Triggers | Target | Pass? | ~Cost | Notes |
+|----|------|---------|-------|----------|--------|-------|-------|-------|
+| S1 | … | 6-kyu-understand-roman-numerals | haiku | N | 1 | YES/NO | $… | … |
 
 ## Findings
+- **FINDING-N (POSITIVE / CONCERN / REGRESSION)**: …
 
-### FINDING-N: Title (POSITIVE / CONCERN / REGRESSION)
-
-Description.
-
----
-
-## Comparison with Previous Reports
-
-Compare against baseline reports (archived in `_developers/archive/`):
-- **BENCHMARK_REPORT_SIMPLE_018.md** (v7.4.52) — fizz-buzz, string-utils, hamming-distance, roman-numerals on `max`
-
-| Metric | Prior Report | This Report |
-|--------|-------------|-------------|
-| metric | value | value |
-
----
+## Comparison with previous reports
+Compare triggers/cost against the prior report and the historical Copilot-era
+baselines in `reports/` (note: those used budget/profiles, not directly comparable).
 
 ## Recommendations
+1. …
+```
 
-Numbered list of actionable next steps.
+## Restore
 
----
+After collecting data, restore each repo to its default mission:
 
-## Restoration Checklist
-
-| Repo | Restored? | Verified? |
-|------|-----------|-----------|
-| repository0-random | YES / NO | YES / NO |
-| repository0-string-utils | YES / NO | YES / NO |
-| repository0-dense-encoder | YES / NO | YES / NO |
-| repository0-plot-code-lib | YES / NO | YES / NO |
+```bash
+# scripts/init-all.sh [--purge] <repo-dir> [repo-dir ...]
+scripts/init-all.sh --purge ../sandbox
 ```

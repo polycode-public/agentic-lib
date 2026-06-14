@@ -1,5 +1,11 @@
 # Plan: Benchmark 018 + 019 Fixes
 
+_Historical (Copilot-era). Every fix below targets the now-**deleted** `src/copilot/`
++ `agentic-step` engine, `agentic-lib-*.yml` workflows, `MISSION.md`, and the
+director/bot/budget machinery. None of it exists in 8.0.0 (engine is now `claude -p`
++ Bedrock; decomposition/memory moved to the marginalia supervisor). Kept as a
+record of the old benchmark investigations; do not action against the current code._
+
 Fixes for findings from BENCHMARK_REPORT_SIMPLE_018.md and BENCHMARK_REPORT_ADVANCED_019.md.
 
 ---
