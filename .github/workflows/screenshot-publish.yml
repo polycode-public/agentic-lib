@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2025-2026 Polycode Limited
+#
+# screenshot-publish.yml — run the repo's Playwright behaviour test (which
+# screenshots its src/web demo app) and publish SCREENSHOT_INDEX.png to the
+# agentic-lib-logs branch, where the intentïon.com showcase fetches it.
+#
+# This is DELIBERATELY a standalone workflow, NOT part of transform.yml: Playwright
+# + a browser is too heavy to run inside the claude -p delivery loop (the v7 lesson
+# — keep behaviour tests out of the agent's tool loop). Consumers call it on a
+# schedule / on demand.
+
+name: screenshot-publish
+
+on:
+  workflow_call: {}
+
+permissions:
+  contents: write
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install deps + browser
+        run: |
+          npm ci || npm install
+          npx playwright install --with-deps chromium
+
+      # The behaviour test serves src/web and saves SCREENSHOT_INDEX.png (fullPage).
+      # Retry once for flake; don't fail the job — we publish whatever screenshot exists.
+      - name: Run behaviour test (produces SCREENSHOT_INDEX.png)
+        run: npm run test:behaviour || (sleep 3 && npm run test:behaviour) || true
+
+      - name: Publish SCREENSHOT_INDEX.png → agentic-lib-logs
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          SHOT=$(find . -maxdepth 3 -name SCREENSHOT_INDEX.png -not -path './node_modules/*' | head -1)
+          if [ -z "${SHOT}" ]; then echo "::warning::no SCREENSHOT_INDEX.png produced — skipping"; exit 0; fi
+          cp "${SHOT}" /tmp/SCREENSHOT_INDEX.png
+          git config user.name "intention-agentic-lib[bot]"
+          git config user.email "intention-agentic-lib[bot]@users.noreply.github.com"
+          publish() {
+            if git ls-remote --exit-code --heads origin agentic-lib-logs >/dev/null 2>&1; then
+              git fetch --depth 1 origin agentic-lib-logs && git checkout -B agentic-lib-logs origin/agentic-lib-logs
+            else
+              git checkout --orphan agentic-lib-logs && git rm -rf . >/dev/null 2>&1 || true
+            fi
+            cp /tmp/SCREENSHOT_INDEX.png SCREENSHOT_INDEX.png
+            git add SCREENSHOT_INDEX.png
+            git commit -m "logs: update SCREENSHOT_INDEX.png [skip ci]" || { echo "no change"; return 0; }
+            git push origin agentic-lib-logs
+          }
+          # up to 3 attempts (summary-export pushes the same branch — different file, so it merges)
+          for i in 1 2 3; do publish && { echo "Published agentic-lib-logs/SCREENSHOT_INDEX.png"; break; } || { echo "retry $i"; git checkout -f - 2>/dev/null || true; sleep $((i*3)); }; done
