@@ -132,8 +132,18 @@ jobs:
           if [ -n "${MODEL}" ] && [ "${CLAUDE_CODE_USE_BEDROCK}" != "1" ]; then
             ARGS+=(--model "${MODEL}")
           fi
-          claude "${ARGS[@]}" > /tmp/result.json || { echo "::error::claude -p failed"; cat /tmp/result.json || true; exit 1; }
-          echo "----- result (truncated) -----"; head -c 2000 /tmp/result.json || true; echo
+          set +e
+          claude "${ARGS[@]}" > /tmp/result.json
+          rc=$?
+          set -e
+          subtype=$(grep -o '"subtype":"[^"]*"' /tmp/result.json | head -1)
+          echo "----- claude rc=$rc $subtype -----"; head -c 2000 /tmp/result.json || true; echo
+          # Hitting the turn cap is NOT a hard failure: the model was told to leave the
+          # most coherent self-contained slice, which the commit step then opens as a
+          # (partial) PR for the supervisor to follow up. Fail only on other errors.
+          if [ "$rc" -ne 0 ] && ! printf '%s' "$subtype" | grep -q 'error_max_turns'; then
+            echo "::error::claude -p failed (rc=$rc)"; exit 1
+          fi
 
       - name: Commit, push, open draft PR
         env:
