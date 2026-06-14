@@ -84,7 +84,8 @@ view** driven by the three hands.
 | # | Open item | Status |
 |---|---|---|
 | S2 | Wire `intention-ci` OIDC/roles/cert (`ACTIONS_ROLE_ARN`/`DEPLOY_ROLE_ARN`/`CERTIFICATE_ARN` for `ci`). Prod live; ci not wired. | open, low |
-| S3 | **Screenshot content** — 6/3/2-kyu `SCREENSHOT_INDEX.png` are identical byte size (likely a generic/fallback render, not the repo's real demo). Make each repo's `src/web` behaviour-test screenshot **per-repo + unconditional** so a real (or at least distinct) demo publishes. Verify panels derive cleanly from `summary.json`. | open, verify |
+| S3a | **Screenshots render** — broken-image cards (post-benchmark `agentic-lib-logs` deletion + missing `on-screenshot`) **fixed**: regenerated all 4, verified live with Playwright (`scripts/check-showcase.mjs`); harness `finalize` + the benchmark guides now re-publish + verify screenshots after every delivery. | ✅ done |
+| S3b | **Screenshot content** — all 4 `SCREENSHOT_INDEX.png` are byte-identical (generic `src/web` render, not each repo's demo) because deliveries update `src/lib` not the web demo. Make each repo's `src/web` demo + behaviour-test screenshot **per-repo** so distinct images publish. `check-showcase.mjs` warns on byte-identical. | open |
 
 ---
 

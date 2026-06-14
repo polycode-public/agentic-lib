@@ -131,6 +131,21 @@ issue)  # raise a decomposed-chunk issue; prints the new number
   echo "$url"; echo "$url" | grep -oE '[0-9]+$'
   ;;
 
+finalize)  # after delivery, repopulate the showcase: regenerate summary.json AND
+           # SCREENSHOT_INDEX.png on agentic-lib-logs. The benchmark reset (init --purge)
+           # deletes agentic-lib-logs, so BOTH must be re-published or the intentïon.com
+           # panel shows a broken image. Run this for every delivered repo.
+  repo="${1:?repo}"; slug="$(R "$repo")"
+  echo "  finalizing $repo: on-summary + on-screenshot ..."
+  gh workflow run on-summary.yml -R "$slug" >/dev/null 2>&1 && echo "    on-summary dispatched" || echo "    on-summary failed"
+  gh workflow run on-screenshot.yml -R "$slug" >/dev/null 2>&1 && echo "    on-screenshot dispatched (Playwright; ~3-5 min)" || echo "    on-screenshot failed"
+  echo "  then verify with: scripts/check-showcase.mjs"
+  ;;
+
+verify-showcase)  # Playwright check that the live showcase renders each repo's screenshot
+  node "$(cd "$(dirname "$0")" && pwd)/check-showcase.mjs" "$@"
+  ;;
+
 merge)  # deliver: squash-merge a green+acceptable PR (orchestrator's judgement)
   repo="${1:?repo}"; pr="${2:?pr#}"; slug="$(R "$repo")"
   gh pr ready "$pr" -R "$slug" 2>/dev/null || true       # un-draft so it can merge

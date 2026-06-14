@@ -194,6 +194,16 @@ decomposition.
 - **FINDING-10 (green tests ≠ met acceptance):** 2-kyu chunk-6 passed 159 tests but
   didn't *commit* the required `docs/examples/sample.html` artifact. "Acceptable" is
   more than "tests green" — the orchestrator must check the INTENT's artifacts.
+- **FINDING-11 (showcase screenshots, fixed + tooled):** the reset (`init --purge`)
+  deletes the `agentic-lib-logs` branch, which holds **both** `summary.json` **and
+  `SCREENSHOT_INDEX.png`**. Re-running `on-summary` alone left the screenshot 404 →
+  **broken images** on intentïon.com cards + the "Show all" grid. Fixed: regenerated
+  via `on-screenshot` (all 4 → HTTP 200, render 1280×720, verified live with
+  Playwright). The harness now has a `finalize` step (summary **+** screenshot) and a
+  `check-showcase.mjs` Playwright verifier wired into the guides. **Open (S3):** all 4
+  screenshots are byte-identical (30372 B) — a generic `src/web` render, because
+  deliveries update `src/lib` not the web demo; making per-repo demos distinct is a
+  separate engine/seed item.
 - **FINDING-3 (INFRA / BLOCKER):** the engine's **`on-init` reset fails** — the M5
   GitHub App lacks **Workflows: write**, so it can't re-push `.github/workflows`
   (`refusing to allow a GitHub App to create or update workflow … without workflows

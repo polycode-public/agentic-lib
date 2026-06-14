@@ -95,6 +95,16 @@ lacks the `workflow` scope, and the deployed dispatch-capable workflows are kept
 the per-issue dispatch, the 30s poll loop, budget hard-stops, and the ledger. The
 orchestrator (Opus 4.8) supplies the decomposition + PR judgement.
 
+## Finalize & verify the showcase (MANDATORY after delivery)
+
+As in the simple suite: the reset deletes `agentic-lib-logs`, so after delivering a
+repo run `scripts/benchmark-run.sh finalize <repo>` (re-publishes `summary.json` **and**
+`SCREENSHOT_INDEX.png`), then `node scripts/check-showcase.mjs` to verify with Playwright
+that the screenshots render on https://xn--intenton-z2a.com/ **and in the "Show all"
+grid** (`naturalWidth > 0`), and to catch the S3 byte-identical generic-render smell.
+Full detail: [`ITERATION_BENCHMARKS_SIMPLE.md`](ITERATION_BENCHMARKS_SIMPLE.md#finalize--verify-the-showcase-mandatory-after-delivery).
+A broken showcase panel means the repo is **not** "delivered" for the showcased fleet.
+
 ## Record the result
 
 Write to `benchmarks/reports/BENCHMARK_REPORT_ADVANCED_NNN.md` (next free number;

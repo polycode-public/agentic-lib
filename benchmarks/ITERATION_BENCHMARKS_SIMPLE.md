@@ -145,6 +145,36 @@ init/reset, dispatch, the 30s poll loop, the budget hard-stop, and the running
 ledger. (The old fire-and-forget `benchmark-all.sh` — which dispatched the now
 *disabled* `on-schedule`/`tend` and never polled — is retired.)
 
+## Finalize & verify the showcase (MANDATORY after delivery)
+
+The benchmark reset (`init --purge`) **deletes the `agentic-lib-logs` branch**, which
+holds both `summary.json` (the embed/VT100 seed) **and `SCREENSHOT_INDEX.png`** (the
+showcase card image). After delivering a repo you **must regenerate both**, or its
+intentïon.com panel shows a **broken image** (`raw.githubusercontent.com/…/agentic-lib-logs/SCREENSHOT_INDEX.png`
+404s). Regenerating `summary.json` alone (`on-summary`) is **not enough** — the
+screenshot needs `on-screenshot` (a Playwright behaviour test of `src/web`):
+
+```bash
+# per delivered repo — dispatches on-summary AND on-screenshot:
+scripts/benchmark-run.sh finalize <repo>
+```
+
+Then **verify with Playwright** that the screenshots actually render on the live site
+**and inside the "Show all" grid** — not just that the file exists:
+
+```bash
+# HTTP gate (200 + PNG, flags the S3 generic-render) + live-site DOM check
+node scripts/benchmark-run.sh ... # or directly:
+node scripts/check-showcase.mjs            # https://xn--intenton-z2a.com/ + "Show all" grid
+```
+
+`check-showcase.mjs` asserts each repo's `SCREENSHOT_INDEX.png` returns 200/PNG, loads
+the live site, clicks `#showcase-show-all`, and asserts every screenshot `<img>` has
+`naturalWidth > 0`. It also **warns when all screenshots are byte-identical** — the
+S3 "generic `src/web` render" smell (the deliveries updated `src/lib` but not the web
+demo, so every card screenshots the same skeleton). Treat a clean `check-showcase`
+run as part of "delivered" for the showcased fleet repos.
+
 ## Record the result
 
 Write a consolidated report to `benchmarks/reports/BENCHMARK_REPORT_SIMPLE_NNN.md`
