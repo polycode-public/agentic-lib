@@ -11,7 +11,10 @@
 **After compaction or at session start:**
 
 1. Read `~/.claude/inboxes/<your-handle>.md` and `.claude/messages.md` — another Claude session may have left messages for you
-2. Read all `PLAN_*.md` files in the project root — these are the active goals
+2. Read **`PLAN_ENGINE.md`** — the engine's *active* forward roadmap. (The other
+   root `PLAN_*.md` are retrospective/historical.) Cross-estate strategy + the
+   supervisor's plan live in the marginalia repo:
+   `../../polycode-projects/marginalia/PLAN_INTENTION.md` and `PLAN_CODING_AGENT.md`.
 3. Run `TaskList` to see tracked tasks with status
 4. Do NOT start new work without checking these first
 
