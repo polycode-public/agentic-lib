@@ -1,9 +1,9 @@
 # INTENTION_ROADMAP.md — the intentïon estate's cross-repo tracker
 
-> **This is the one forward roadmap that spans all three estate repos**
-> (`agentic-lib`, `repository0`, `xn-intenton-z2a.com`). It is an *index*: each
-> item is one line with an owner repo, a status, and a pointer to where the detail
-> lives. The roadmap holds the **summary**; detail lives in the named PLAN docs.
+> **The one forward roadmap spanning all three estate repos** (`agentic-lib`,
+> `repository0`, `xn-intenton-z2a.com`). An *index*: each item is a line with an
+> owner repo, a status, and a pointer to where the detail lives. The roadmap holds
+> the **summary**; detail lives in the named PLAN docs.
 >
 > **Read order for a cold-start agent:** this file first (esp. the **Handover** at
 > the end), then the per-repo detail doc for whatever you're touching, then your
@@ -11,145 +11,158 @@
 >
 > | Detail doc | Repo | Holds |
 > |---|---|---|
-> | [`PLAN_ENGINE.md`](PLAN_ENGINE.md) | agentic-lib | the engine's open work (E1–E5) |
+> | [`PLAN_ENGINE.md`](PLAN_ENGINE.md) | agentic-lib | the engine's open work (E1–E7) |
+> | [`benchmarks/ITERATION_BENCHMARKS_SIMPLE.md`](benchmarks/ITERATION_BENCHMARKS_SIMPLE.md) + [`…_ADVANCED.md`](benchmarks/ITERATION_BENCHMARKS_ADVANCED.md) | agentic-lib | the benchmark method + executor |
+> | [`MARGINALIA_DEPENDENCIES.md`](MARGINALIA_DEPENDENCIES.md) | agentic-lib | what we need from marginalia |
 > | [`../xn-intenton-z2a.com/PLAN_SHOWCASE.md`](../xn-intenton-z2a.com/PLAN_SHOWCASE.md) | site | the showcase/embed surface |
-> | [`../../polycode-projects/marginalia/PLAN_INTENTION.md`](../../polycode-projects/marginalia/PLAN_INTENTION.md) | marginalia | the **done** estate-move record (history, not forward) |
+> | [`../../polycode-projects/marginalia/PLAN_INTENTION.md`](../../polycode-projects/marginalia/PLAN_INTENTION.md) | marginalia | the **done** estate-move record (history) |
 >
-> **Status (2026-06-14):** estate migration complete; **cleanup/refocus done**;
-> engine at **8.2.0** (`v8` is the moving BOM pin). What remains is a short list of
-> engine/site follow-ons + one hard delivery (3-kyu) — see Handover.
+> **Status (2026-06-14):** estate migration + cleanup done; engine at **8.2.0**
+> (`v8` is the moving BOM pin). What remains is the **benchmark run + process
+> tuning** (now the live engine item), a few engine/site follow-ons, and the
+> durable "three hands" framing — see Handover.
+
+---
+
+## The frame (the thing every item serves)
+
+**A consumer repo cannot self-drive.** `on-schedule` is disabled (and only does a
+`tend` "one small improvement" pass); `on-intent`/`on-review` need an externally
+raised issue, a pushed `INTENT.md`, or a manual dispatch. Delivery is driven by one
+of **three hands**: **a human**, **Claude + the benchmark harness** (the `intention`
+session), or **marginalia** (the supervisor graph via `repo_dispatch`, one piece at
+a time). An `INTENT.md` of any size is delivered by **decomposing it into many
+one-shot-sized issues, each a single PR, re-worked until green, then merged** — one
+reliable one-shot per issue. The benchmark holds the **Haiku-4.5 engine fixed** and
+varies only the *orchestrator brain* (Opus 4.8 here = maximal standard; Haiku in
+marginalia's run) to measure how much better decomposition lifts the same engine.
 
 ---
 
 ## 0 · Cleanup & refocus — ✅ COMPLETE
 
-| # | Item | Repo | Status |
-|---|---|---|---|
-| C1 | Drop `repository0` + deleted `4-kyu-apply-cron-engine` from the showcase repo-bar; fix `index.html` fallback/default; add a "Create your own ↗" template CTA. | site | ✅ done |
-| C2 | Delete the orphaned `public/all.html` stats page. | site | ✅ done |
-| C3 | Delete the obsolete plan docs; keep `PLAN_2_NARRATIVE.md` + the MCP/parameter-tuning specs. (See [§D](#d--plan-doc-disposition).) | agentic-lib | ✅ done |
-| C4 | Refresh the stale `PLAN_SHOWCASE.md` to current reality (marginalia embed + `summary.json` seed + repo-bar). | site | ✅ done |
-| C5 | Doc-consistency: cold-start pointer → this file; drop `4-kyu` from the agentic-lib `CLAUDE.md` fleet table (mission *seed* kept); tidy site `CLAUDE.md`. | all | ✅ done |
-| C6 | Tell marginalia the `4-kyu-apply-cron-engine` repo is deleted → graph `c71c35db-…` orphaned. | marginalia (coord) | ✅ done (marginalia ack'd) |
+C1–C6 done (showcase repo-bar fixed, orphan pages deleted, plan docs pruned,
+`PLAN_SHOWCASE.md` refreshed, doc-consistency pass, marginalia told of the deleted
+`4-kyu-apply-cron-engine` repo). Detail in [§D](#d--plan-doc-disposition).
 
-**Live fleet: 4 repos + sandbox** — `8-kyu-remember-hello-world`,
+**Live fleet: 4 kyu repos + sandbox** — `8-kyu-remember-hello-world`,
 `6-kyu-understand-roman-numerals`, `3-kyu-analyze-lunar-lander`,
-`2-kyu-create-markdown-compiler`, `sandbox`.
+`2-kyu-create-markdown-compiler`, `sandbox` (random-wildcard).
 
 ---
 
 ## 1 · agentic-lib (the engine) → detail in [`PLAN_ENGINE.md`](PLAN_ENGINE.md)
 
-**Shipped this session — 8.0.0 → 8.2.0** (`v8` moved; **npm-unpublished**, consumed via `@v8` git ref):
-- **8.1.0** — marginalia-seon **MCP wiring** in `transform.yml` (attaches the repo's graph-memory tools to `claude -p` when `MARGINALIA_API_KEY` + `.mcp.json` present; graceful); clean **product-skeleton seed** (identity lib + web demo + behaviour test, no delivered example); `init` now **seeds `.mcp.json` + merges package.json** (engine CLI scripts + tooling deps) so a re-init never goes backwards; `--purge` removes delivered extras.
-- **8.2.0** — **`on-init`**: remote `agentic-lib init` (reusable `init.yml` + `on-init.yml` consumer, dispatch flavours `mode`/`mission`/`dry_run` → draft PR). The init analogue of `on-intent`.
-- **Deps refreshed** (eslint held at 9.x — 10's plugin ecosystem isn't ready).
+**Shipped (8.0.0 → 8.2.0):** thin `claude -p`+Bedrock engine; `transform.yml` (one
+trigger → one transformation → one PR, partial-slice on max-turns, `fixes #N` gate);
+`summary-export.yml`; marginalia-seon MCP wiring; clean product-skeleton seed; `init`
+seeds `.mcp.json` + merges `package.json`; **`on-init`** (remote init). **This
+session:** seed `model: sonnet → haiku` (the engine under test is unambiguously
+Haiku); seed `on-intent.yml` gains a `workflow_dispatch` `work_item` input (so a
+*hand* can drive it); benchmark suite + executor overhauled.
 
 | # | Open item | Status |
 |---|---|---|
-| E1 | **npm-publish `@polycode-public/agentic-lib`.** `release.yml` fires on a `vN.N.N` tag → npm publish (needs **`NPM_TOKEN` secret — NOT SET**) → moves `v8`. Until set, `v8` is moved **manually** on release. **Next:** add `NPM_TOKEN`, then tag `v8.2.0` for a real publish; or ratify the git-ref model and drop the "not yet published" doc wording. | open (NPM_TOKEN blocker) |
-| E2 | **Re-run the kyu benchmarks on `claude -p` + Bedrock** (021+). Run plan adapted to the current fleet in `benchmarks/ITERATION_BENCHMARKS_ADVANCED.md` (4-kyu→sandbox; 3/2-kyu on their own repos). Reports still Copilot-era 018–020. | open (doc ready) |
-| E3 | Tune engine defaults (model + `max_turns`) from E2. Folds `PLAN_PARAMETER_TUNING` intent. **3-kyu shows Haiku plateaus on hard chunks** (see Handover) — likely needs a per-tier Sonnet escalation. | open |
-| E4 | Spec the agentic-lib **own** MCP server (`PLAN_MCP_SERVER.md` — drive a mission at varying resource, watch convergence). NB distinct from the *marginalia-seon* consumer MCP now wired. | backlog — spec needed |
-| E5 | Runner hygiene: bump `checkout`/`setup-node` (Node-20 deprecation) or set `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`. | open, low |
+| E1 | **npm-publish `@polycode-public/agentic-lib`** (or ratify the `@v8` git-ref model). `release.yml` publishes on a `vN.N.N` tag → needs **`NPM_TOKEN` (NOT SET)**; until then `v8` is moved by hand. **Next:** add `NPM_TOKEN` + tag `v8.2.0`, or update docs to bless the git-ref model permanently. | open (NPM_TOKEN blocker) |
+| E2 | **Run the kyu benchmark** (decompose → deliver → merge; Opus orchestrator / fixed Haiku engine; hands-free 30s-poll executor). **✅ done — `reports/BENCHMARK_REPORT_{SIMPLE,ADVANCED}_021.md`.** Result: all 5 repos run; 8/6/3/2-kyu **delivered green** (incl. the 3-kyu autopilot plateau **cleared** via an Opus-verified control law); sandbox 2/3 + a located cron ceiling. Next: marginalia's Haiku-orchestrated pass for the head-to-head. | ✅ done (021) |
+| E3 | **Tune the *process* defaults from E2** — issue granularity + the context recipe (graph facts / failing-test output / prior diff) + `max_turns`. **Not the model** (frozen Haiku). Folds the *intent* of `PLAN_PARAMETER_TUNING`. The 3-kyu autopilot is the canonical plateau to push with finer decomposition. | open (feeds from E2) |
+| E4 | **Spec the agentic-lib *own* MCP server** (`_developers/backlog/PLAN_MCP_SERVER.md`) — drive a mission at varying resource, watch convergence. NB distinct from the *marginalia-seon* consumer MCP already wired. | backlog — spec needed |
+| E5 | **Runner hygiene** — bump `checkout`/`setup-node` (Node-20 deprecation, forced Node-24 from 2026-06-16) or set `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`. | open, low |
+| E6 | **Config-consistency: `sonnet → haiku`** in `seeds/{workflows/on-*.yml, agentic-lib.toml}`. No Bedrock-runtime change (env wins) but removes the Anthropic-lane landmine and makes "the system under test is Haiku" unambiguous. | ✅ done (this session) |
+| E7 | **Benchmark executor harness** (`scripts/benchmark-run.sh`) — init/reset (clone + local `init --purge` + SSH-push of non-workflow files), per-issue `on-intent` dispatch, 30s poll, budget hard-stop, ledger; retires the broken `benchmark-all.sh`. **✅ done + proven** across the full 021 run. | ✅ done |
+| E8 | **Engine-prompt fixes from 021** (new): make `address-review` read PR comments / the dispatch input (not only review threads); tell `deliver-intent` to test the INTENT's bar (not invent a stricter one) and to produce the INTENT's *artifacts* (files), not just passing tests; ship a minimal `test.yml` seed so PRs have a mechanical green/red gate. | open (from 021 findings) |
 
 ---
 
 ## 2 · xn-intenton-z2a.com (the site) → detail in [`PLAN_SHOWCASE.md`](../xn-intenton-z2a.com/PLAN_SHOWCASE.md)
 
-**Shipped this session:** showcase cleanup (C1/C2/C4); **deps refreshed** — pom
-`--release 25` (house JDK), aws-cdk-lib 2.259.0, constructs 10.6.0, junit 5.14.4
-(+ explicit `junit-platform-launcher`); **`deploy.yml` CI JDK bumped 21→25** (the
-first deploy failed on the mismatch); **redeployed live**. Screenshots re-published
-(see below).
+**Shipped:** showcase cleanup (C1/C2/C4); deps refreshed (pom `--release 25`,
+aws-cdk-lib 2.259, constructs 10.6, junit 5.14.4); `deploy.yml` CI JDK 21→25;
+redeployed live; screenshots re-published; README notes the site is a **read-only
+view** driven by the three hands.
 
 | # | Open item | Status |
 |---|---|---|
-| S2 | Wire `intention-ci` OIDC/roles/cert for ci-env deploys (`ACTIONS_ROLE_ARN`/`DEPLOY_ROLE_ARN`/`CERTIFICATE_ARN` for `ci`). Prod is live; ci not wired. | open, low |
-| S3 | Confirm the showcase panels (status `[N]`, VT100, screenshot) derive cleanly from `summary.json`. Screenshots now publish + serve (HTTP 200), but **6/3/2-kyu `SCREENSHOT_INDEX.png` are identical byte size** — likely a generic/fallback render, not the repo's real demo. Verify + fix the per-repo demo (or make the screenshot unconditional). | open, verify |
+| S2 | Wire `intention-ci` OIDC/roles/cert (`ACTIONS_ROLE_ARN`/`DEPLOY_ROLE_ARN`/`CERTIFICATE_ARN` for `ci`). Prod live; ci not wired. | open, low |
+| S3 | **Screenshot content** — 6/3/2-kyu `SCREENSHOT_INDEX.png` are identical byte size (likely a generic/fallback render, not the repo's real demo). Make each repo's `src/web` behaviour-test screenshot **per-repo + unconditional** so a real (or at least distinct) demo publishes. Verify panels derive cleanly from `summary.json`. | open, verify |
 
 ---
 
 ## 3 · repository0 (the template)
 
-**Cleaned this session:** product reset to the clean identity skeleton (fizzbuzz
-example — incl. the engine-delivered `fizzBuzzRange` — removed; `INTENT.md` keeps
-FizzBuzz as the *undelivered* smoke-test target); engine CLI npm scripts added;
-`.mcp.json` shipped; README rewritten (CLI/actions/MCP/webhooks/`on-init`); deps
-refreshed; `on-init.yml` added. `INTENT.md` is its fixed point — no plan doc needed.
+Clean identity skeleton; `INTENT.md` keeps **Hello-World/FizzBuzz** as the
+*undelivered* smoke-test fixed point; engine CLI scripts + `.mcp.json` + `on-init.yml`
+shipped; README now carries a **"Driving delivery by hand"** operator section
+(the three hands). Open: confirm `init`/`on-init` round-trips cleanly; the benchmark
+**resets repository0 to this clean template but does not deliver on it**.
 
 ---
 
-## 4 · Cross-session / marginalia-owned
+## 4 · Cross-session / marginalia-owned → see [`MARGINALIA_DEPENDENCIES.md`](MARGINALIA_DEPENDENCIES.md)
 
-- **The 3 embed bugs are FIXED + deployed** (marginalia, 2026-06-14): tier-0
-  wrong-repo (verified live), in-widget login → private-graph full-model chat,
-  on-page tier/context block. ✅
-- **Outbound actuator built** (marginalia `repo_dispatch`): the graph can now
-  dispatch a bound repo's `on-intent`/`on-review`/`on-summary`/`on-screenshot`/
-  `on-schedule` (owner posture, 1/turn + caps) — the C1 "graph is the trigger" rung.
+- **The 3 embed bugs are FIXED + deployed** (marginalia, 2026-06-14). ✅
+- **The outbound `repo_dispatch` actuator is live both directions** (marginalia
+  drove all five of 8-kyu's repo actions from chat turns; the C1 "graph is the
+  trigger" rung). ✅
 - **marginalia-seon MCP is private/unpublished** (`@polycode-projects/marginalia-seon`,
-  npm 404). Our `.mcp.json` (all 6 repos) + `transform.yml` are ready; the MCP
-  **attaches only once marginalia publishes the server** (operator-gated). Until
-  then it silently doesn't attach — by design.
-- **M5 GitHub App** `intention-system` (App 4048241, install 140151684) installed +
-  verified; per-repo webhooks live; SSM creds mirrored to marginalia-prod.
+  npm 404) and `MARGINALIA_GRAPH_ID` is a write-only secret. So seon does **not**
+  attach for the CI agents, and the orchestrator can't read graph ids to consult it
+  locally — a **soft dependency** for the benchmark. Asks tracked in
+  [`MARGINALIA_DEPENDENCIES.md`](MARGINALIA_DEPENDENCIES.md) (publish seon or bless a
+  local/git-ref `.mcp.json`; an operator key + per-repo graph ids).
+- **`on-schedule` is disabled** in the fleet (a faithful 422 from `repo_dispatch`) —
+  intentional; not a delivery driver (the "three hands" framing).
+- **M5 GitHub App** `intention-system` (App 4048241, install 140151684) live;
+  creds mirrored to marginalia-prod SSM `/marginalia/prod/github-app-*`.
 
 ---
 
-## 5 · Done (estate move + this session)
+## 5 · Done (estate move + sessions to date)
 
-Estate move + AWS reboot + M5/summary/embed are complete (full record:
-[`PLAN_INTENTION.md`](../../polycode-projects/marginalia/PLAN_INTENTION.md)). This
-session added: cross-repo roadmap + plan cleanup; estate-wide dep refresh; the
+Estate move + AWS reboot + M5/summary/embed complete (record:
+[`PLAN_INTENTION.md`](../../polycode-projects/marginalia/PLAN_INTENTION.md)). Recent
+sessions added: the cross-repo roadmap + plan cleanup; estate-wide dep refresh; the
 marginalia-seon MCP wiring; the clean-template seed + `init` package.json/.mcp.json
-seeding; `on-init` (remote init); site dep refresh + redeploy; screenshots
-re-published.
+seeding; `on-init`; site dep refresh + redeploy; screenshots; the seed Haiku
+consistency + `workflow_dispatch` hand-driveability; the benchmark overhaul.
 
 ---
 
 ## Handover — read this to resume (2026-06-14, end of session)
 
-**Released + propagated:**
-- **agentic-lib 8.2.0**, `v8` → the 8.2.0 commit (moved manually — npm publish
-  deferred, no `NPM_TOKEN`). Carries: `transform.yml` MCP wiring, `init.yml` (remote
-  init reusable), clean seed skeleton, `init` package.json/.mcp.json seeding.
-- **All 6 repos** (repository0 + 5 fleet) got: refreshed `package.json` (engine CLI
-  scripts + latest tooling deps + fresh lockfile), `.mcp.json`, **`on-init.yml`**.
-  Pushed. (NB: pushing **workflow files needs SSH** — gh's HTTPS token lacks the
-  `workflow` scope.)
-- **Site** redeployed live on JDK 25 / CDK 2.259.
+**Released + propagated:** agentic-lib **8.2.0** (`v8` → the 8.2.0 commit, moved by
+hand — npm publish deferred, no `NPM_TOKEN`). All 6 repos carry refreshed
+`package.json` + `.mcp.json` + `on-init.yml`. Site live on JDK 25 / CDK 2.259.
+(NB: pushing **workflow files needs SSH** — gh's HTTPS token lacks the `workflow`
+scope; the benchmark executor therefore **never pushes `.github/workflows`**.)
+
+**This session's deliverables:** the two-brain benchmark method + the hands-free
+30s-poll executor (`scripts/benchmark-run.sh`); `INTENTION_ROADMAP.md` rewritten as
+the all-repo feature plan; `MARGINALIA_DEPENDENCIES.md` added; "three hands" +
+benchmark framing captured durably in the engine/template CLAUDE.md + repository0
+README; seed `sonnet→haiku` + `workflow_dispatch`. **Then the benchmark was run** →
+`reports/BENCHMARK_REPORT_{SIMPLE,ADVANCED}_021.md`.
 
 **Open / next session:**
-1. **3-kyu lunar-lander is RED on main** (incomplete delivery — pre-existing, not
-   from our changes). Failing area is **only `autopilot()`** (12 tests; physics/
-   scoring pass). Demonstrated the decompose model: focused issue **#9** → scoped
-   Haiku delivery → **PR #10**, but **Haiku plateaus at ~30/40** — the autopilot is
-   one irreducibly-hard algorithm. PRs **#8 + #10 open, neither green.** Decision
-   needed: escalate this chunk to **Sonnet** (set the repo's `ANTHROPIC_MODEL` var,
-   re-deliver, merge if green, revert) — needs explicit user OK (changing a shared
-   CI var + closing a PR was auto-denied); or accept partial. **The model is right:
-   one one-shot Haiku delivery per PR; decompose INTENT into many one-shot issues.**
-2. **E1 — add `NPM_TOKEN`** to agentic-lib, then a `v8.2.0` tag for a real npm
-   publish (today `v8` is moved by hand on each release).
-3. **E2 — run the adapted advanced benchmarks** (`ITERATION_BENCHMARKS_ADVANCED.md`)
-   → reports 021+; feeds E3 tuning (and likely a Sonnet tier for 3–2 kyu).
-4. **S3 — screenshot content:** 6/3/2-kyu PNGs are identical-size (generic render?).
-   Verify each repo's `src/web` demo actually renders its delivery; make the
-   behaviour-test screenshot unconditional so a broken demo still publishes.
-5. **marginalia-seon MCP** lights up fleet-wide the moment marginalia publishes the
-   npm package — no change needed our end.
+1. **E2/E3 — read the 021 reports**, tune the decomposition-granularity + context
+   recipe, raise budgets, re-run. The 3-kyu autopilot plateau is the thing to push
+   with finer decomposition (never a bigger model).
+2. **E1 — add `NPM_TOKEN`**, tag `v8.2.0` for a real publish (or bless the git-ref
+   model in the docs).
+3. **S3 — screenshot content** (6/3/2-kyu identical-size PNGs).
+4. **marginalia-seon** lights up fleet-wide the moment marginalia publishes / blesses
+   a resolvable `.mcp.json` form + hands over an operator key + graph ids
+   (`MARGINALIA_DEPENDENCIES.md`).
+5. **marginalia's own benchmark** (same process, Haiku orchestrator) → the
+   comparison the 021 reports are the maximal-standard half of.
 
 **Inbox:** marginalia is live and collaborative — message
-`~/.claude/inboxes/marginalia.md` directly (these are transient peer messages, not
-a durable record). Last exchange: they confirmed seon-unpublished + embed fixes +
-`repo_dispatch`; we confirmed 8.2.0 / screenshots / 3-kyu.
+`~/.claude/inboxes/marginalia.md` directly (transient peer messages, not a durable
+record).
 
 ---
 
 ## D · Plan-doc disposition
-
-What we did with every `PLAN_*.md` in the estate during the C3/C4 refocus.
 
 **Deleted** (git history retains them): `PLAN_3_MARKETPLACE.md`,
 `PLAN_BENCHMARK_018_FIXES.md`, `_developers/backlog/PLAN_3_PLANNING.md`,
@@ -157,7 +170,7 @@ What we did with every `PLAN_*.md` in the estate during the C3/C4 refocus.
 `2-dan-create-agi.md`, and the three `_developers/bluesky/PLAN_{4,5,6}_*.md`.
 
 **Kept:** `PLAN_ENGINE.md` (active engine roadmap), `PLAN_2_NARRATIVE.md`
-(terminology record), `_developers/backlog/PLAN_MCP_SERVER.md` (→ E4, re-spec),
-`_developers/backlog/PLAN_PARAMETER_TUNING.md` (→ E3, re-spec), and the site's
-refreshed `PLAN_SHOWCASE.md`. Non-plan material (`benchmarks/reports/`,
-`_developers/reference|examples|archive|REPORT_*`) is data/history — untouched.
+(terminology record), `MARGINALIA_DEPENDENCIES.md` (marginalia asks),
+`_developers/backlog/PLAN_MCP_SERVER.md` (→ E4), `_developers/backlog/PLAN_PARAMETER_TUNING.md`
+(→ E3), and the site's `PLAN_SHOWCASE.md`. Non-plan material
+(`benchmarks/reports/`, `_developers/reference|examples|archive`) is data/history.

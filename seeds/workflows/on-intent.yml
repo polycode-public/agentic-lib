@@ -9,17 +9,30 @@ on:
     types: [assigned, labeled]
   push:
     paths: ["INTENT.md"]
+  # workflow_dispatch is how a *hand* drives delivery (human or the benchmark
+  # harness): `gh workflow run on-intent.yml -f work_item=<issue-number>`.
+  workflow_dispatch:
+    inputs:
+      work_item:
+        description: "Issue number (a decomposed chunk) or 'INTENT.md' (the whole intent)"
+        type: string
+        required: false
+        default: "INTENT.md"
 permissions:
   contents: write
   pull-requests: write
   id-token: write
 jobs:
   deliver:
-    if: github.event_name == 'push' || github.event.label.name == 'ready' || github.event.assignee.login == 'agentic-lib[bot]'
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'push' ||
+      github.event.label.name == 'ready' ||
+      github.event.assignee.login == 'agentic-lib[bot]'
     uses: polycode-public/agentic-lib/.github/workflows/transform.yml@v8
     with:
       type: deliver-intent
-      work_item: ${{ github.event.issue.number || 0 }}
+      work_item: ${{ inputs.work_item || (github.event.issue && github.event.issue.number) || 'INTENT.md' }}
       max_turns: 30
-      model: sonnet
+      model: haiku       # system-under-test; Bedrock lane runs ANTHROPIC_MODEL (Haiku 4.5)
     secrets: inherit

@@ -91,6 +91,29 @@ runs — decomposition and memory live in the **marginalia** supervisor graph.
 GitHub Copilot and the repository0 discussions-bot are **GONE** (removed in the
 port). There is no longer any agent-to-agent Copilot/bot conversation to maintain.
 
+### The three hands
+
+A consumer repo cannot self-drive: `on-schedule` is disabled (`tend` only), and
+`on-intent`/`on-review` need an externally raised issue, a pushed `INTENT.md`, or a
+manual dispatch. Delivery is driven by exactly one of **three hands**: **a human**
+(issues + dispatch + review/merge), **Claude + the benchmark harness** (the
+`intention` Claude Code session orchestrating a run), or **marginalia** (the
+supervisor graph, one piece at a time via its `repo_dispatch` actuator against a
+repo-specific graph).
+
+### Benchmark framing
+
+The kyu benchmark holds **this delivery engine FIXED** — Claude Haiku 4.5 via
+Bedrock, the system under test, **never escalated to a bigger model** — and varies
+only the *orchestrator brain* that decomposes `INTENT.md` and supplies context.
+That brain is **Claude Code Opus 4.8** in the intentïon benchmark (the maximal
+standard) and **Haiku** in marginalia's. The benchmark measures how much a smarter
+decomposer lifts the *same* engine's **reliable-one-shot-per-issue** rate: one
+trigger → one `claude -p` transformation → one draft PR, re-worked until green,
+then merged. On a plateau you **decompose finer / supply better context — never a
+bigger engine model**. Decomposition and merge policy belong to the driver (human /
+Claude / marginalia), not the engine.
+
 ## Distributed Files (mastered here, consumed by repository0 / the fleet)
 
 `npx @polycode-public/agentic-lib init [--purge] [--mission <name>]` lays the

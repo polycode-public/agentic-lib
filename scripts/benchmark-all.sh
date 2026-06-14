@@ -1,21 +1,13 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: AGPL-3.0-only
-# benchmark-all.sh — dispatch the kyu/INTENT benchmark across fleet repositories.
-# Each repo is initialised with a mission, then on-intent is dispatched; results are
-# tracked over time in benchmarks/reports/. Bedrock-metered economics — pace slowly.
-# Usage: scripts/benchmark-all.sh <owner> <mission> repo [repo ...]
+# benchmark-all.sh — RETIRED. Use scripts/benchmark-run.sh.
+#
+# This fire-and-forget script dispatched on-schedule.yml `type=tend` (which is now
+# DISABLED in the fleet repos — a literal 422) and never polled, decomposed, or
+# iterated. The kyu benchmark is now the two-brain decompose→deliver→merge loop with
+# a hands-free 30s-poll executor. See:
+#   scripts/benchmark-run.sh
+#   benchmarks/ITERATION_BENCHMARKS_SIMPLE.md  /  _ADVANCED.md
 set -euo pipefail
-
-OWNER="${1:?owner required}"; shift
-MISSION="${1:?mission name required (see missions/index.toml)}"; shift
-
-if [ "$#" -eq 0 ]; then
-  echo "usage: $0 <owner> <mission> <repo> [repo ...]" >&2
-  exit 1
-fi
-
-for repo in "$@"; do
-  echo "=== benchmark ${OWNER}/${repo} :: ${MISSION} ==="
-  npx @polycode-public/agentic-lib init --purge --mission "$MISSION" --target "../$repo"
-  gh workflow run on-schedule.yml -R "${OWNER}/${repo}" -f type=tend || true
-done
+echo "benchmark-all.sh is RETIRED — use scripts/benchmark-run.sh (see benchmarks/ITERATION_BENCHMARKS_*.md)." >&2
+exit 2

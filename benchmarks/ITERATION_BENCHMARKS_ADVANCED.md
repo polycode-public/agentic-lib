@@ -1,150 +1,138 @@
-# Advanced Iteration Benchmarks
+# Advanced Iteration Benchmarks (3–2 kyu + sandbox wildcard)
 
-Repeatable delivery benchmarks for **higher-complexity missions (4–1 kyu, dan)** on
-the 8.x engine (`claude -p` + Bedrock). Same metric as the simple suite — **triggers
-(transformations) to an acceptable PR** — but here the questions are about scaling:
-how do iteration count, token cost, and success rate move as the kyu rung climbs,
-and where does the cheap default model stop being enough? Results tracked in
+Repeatable delivery benchmarks for the **harder tiers** on the 8.x engine
+(`claude -p` + Bedrock). This suite shares the **two-brain method, the polling
+executor, the frozen-Haiku engine, the limits, and the report schema** defined in
+[`ITERATION_BENCHMARKS_SIMPLE.md`](ITERATION_BENCHMARKS_SIMPLE.md) — **read that
+first**. This file adds only what is specific to the harder tiers: heavier
+decomposition, the plateau protocol, and the `sandbox` wildcard. Results in
 [`reports/`](reports/).
 
-Oversized intents (1-dan and up) are normally **decomposed into work items by the
-marginalia supervisor**; for a standalone benchmark you drive the rungs directly and
-record how the one-shot engine copes without a supervisor carving the intent.
+## Recap of the fixed method (see SIMPLE for the full text)
 
-## How a benchmark run works
+- **Engine frozen at Haiku 4.5** (`eu.anthropic.claude-haiku-4-5-20251001-v1:0`),
+  Bedrock lane, `max_turns=30`. **Never escalate the model.** The only lever is the
+  *process* — decomposition granularity + supplied context.
+- **Orchestrator = Claude Code Opus 4.8 (me)**, the maximal standard; marginalia
+  runs the same process on Haiku. The benchmark measures how much a smarter
+  decomposer lifts the *same* engine's reliable-one-shot rate.
+- **Delivery = decompose INTENT → one issue per one-shot-sized chunk → dispatch
+  `on-intent` per issue → judge → merge or re-work → repeat to delivery or budget
+  exhaustion.** Hands-free executor: one transformation in flight, **poll every
+  30s**, dispatch the next on idle, **no throttle** (contrast marginalia's
+  6h/1h/30m billing cadence).
 
-No budget counter, no profile, **no agent "mission complete" signal**. A scenario
-**passes** if an acceptable PR exists within the target trigger count; it **fails**
-if it exceeds it. The operator (or the supervisor, in production) judges the PR.
+## Where the harder tiers differ — decomposition is the whole game
 
-| Kyu | Target triggers to an acceptable PR | Rationale |
-|-----|-------------------------------------|-----------|
-| 4 | **3** | Medium: a review/revise cycle plus a second `deliver-intent`. |
-| 3 | **5** | Hard: domain algorithms / physics need iterative convergence. |
-| 2 | **5** | Very hard: multi-output libraries. |
-| 1 / dan | decomposed | Beyond one transformation — decompose into work items (marginalia) and benchmark the sub-items. |
+At 8–6 kyu a chunk usually *is* the whole intent. At 3–2 kyu the intent is a
+multi-capability library that **must be carved** before the engine can one-shot
+any part of it. This is exactly where an Opus orchestrator should beat a Haiku one,
+and where the measurement lives.
 
-## What we're measuring
+- **2-kyu `create-markdown-compiler`** is ~10 distinct feature areas (headings,
+  inline formatting, links, lists, code blocks, blockquotes, tables, rules, task
+  lists, auto-linking) plus XSS-safety. Carve one issue per feature area (or a
+  small cluster), ordered so later issues build on a green core. Each issue → one
+  PR → merge → next.
+- **3-kyu `analyze-lunar-lander`** is physics + scoring + an **autopilot
+  controller**. Physics/scoring decompose cleanly; the autopilot is one
+  **irreducibly-hard algorithm** (history: Haiku plateaus ~30/40 of its
+  range-cases — passing the basic cases doesn't help the hard ones, and the prior
+  session's PRs #8/#10 stalled there). It is the canonical plateau test.
 
-1. **Kyu scaling** — triggers, token cost, success rate from 4 → 3 → 2 kyu.
-2. **Mission-type difficulty** — encoding schemes vs structural analysis vs
-   domain physics vs multi-output libraries.
-3. **Model trade-off** — does Haiku 4.5 clear the rung, or does it need `sonnet` /
-   `opus`? Re-run a failing tier with a bumped `ANTHROPIC_MODEL` and compare.
-4. **Convergence** — do harder missions converge across triggers, or stall on
-   code/test mismatch? (A stall shows as repeated triggers with no acceptable PR.)
+### The plateau protocol (the core experiment)
 
-## Model
+When a chunk won't go green after a revision:
 
-Set `ANTHROPIC_MODEL` (Bedrock lane). Fleet default is **Haiku 4.5**
-(`eu.anthropic.claude-haiku-4-5-20251001-v1:0`); for 3–2 kyu it's usually worth a
-paired run at `sonnet` (`anthropic.claude-sonnet-4-6`) to quantify the trade. See
-[`MODELS.md`](../MODELS.md).
+1. **Decompose it finer** — split the algorithm into smaller, independently
+   testable sub-behaviours (e.g. for the autopilot: descent-phase detection →
+   thrust schedule for the nominal case → boundary/limit handling → the hard
+   range-cases) and dispatch each as its own issue.
+2. **Supply richer context** — attach the failing-test output, the prior PR diff,
+   and graph facts from seon (`seon_describe` the module, `seon_impact` to see what
+   the change touches) into the issue body.
+3. **Retry within budget.** Record the granularity + context that *did* break the
+   plateau — that is the tuned variable.
+4. **If it still won't one-shot** after a couple of finer attempts, **stop spending
+   on it, record it as "beyond Haiku one-shot at the tested granularity," and move
+   on.** The plateau location is the headline measurement vs marginalia — **not** a
+   cue to change the model.
 
-## Current fleet (2026-06-14) — repo ↔ mission map + prerequisites
+## The `sandbox` wildcard — the anti-overfitting control
 
-The last advanced run (reports 019/020) used `repository0-random`,
-`repository0-string-utils`, `repository0-plot-code-lib` — **those repos no longer
-exist**. The estate moved to `polycode-public` and the fleet is now kyu-named repos,
-each carrying *its own* mission as `INTENT.md`. Map the advanced rungs onto the
-current fleet:
+`sandbox` is seeded with a **random wildcard INTENT, re-picked at run time on every
+run** — never a fixed seed. It is the held-out control: if the process generalises,
+sandbox keeps pace with the tiers it was tuned on; if sandbox lags, that gap is the
+**overfitting signal** (the decomposition recipe has been over-tuned to the four
+known kyu missions). The orchestrator picks the wildcard at run time from outside
+the already-benchmarked set — an unused mission seed (e.g. `4-kyu-apply-cron-engine`,
+`4-kyu-apply-owl-ontology`, `3-kyu-evaluate-time-series-lab`) or a freshly
+hand-written INTENT with no name-affinity. **Record which INTENT was picked each
+run** so the result is interpretable, but do not freeze the choice.
 
-| Rung | Repo (run target) | Mission (`--mission`) | Notes |
-|------|-------------------|-----------------------|-------|
-| 4-kyu | `sandbox` | `4-kyu-apply-dense-encoding` (or `4-kyu-analyze-json-schema-diff`) | **No dedicated 4-kyu repo** — `4-kyu-apply-cron-engine` was deleted; benchmark a 4-kyu mission on the scratch `sandbox` repo. |
-| 3-kyu | `3-kyu-analyze-lunar-lander` | `3-kyu-analyze-lunar-lander` | The repo IS its mission. |
-| 2-kyu | `2-kyu-create-markdown-compiler` | `2-kyu-create-markdown-compiler` | The repo IS its mission. |
-| 1-kyu / dan | `sandbox` | `1-kyu-create-ray-tracer` / `1-dan-*` | Beyond one shot — decompose via marginalia, or run on `sandbox` and record the stall. |
+## Scope of this suite
 
-The fleet repos already carry **delivered content** from earlier runs, so a
-benchmark must **reset each to a clean mission seed first** (`init --purge --mission`,
-which `scripts/benchmark-all.sh` does per repo). Use `sandbox` for any mission whose
-repo doesn't exist, so you never overwrite a "real" fleet repo's delivery.
+| Repo | INTENT | Decomposition | Target reliable one-shots | Budget (turn-limit) |
+|---|---|---|---|---|
+| `3-kyu-analyze-lunar-lander` | physics + scoring + autopilot | physics/scoring clean; autopilot is the plateau | per-chunk | **6** |
+| `2-kyu-create-markdown-compiler` | ~10 GFM feature areas + XSS-safety | one issue per feature area/cluster | per-chunk | **8** |
+| `sandbox` | **random wildcard, re-picked each run** | per the picked INTENT | per-chunk | **3** |
 
-### Prerequisites (all currently met)
-
-1. **Bedrock Anthropic access** — enabled org-wide (eu-west-2 inference profiles).
-2. **Org setting** "Allow GitHub Actions to create and approve PRs" — **on**.
-3. **Per-repo CI config** (vars `CLAUDE_CODE_USE_BEDROCK=1`, `ANTHROPIC_MODEL`,
-   `AWS_REGION=eu-west-2`; secret `AWS_OIDC_ROLE` = `intention-fleet-bedrock-role`).
-   The fleet repos already have these; `sandbox` does too.
-4. **`gh` authenticated** with dispatch rights on `polycode-public/*`.
-5. **Cost budget**: ~$0.20–0.24 per substantial mission at the 20-turn cap; a full
-   4→3→2-kyu pass with a haiku/sonnet comparison is a few dollars. Honour the
-   one-repo/day Bedrock cadence (PLAN_CODING_AGENT §17) — crons stay disabled;
-   dispatch deliberately.
+`max_turns=30` (turn-size limit). Budgets above are the **turn-limit** per repo
+(lean first-calibration round); the executor hard-stops and records exhaustion.
+Note `3-kyu` carries **leftover open PRs (#8/#10) + an issue** from the prior
+session — the executor cleans these to a baseline before its run.
 
 ## Run it
 
 ```bash
-# scripts/benchmark-all.sh <owner> <mission> <repo> [repo ...]
-# 3-kyu on its own repo + a sandbox replica:
-scripts/benchmark-all.sh polycode-public 3-kyu-analyze-lunar-lander \
-  3-kyu-analyze-lunar-lander sandbox
-# 4-kyu has no dedicated repo — run the mission on sandbox:
-scripts/benchmark-all.sh polycode-public 4-kyu-apply-dense-encoding sandbox
+# Advanced suite (3-kyu + 2-kyu + sandbox-wildcard), hands-free:
+scripts/benchmark-run.sh polycode-public advanced
 ```
 
-Per repo this runs `npx @polycode-public/agentic-lib init --purge --mission
-<mission>` then dispatches the engine; each dispatch yields one draft PR (or
-nothing). Re-trigger to add a transformation; count triggers to an acceptable PR.
-
-**Monitor**, watching for convergence stalls (repeated triggers, no acceptable PR)
-and multi-file source growth:
-
-```bash
-for REPO in 3-kyu-analyze-lunar-lander sandbox; do
-  echo "=== $REPO ==="
-  gh run list -R polycode-public/$REPO -L 3 --json status,conclusion,createdAt \
-    --jq '.[] | "  \(.createdAt) \(.status) \(.conclusion)"'
-  gh pr list -R polycode-public/$REPO --state all -L 5 \
-    --json number,title,isDraft,additions,deletions \
-    --jq '.[] | "  #\(.number) \(.title) +\(.additions)/-\(.deletions) draft=\(.isDraft)"'
-done
-```
+The script handles init/reset (without pushing `.github/workflows` — the token
+lacks the `workflow` scope, and the deployed dispatch-capable workflows are kept),
+the per-issue dispatch, the 30s poll loop, budget hard-stops, and the ledger. The
+orchestrator (Opus 4.8) supplies the decomposition + PR judgement.
 
 ## Record the result
 
 Write to `benchmarks/reports/BENCHMARK_REPORT_ADVANCED_NNN.md` (next free number;
-current: `BENCHMARK_REPORT_ADVANCED_019.md`, `_020.md`). Per scenario record repo,
-mission, model, triggers, pass/fail vs target, token/cost, source-line and test-file
-growth, and findings.
+the Copilot-era 019/020 used budgets/profiles and `repository0-*` repos that no
+longer exist — **not directly comparable**). Use the schema in SIMPLE, plus the
+decomposition + plateau detail the hard tiers need:
 
 ```markdown
 # Benchmark Report NNN (Advanced)
 
 **Date**: YYYY-MM-DD
-**Operator**: Claude Code (model-id)
-**agentic-lib version**: X.Y.Z · **engine**: claude -p + Bedrock (model: …)
-**Previous report**: BENCHMARK_REPORT_ADVANCED_MMM.md (or "none")
+**Orchestrator**: Claude Code (claude-opus-4-8[1m]) — maximal-standard decomposer
+**Engine (under test)**: claude -p + Bedrock · **Haiku 4.5** (frozen)
+**agentic-lib version**: X.Y.Z · **Previous report**: …_MMM.md (or "none")
+**sandbox wildcard this run**: <the INTENT picked>
 
-| ID | Repo | Mission | Model | Triggers | Target | Pass? | ~Cost | Src lines | Test files | Notes |
-|----|------|---------|-------|----------|--------|-------|-------|-----------|------------|-------|
-| A1 | … | 4-kyu-apply-dense-encoding | haiku | N | 3 | YES/NO | $… | N | N | … |
+| ID | Repo | INTENT | Issues | Triggers | Budget | Delivered? | Merged PRs | Plateau? | ~Cost |
+|----|------|--------|--------|----------|--------|-----------|-----------|----------|-------|
+| A1 | 3-kyu-analyze-lunar-lander | … | N | N | 6 | YES/NO | … | autopilot@… | $… |
 
-## Kyu scaling
-| Metric | A1 (4) | A2 (4) | A3 (3) | A4 (2) |
-|--------|--------|--------|--------|--------|
-| Triggers | … | … | … | … |
-| Tokens / ~cost | … | … | … | … |
+## Decomposition & plateau detail (per repo)
+- **Issues raised** and the slice each covered; ordering rationale.
+- **Plateau locations** — the chunk(s) Haiku could not one-shot, the finer splits
+  tried, the context attached, and whether a split/context broke it or it was
+  recorded as the ceiling.
 
-## Model trade-off (haiku vs sonnet on the failing tier)
-…
+## Limit progression
+| Repo | Transforms used / budget | max_turns hits | Decomposition refinements | Plateau? where |
 
-## Findings
-- **FINDING-N (POSITIVE / CONCERN / REGRESSION)**: …
+## Overfitting check (sandbox vs tuned tiers)
+Does sandbox's reliable-one-shot rate track 3/2-kyu, or lag? Interpret.
 
-## Comparison with previous reports
-Compare against the prior report and the historical Copilot-era baselines in
-`reports/` (budget/profile-based — not directly comparable).
-
-## Recommendations
-1. …
+## Findings · vs marginalia · Recommendations
+…feeding the next round's granularity recipe.
 ```
 
 ## Restore
 
 ```bash
-# scripts/init-all.sh [--purge] <repo-dir> [repo-dir ...]
-scripts/init-all.sh --purge ../sandbox
+scripts/init-all.sh --purge ../3-kyu-analyze-lunar-lander ../2-kyu-create-markdown-compiler ../sandbox
 ```

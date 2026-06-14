@@ -22,5 +22,5 @@ jobs:
       type: address-review
       work_item: ${{ github.event.pull_request.number || github.event.issue.number }}
       max_turns: 30
-      model: sonnet
+      model: haiku       # system-under-test; Bedrock lane runs ANTHROPIC_MODEL (Haiku 4.5)
     secrets: inherit
