@@ -11,10 +11,13 @@
 **After compaction or at session start:**
 
 1. Read `~/.claude/inboxes/<your-handle>.md` and `.claude/messages.md` — another Claude session may have left messages for you
-2. Read **`PLAN_ENGINE.md`** — the engine's *active* forward roadmap. (The other
-   root `PLAN_*.md` are retrospective/historical.) Cross-estate strategy + the
-   supervisor's plan live in the marginalia repo:
-   `../../polycode-projects/marginalia/PLAN_INTENTION.md` and `PLAN_CODING_AGENT.md`.
+2. Read **`INTENTION_ROADMAP.md`** first — the cross-repo forward tracker (the one
+   roadmap spanning agentic-lib + repository0 + the site). Then read
+   **`PLAN_ENGINE.md`** for the engine's own detail (E1–E5). (The only other root
+   `PLAN_*.md` is `PLAN_2_NARRATIVE.md`, a settled terminology record.) Cross-estate
+   strategy + the supervisor's plan live in the marginalia repo:
+   `../../polycode-projects/marginalia/PLAN_INTENTION.md` (the done estate record)
+   and `PLAN_CODING_AGENT.md`.
 3. Run `TaskList` to see tracked tasks with status
 4. Do NOT start new work without checking these first
 
@@ -125,7 +128,7 @@ The 3 thin consumer workflows: `on-intent.yml` (issue/INTENT change → `deliver
 |---|---|
 | `repository0` | MIT template that consumes `transform.yml@v8` via the 3 thin workflows; carries `INTENT.md` |
 | `marginalia` (`../polycode-projects/marginalia`) | The supervisor graph — holds plans/memory/decomposition; dispatches work to the engine |
-| The fleet | `8-kyu-remember-hello-world`, `6-kyu-understand-roman-numerals`, `4-kyu-apply-cron-engine`, `3-kyu-analyze-lunar-lander`, `2-kyu-create-markdown-compiler`, + `sandbox` |
+| The fleet | `8-kyu-remember-hello-world`, `6-kyu-understand-roman-numerals`, `3-kyu-analyze-lunar-lander`, `2-kyu-create-markdown-compiler`, + `sandbox` (the `4-kyu-apply-cron-engine` repo was deleted; its mission *seed* in `missions/` stays) |
 
 ## Test Commands
 

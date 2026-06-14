@@ -1,6 +1,6 @@
 # Plan: MCP Server
 
-_Stale (Copilot-era) but the idea is worth reviving. The implementation references below (`@github/copilot-sdk`, gpt-5-mini, the maintain-features→transform→fix-code iterate loop) are gone in 8.0.0. The underlying use case — drive a mission at varying resource levels and observe convergence — still fits the `claude -p` + Bedrock engine and is a candidate for the forward roadmap. See ../../CLAUDE.md._
+_Stale (Copilot-era) but the idea is worth reviving. The implementation references below (`@github/copilot-sdk`, gpt-5-mini, the maintain-features→transform→fix-code iterate loop) are gone in 8.0.0. The underlying use case — drive a mission at varying resource levels and observe convergence — still fits the `claude -p` + Bedrock engine and is a candidate for the forward roadmap. **Tracked as E4 in [`../../PLAN_ENGINE.md`](../../PLAN_ENGINE.md) / [`../../INTENTION_ROADMAP.md`](../../INTENTION_ROADMAP.md); re-spec against 8.0.0 before actioning.** See ../../CLAUDE.md._
 
 ## User's Ideal Use Case
 

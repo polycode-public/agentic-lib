@@ -1,13 +1,15 @@
 # PLAN_ENGINE.md — agentic-lib's active forward roadmap
 
-> **This is the one *active* plan in this repo.** The other root `PLAN_*.md` are
-> retrospective/historical (PLAN_2_NARRATIVE = settled, PLAN_3_MARKETPLACE =
-> obsolete, PLAN_BENCHMARK_018_FIXES = Copilot-era). **Cross-estate strategy and
+> **This is the engine's active plan — the engine-detail companion to the
+> cross-repo [`INTENTION_ROADMAP.md`](INTENTION_ROADMAP.md)** (which indexes E1–E5
+> below alongside the site + template work). The only other root `PLAN_*.md` is
+> `PLAN_2_NARRATIVE.md` (settled terminology record); the obsolete Copilot-era
+> plans were deleted in the 2026-06-14 refocus. **Cross-estate strategy and
 > decomposition live in the marginalia repo** —
 > [`../../polycode-projects/marginalia/PLAN_INTENTION.md`](../../polycode-projects/marginalia/PLAN_INTENTION.md)
-> (the estate move + intentïon.com) and `PLAN_CODING_AGENT.md` §7 (this engine's
-> port). marginalia is the supervisor that holds the plan/memory; this file is just
-> the **engine's own** open work.
+> (the estate move + intentïon.com, now a done record) and `PLAN_CODING_AGENT.md`
+> §7 (this engine's port). marginalia is the supervisor that holds the plan/memory;
+> this file is just the **engine's own** open work.
 
 ## Where the engine is (2026-06-14)
 
@@ -60,7 +62,8 @@ The one backlog idea that still fits 8.0.0: an MCP server exposing the engine
   published, embeds seeding); estate docs refreshed; backlog staleness-annotated.
 
 ## Backlog disposition (`_developers/backlog/`)
-Revive: `PLAN_MCP_SERVER` (→ E4), intent of `PLAN_PARAMETER_TUNING` (→ E3).
-Superseded: `PLAN_MULTI_LLM` (env-var lanes deliver it), `PLAN_SUPERVISOR`
-(marginalia is the supervisor). Dead history: `PLAN_3_PLANNING` (the deleted plan
-engine), `2-dan-create-agi`. Orthogonal product idea: `PLAN_NEWS_AGGREGATOR`.
+After the 2026-06-14 refocus only the two **revive** specs remain (the superseded /
+dead-history / out-of-scope plans were deleted — see `INTENTION_ROADMAP.md` §D for
+the full list and rationale):
+- `PLAN_MCP_SERVER.md` → **E4** (re-spec against the 8.0.0 `claude -p`+Bedrock stack first).
+- `PLAN_PARAMETER_TUNING.md` → its intent feeds **E3** (re-spec first; the live knobs are `ANTHROPIC_MODEL` + `max_turns`).

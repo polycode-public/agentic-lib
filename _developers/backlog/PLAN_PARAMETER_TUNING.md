@@ -1,6 +1,6 @@
 # Plan: Parameter Tuning for Workflows
 
-_Stale (Copilot-era). The knobs it tunes — profiles min/med/max, read-chars, gpt-5-mini, the `iterate`/`transform` CLI — no longer exist in 8.0.0, where tuning is just model + `max_turns`. The intent (find good defaults via the kyu benchmarks, now affordable on metered Bedrock) is still relevant. See ../../MODELS.md._
+_Stale (Copilot-era). The knobs it tunes — profiles min/med/max, read-chars, gpt-5-mini, the `iterate`/`transform` CLI — no longer exist in 8.0.0, where tuning is just model + `max_turns`. The intent (find good defaults via the kyu benchmarks, now affordable on metered Bedrock) is still relevant. **Its intent feeds E3 in [`../../PLAN_ENGINE.md`](../../PLAN_ENGINE.md) / [`../../INTENTION_ROADMAP.md`](../../INTENTION_ROADMAP.md); re-spec against 8.0.0 before actioning.** See ../../MODELS.md._
 
 ## Goal
 
