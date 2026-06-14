@@ -1,0 +1,87 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2025-2026 Polycode Limited
+# init.yml — reusable: run `agentic-lib init` (any flavour) against the caller repo
+# and open a draft PR with the result. The remote analogue of on-intent, but for the
+# scaffolding/seed layer (workflows, AGENTS.md, agentic-lib.toml, .mcp.json,
+# package.json tooling, and — on `reset` — the product skeleton).
+name: init
+on:
+  workflow_call:
+    inputs:
+      mode:
+        description: "init (refresh scaffolding, non-destructive) | reset (init --purge: reset product + clean the GitHub repo)"
+        type: string
+        default: "init"
+      mission:
+        description: "Mission name to seed INTENT.md from (reset only; 'random' picks one). Empty = leave INTENT.md."
+        type: string
+        default: ""
+      dry_run:
+        description: "Show what init would change without writing or committing."
+        type: boolean
+        default: false
+      ref:
+        description: "agentic-lib ref to init from (the seed source)."
+        type: string
+        default: "v8"
+
+# One init at a time per ref.
+concurrency:
+  group: init-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write # reset (--purge) closes open issues
+  actions: write # reset (--purge) deletes old workflow runs
+
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      MODE: ${{ inputs.mode }}
+      MISSION: ${{ inputs.mission }}
+      DRY_RUN: ${{ inputs.dry_run }}
+      REF: ${{ inputs.ref }}
+    steps:
+      - name: Checkout caller repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Run agentic-lib init
+        run: |
+          set -euo pipefail
+          ARGS=(init)
+          [ "${MODE}" = "reset" ] && ARGS+=(--purge)
+          [ -n "${MISSION}" ] && ARGS+=(--mission "${MISSION}")
+          [ "${DRY_RUN}" = "true" ] && ARGS+=(--dry-run)
+          echo "Running: agentic-lib ${ARGS[*]} (seed ref: ${REF})"
+          npx -y "github:polycode-public/agentic-lib#${REF}" "${ARGS[@]}"
+
+      - name: Commit changes + open draft PR
+        if: ${{ inputs.dry_run == false }}
+        run: |
+          set -euo pipefail
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "init produced no changes — nothing to propose."; exit 0
+          fi
+          git config user.name "intention-agentic-lib[bot]"
+          git config user.email "intention-agentic-lib[bot]@users.noreply.github.com"
+          BRANCH="agentic-lib/init-${MODE}-${GITHUB_RUN_ID}"
+          git checkout -b "${BRANCH}"
+          git add -A
+          git commit -m "chore: agentic-lib init (${MODE}${MISSION:+ --mission ${MISSION}})" \
+                     -m "Scaffolding refreshed by the agentic-lib init workflow (seed ref ${REF})."
+          git push -u origin "${BRANCH}" --force-with-lease
+          gh pr create --draft --base "${GITHUB_REF_NAME}" --head "${BRANCH}" \
+            --title "agentic-lib init (${MODE})" \
+            --body "Automated scaffolding refresh via \`agentic-lib init\` (mode: ${MODE}${MISSION:+, mission: ${MISSION}}). Review the seed/tooling changes and merge." \
+            || echo "PR already exists for ${BRANCH}."

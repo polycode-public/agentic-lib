@@ -24,15 +24,20 @@ describe("seeds (what init lays into a consumer repo)", () => {
     expect(doc.paths.intent).toBe("INTENT.md");
   });
 
-  it("ships the three thin consumer workflows pinning transform.yml@v8", () => {
+  it("ships the thin consumer workflows pinning agentic-lib reusables @v8", () => {
     const wfDir = join(SEEDS, "workflows");
     const files = readdirSync(wfDir)
       .filter((f) => f.endsWith(".yml"))
       .sort();
-    expect(files).toEqual(["on-intent.yml", "on-review.yml", "on-schedule.yml"]);
+    expect(files).toEqual(["on-init.yml", "on-intent.yml", "on-review.yml", "on-schedule.yml"]);
     for (const f of files) {
       const content = readFileSync(join(wfDir, f), "utf8");
-      expect(content).toContain("agentic-lib/.github/workflows/transform.yml@v8");
+      expect(content).toMatch(/polycode-public\/agentic-lib\/\.github\/workflows\/[\w-]+\.yml@v8/);
+    }
+    // on-init pins the init reusable; the delivery trio pin transform.
+    expect(readFileSync(join(wfDir, "on-init.yml"), "utf8")).toContain("init.yml@v8");
+    for (const f of ["on-intent.yml", "on-review.yml", "on-schedule.yml"]) {
+      expect(readFileSync(join(wfDir, f), "utf8")).toContain("transform.yml@v8");
     }
   });
 
