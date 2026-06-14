@@ -1,5 +1,7 @@
 # PLAN: Implementing the Conceptual Model
 
+_Historical / DELETED. This designs the committed partial-order plan engine plus the `agentic-step`/Copilot task handlers — the exact machinery removed in the 8.0.0 port. Memory and decomposition moved to the marginalia supervisor graph; the plan engine was deleted, not built — see ../../CONCEPT.md and ../../FEATURES.md._
+
 Transform the current 8-task cron-driven system into the model described in CONCEPT.md. The plan is a committed file. Each workflow run reads state, refines the plan, executes, witnesses, and merges. No separate orchestrator. No "evolve" language anywhere.
 
 ---

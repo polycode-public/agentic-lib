@@ -1,5 +1,7 @@
 # Plan: MCP Server
 
+_Stale (Copilot-era) but the idea is worth reviving. The implementation references below (`@github/copilot-sdk`, gpt-5-mini, the maintain-features→transform→fix-code iterate loop) are gone in 8.0.0. The underlying use case — drive a mission at varying resource levels and observe convergence — still fits the `claude -p` + Bedrock engine and is a candidate for the forward roadmap. See ../../CLAUDE.md._
+
 ## User's Ideal Use Case
 
 > "Hello Claude, please run the hamming distance mission with the lowest possible resources and see how many iterations it takes then increase resources to see what brings the best improvement"

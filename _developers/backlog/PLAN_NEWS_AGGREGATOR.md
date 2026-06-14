@@ -1,5 +1,7 @@
 # Plan: News Aggregator — Git as a Database, GitHub as the Platform
 
+_Stale (Copilot/old-org era) — a downstream product/use-case idea, not engine roadmap. The git-as-database persistence analysis is still broadly valid, but the `agentic-lib-workflow` / Copilot-SDK references are obsolete under 8.0.0. See ../../CLAUDE.md._
+
 ## Vision
 
 A news aggregator website where GitHub Actions workflows use HTTP crawlers and LLMs to fetch, process, and summarise web content. Processed content is stored on a **storage branch** (not main) so that every workflow run commits data without PR noise. The website reads this data anonymously via `raw.githubusercontent.com`. A round-trip feedback loop exists: GitHub Discussions can trigger workflows which crawl content and commit results back to the storage branch.

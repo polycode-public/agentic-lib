@@ -1,5 +1,7 @@
 # Mission
 
+_Historical — pre-8.0.0 vision narrative (OpenAI-API help-seeking / JS Lambda-agent era). The six "AGI traits" (memory, planning, decomposition, etc.) were never the architecture that shipped; memory and decomposition now live in the marginalia supervisor graph, not in agentic-lib. Kept for history — see ../../CONCEPT.md._
+
 **Agentic-lib** is evolving into an intelligent automation system endowed with multiple AGI-aligned capabilities, all oriented toward a coherent long-term purpose: enabling agentic, cross-repository intelligent automation. The ultimate vision is a network of self-managing coding agents that can understand high-level goals, break them down, execute tasks across many projects, learn from their experiences, and seek assistance when needed – all with minimal human intervention. Each of the new features (Memory, Planning, Goal Decomposition, Self-Improvement, Replication, and Help-Seeking) contributes to this vision in a concrete, feasible way, building the stepping stones toward a truly autonomous development workflow.
 
 In the near term, these traits function as enhancements to the JavaScript CLI/Lambda agent that drives **agentic-lib**:

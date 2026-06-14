@@ -1,5 +1,7 @@
 # Plan: Parameter Tuning for Workflows
 
+_Stale (Copilot-era). The knobs it tunes — profiles min/med/max, read-chars, gpt-5-mini, the `iterate`/`transform` CLI — no longer exist in 8.0.0, where tuning is just model + `max_turns`. The intent (find good defaults via the kyu benchmarks, now affordable on metered Bedrock) is still relevant. See ../../MODELS.md._
+
 ## Goal
 
 Fine-tune the values in `agentic-lib.toml` to find a reliable and efficient default configuration for consumers.

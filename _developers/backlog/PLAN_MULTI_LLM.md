@@ -1,5 +1,7 @@
 # Plan: Multi-LLM Provider Abstraction
 
+_Superseded — goal already met differently. 8.0.0 provides multi-LLM selection purely via environment variables (Anthropic vs Bedrock lanes), with no provider code branch; the Copilot-SDK provider interface designed below was deleted, not built. See ../../MODELS.md._
+
 ## Goal
 
 Extract a provider interface from the existing Copilot SDK integration so that

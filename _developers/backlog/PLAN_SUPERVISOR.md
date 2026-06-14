@@ -1,5 +1,7 @@
 # Plan: Supervisor Service
 
+_Superseded. agentic-lib is no longer the supervisor — the **marginalia** graph IS the supervisor (plan, memory, decomposition, dispatch), and the release / re-run loop is the `release-and-init` skill. The `supervise` CLI and Copilot-era skill inventory below were never built. Kept for history — see ../../CLAUDE.md._
+
 ## What the Supervisor Does
 
 The supervisor is the composite of every skill needed to run benchmarks, diagnose issues, fix them, release fixes, and re-run benchmarks — end to end, without human intervention. It is defined by what a Claude Code session actually does today when executing ITERATION_BENCHMARKS_SIMPLE.md.
