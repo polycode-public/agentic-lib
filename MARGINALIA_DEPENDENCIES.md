@@ -115,6 +115,41 @@ for delivery.
 
 ---
 
+## 4b · `on-init` workflow-file push — operator infra for the M5 key
+
+**Status: the M5 App now has `workflows: write` (granted ✅). Remaining is AWS infra
+so `init.yml` can USE the App token.**
+
+`on-init` (reset/refresh) failed to push `.github/workflows` because `init.yml` pushed
+with the Actions **`GITHUB_TOKEN`**, which GitHub *categorically bars* from
+creating/updating workflow files — no permission grant fixes that. `init.yml` now
+mints the **M5 `intention-system` App installation token** (which carries the
+`workflows: write` you granted) and pushes with it: OIDC → AWS → read the App key from
+SSM → `actions/create-github-app-token` → push. If the SSM read fails it **degrades
+gracefully** (pushes everything except `.github/workflows`).
+
+**To make the workflow-file push actually work, provision (operator):**
+
+1. **SSM parameters** the role can reach, by default at `/intention/m5/` (override
+   with repo/org var `M5_SSM_PREFIX`):
+   - `/intention/m5/github-app-id` (String, the numeric App ID `4048241`)
+   - `/intention/m5/github-app-private-key` (**SecureString**, the App PEM)
+   (Same convention as marginalia's `/marginalia/{env}/github-app-*`.)
+2. **IAM on the OIDC role** named by the repo secret `AWS_OIDC_ROLE`
+   (`intention-fleet-bedrock-role`, today Bedrock-invoke only): add
+   `ssm:GetParameter` on `${M5_SSM_PREFIX}/github-app-*` **+ `kms:Decrypt`** on the
+   key's KMS key.
+3. **Account/region:** the params must live in the account the role assumes into
+   (it's in **intention-ci 285034436101**; the M5 creds are in **intention-prod
+   813333281588**) — either mirror the two params into the role's account or grant
+   cross-account SSM/KMS access. Region is `AWS_REGION` (eu-west-2).
+
+Until 1–3 are in place, `on-init` succeeds but skips workflow files (degraded mode).
+This affects marginalia too: graph-driven `repo_dispatch → on-init` reset needs this
+to refresh workflow files.
+
+---
+
 ## 5 · The three "hands" contract
 
 **ASK: ratify the division of labour — the repos have no self-driving trigger;

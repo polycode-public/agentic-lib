@@ -35,6 +35,7 @@ permissions:
   pull-requests: write
   issues: write # reset (--purge) closes open issues
   actions: write # reset (--purge) deletes old workflow runs
+  id-token: write # OIDC -> AWS, to read the M5 App key from SSM (workflow-file push)
 
 jobs:
   init:
@@ -46,6 +47,14 @@ jobs:
       MISSION: ${{ inputs.mission }}
       DRY_RUN: ${{ inputs.dry_run }}
       REF: ${{ inputs.ref }}
+      # The Actions GITHUB_TOKEN is categorically barred from creating/updating
+      # .github/workflows files. To push the seed workflows on init/reset we mint the
+      # M5 GitHub App installation token (which carries `workflows: write`), reading
+      # its key from SSM via the repo's existing OIDC->AWS role. If that isn't wired,
+      # we degrade gracefully (push everything EXCEPT .github/workflows).
+      AWS_OIDC_ROLE: ${{ secrets.AWS_OIDC_ROLE }}
+      AWS_REGION: ${{ vars.AWS_REGION || 'eu-west-2' }}
+      M5_SSM_PREFIX: ${{ vars.M5_SSM_PREFIX || '/intention/m5' }}
     steps:
       - name: Checkout caller repo
         uses: actions/checkout@v4
@@ -66,8 +75,48 @@ jobs:
           echo "Running: agentic-lib ${ARGS[*]} (seed ref: ${REF})"
           npx -y "github:polycode-public/agentic-lib#${REF}" "${ARGS[@]}"
 
+      # ── Mint the M5 App token so the push can include .github/workflows ──────────
+      - name: Authenticate to AWS (OIDC) for the M5 App key
+        if: ${{ inputs.dry_run == false && env.AWS_OIDC_ROLE != '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_OIDC_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Read M5 App creds from SSM
+        if: ${{ inputs.dry_run == false && env.AWS_OIDC_ROLE != '' }}
+        run: |
+          set -uo pipefail
+          APP_ID=$(aws ssm get-parameter --name "${M5_SSM_PREFIX}/github-app-id" \
+            --query Parameter.Value --output text 2>/dev/null) || true
+          KEY=$(aws ssm get-parameter --name "${M5_SSM_PREFIX}/github-app-private-key" --with-decryption \
+            --query Parameter.Value --output text 2>/dev/null) || true
+          if [ -z "${APP_ID}" ] || [ -z "${KEY}" ]; then
+            echo "::warning::M5 App creds not readable from SSM (${M5_SSM_PREFIX}/*) via this OIDC role — will push without .github/workflows. Grant the role ssm:GetParameter + kms:Decrypt on that path."
+            exit 0
+          fi
+          echo "::add-mask::${KEY}"
+          {
+            echo "M5_APP_ID=${APP_ID}"
+            echo "M5_PRIVATE_KEY<<__PEM__"
+            echo "${KEY}"
+            echo "__PEM__"
+          } >> "$GITHUB_ENV"
+
+      - name: Mint M5 installation token
+        id: apptoken
+        if: ${{ inputs.dry_run == false && env.M5_APP_ID != '' }}
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ env.M5_APP_ID }}
+          private-key: ${{ env.M5_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+
       - name: Commit changes + open draft PR
         if: ${{ inputs.dry_run == false }}
+        env:
+          APP_TOKEN: ${{ steps.apptoken.outputs.token }}
         run: |
           set -euo pipefail
           if [ -z "$(git status --porcelain)" ]; then
@@ -77,10 +126,22 @@ jobs:
           git config user.email "intention-agentic-lib[bot]@users.noreply.github.com"
           BRANCH="agentic-lib/init-${MODE}-${GITHUB_RUN_ID}"
           git checkout -b "${BRANCH}"
-          git add -A
+          if [ -n "${APP_TOKEN:-}" ]; then
+            echo "Pushing with the M5 App token (includes .github/workflows)."
+            git add -A
+            PUSH_TOKEN="${APP_TOKEN}"
+          else
+            echo "::warning::No M5 App token — pushing WITHOUT .github/workflows (the GITHUB_TOKEN cannot modify workflow files). Wire the OIDC role's SSM access to enable workflow-file refresh."
+            git add -A -- . ':!.github/workflows'
+            PUSH_TOKEN="${GH_TOKEN}"
+          fi
+          if git diff --cached --quiet; then
+            echo "Only .github/workflows changed and no App token — nothing pushable."; exit 0
+          fi
           git commit -m "chore: agentic-lib init (${MODE}${MISSION:+ --mission ${MISSION}})" \
                      -m "Scaffolding refreshed by the agentic-lib init workflow (seed ref ${REF})."
-          git push -u origin "${BRANCH}" --force-with-lease
+          git push "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            "HEAD:${BRANCH}" --force-with-lease
           gh pr create --draft --base "${GITHUB_REF_NAME}" --head "${BRANCH}" \
             --title "agentic-lib init (${MODE})" \
             --body "Automated scaffolding refresh via \`agentic-lib init\` (mode: ${MODE}${MISSION:+, mission: ${MISSION}}). Review the seed/tooling changes and merge." \
