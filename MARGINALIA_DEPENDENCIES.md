@@ -115,10 +115,22 @@ for delivery.
 
 ---
 
-## 4b · `on-init` workflow-file push — operator infra for the M5 key
+## 4b · `on-init` workflow-file push — ✅ RESOLVED + verified
 
-**Status: the M5 App now has `workflows: write` (granted ✅). Remaining is AWS infra
-so `init.yml` can USE the App token.**
+**Done end-to-end (2026-06-16).** The M5 App has `workflows: write`; `init.yml` mints
+the M5 installation token via OIDC→SSM and pushes workflow files with it
+(`persist-credentials: false`); `on-init.yml` grants `id-token`. **Infra provisioned**
+by the operator session: `/intention/m5/github-app-{id,private-key}` mirrored into
+**intention-ci** (285034436101, the fleet OIDC role's account) + an `m5-ssm-read`
+inline policy (`ssm:GetParameter` on `/intention/m5/github-app-*`) on
+`intention-fleet-bedrock-role`. **Verified:** an `on-init` on sandbox pushed
+`.github/workflows/*` and opened a PR. So **graph-driven `repo_dispatch → on-init`
+reset can now refresh workflow files** — no change needed your end.
+
+<details><summary>Original diagnosis (kept for the record)</summary>
+
+The M5 App now has `workflows: write` (granted). Remaining was AWS infra so
+`init.yml` could USE the App token.
 
 `on-init` (reset/refresh) failed to push `.github/workflows` because `init.yml` pushed
 with the Actions **`GITHUB_TOKEN`**, which GitHub *categorically bars* from
@@ -147,6 +159,8 @@ gracefully** (pushes everything except `.github/workflows`).
 Until 1–3 are in place, `on-init` succeeds but skips workflow files (degraded mode).
 This affects marginalia too: graph-driven `repo_dispatch → on-init` reset needs this
 to refresh workflow files.
+
+</details>
 
 ---
 
