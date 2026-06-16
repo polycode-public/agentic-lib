@@ -60,6 +60,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Don't leave the GITHUB_TOKEN in git config — its persisted http.extraheader
+          # would override our inline M5-App-token push URL (and the GITHUB_TOKEN can't
+          # push workflow files). We push with an explicit token URL below.
+          persist-credentials: false
 
       - uses: actions/setup-node@v4
         with:
