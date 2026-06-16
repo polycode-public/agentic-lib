@@ -1,10 +1,14 @@
 <!-- prompt: address-review (one-shot) -->
 # Transformation: address review
 
-A reviewer has left threads on PR #{{work_item}}. Address **all** of them in one
+A reviewer has left feedback on PR #{{work_item}}. Address **all** of it in one
 transformation and stop.
 
-1. Read every open review thread on the PR. Read `AGENTS.md` and `INTENT.md`.
+1. Read **every source of feedback**: open review threads, **PR comments mentioning
+   `@agentic-lib`**, and the **work-item context provided below** (it includes the
+   PR title/body/comments/reviews). Act on the substance wherever it appears — do not
+   no-op just because the feedback is a comment rather than a formal review thread.
+   Read `AGENTS.md` and `INTENT.md`.
 2. Make the changes that resolve the feedback. Update tests so the suite passes.
 3. Push **one revision** to the same PR branch (one commit, or a tidy few). Do not
    open a new PR.

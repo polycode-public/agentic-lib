@@ -29,8 +29,10 @@ describe("seeds (what init lays into a consumer repo)", () => {
     const files = readdirSync(wfDir)
       .filter((f) => f.endsWith(".yml"))
       .sort();
-    expect(files).toEqual(["on-init.yml", "on-intent.yml", "on-review.yml", "on-schedule.yml"]);
-    for (const f of files) {
+    expect(files).toEqual(["on-init.yml", "on-intent.yml", "on-review.yml", "on-schedule.yml", "test.yml"]);
+    // The reusable-consuming workflows pin agentic-lib @v8; test.yml is a plain CI gate.
+    const reusableConsumers = ["on-init.yml", "on-intent.yml", "on-review.yml", "on-schedule.yml"];
+    for (const f of reusableConsumers) {
       const content = readFileSync(join(wfDir, f), "utf8");
       expect(content).toMatch(/polycode-public\/agentic-lib\/\.github\/workflows\/[\w-]+\.yml@v8/);
     }
@@ -39,6 +41,10 @@ describe("seeds (what init lays into a consumer repo)", () => {
     for (const f of ["on-intent.yml", "on-review.yml", "on-schedule.yml"]) {
       expect(readFileSync(join(wfDir, f), "utf8")).toContain("transform.yml@v8");
     }
+    // test.yml is the mechanical green/red gate: runs the unit suite, no reusable.
+    const testWf = readFileSync(join(wfDir, "test.yml"), "utf8");
+    expect(testWf).toContain("npm test");
+    expect(testWf).not.toContain("transform.yml@v8");
   });
 
   it("ships the clean product skeleton seeds (library + browser demo + behaviour)", () => {
