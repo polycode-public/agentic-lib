@@ -70,7 +70,8 @@ Haiku); seed `on-intent.yml` gains a `workflow_dispatch` `work_item` input (so a
 | E5 | **Runner hygiene** — bump `checkout`/`setup-node` (Node-20 deprecation, forced Node-24 from 2026-06-16) or set `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`. | open, low |
 | E6 | **Config-consistency: `sonnet → haiku`** in `seeds/{workflows/on-*.yml, agentic-lib.toml}`. No Bedrock-runtime change (env wins) but removes the Anthropic-lane landmine and makes "the system under test is Haiku" unambiguous. | ✅ done (this session) |
 | E7 | **Benchmark executor harness** (`scripts/benchmark-run.sh`) — init/reset (clone + local `init --purge` + SSH-push of non-workflow files), per-issue `on-intent` dispatch, 30s poll, budget hard-stop, ledger; retires the broken `benchmark-all.sh`. **✅ done + proven** across the full 021 run. | ✅ done |
-| E8 | **Engine-prompt fixes from 021** (new): make `address-review` read PR comments / the dispatch input (not only review threads); tell `deliver-intent` to test the INTENT's bar (not invent a stricter one) and to produce the INTENT's *artifacts* (files), not just passing tests; ship a minimal `test.yml` seed so PRs have a mechanical green/red gate. | open (from 021 findings) |
+| E8 | **Engine-prompt + seed fixes from 021** — **done**: `address-review.md` now acts on PR comments + work-item context (F8); `deliver-intent.md` tests the INTENT's stated bar, produces required artifacts, and wires the `src/web` demo to exercise the API (F9/F10/S3b); new `seeds/workflows/test.yml` mechanical green/red gate (F5); `on-review.yml` gains `workflow_dispatch` (F6). Live for future deliveries once `v8` moves to the fix commit. | ✅ done |
+| E9 | **FINDING-3 — grant the M5 App `Workflows: write`** so `on-init` reset can push `.github/workflows` (operator action, not code). Tracked in `MARGINALIA_DEPENDENCIES.md`. | open (operator) |
 
 ---
 
@@ -85,7 +86,7 @@ view** driven by the three hands.
 |---|---|---|
 | S2 | Wire `intention-ci` OIDC/roles/cert (`ACTIONS_ROLE_ARN`/`DEPLOY_ROLE_ARN`/`CERTIFICATE_ARN` for `ci`). Prod live; ci not wired. | open, low |
 | S3a | **Screenshots render** — broken-image cards (post-benchmark `agentic-lib-logs` deletion + missing `on-screenshot`) **fixed**: regenerated all 4, verified live with Playwright (`scripts/check-showcase.mjs`); harness `finalize` + the benchmark guides now re-publish + verify screenshots after every delivery. | ✅ done |
-| S3b | **Screenshot content** — all 4 `SCREENSHOT_INDEX.png` are byte-identical (generic `src/web` render, not each repo's demo) because deliveries update `src/lib` not the web demo. Make each repo's `src/web` demo + behaviour-test screenshot **per-repo** so distinct images publish. `check-showcase.mjs` warns on byte-identical. | open |
+| S3b | **Screenshot content** — **fixed**: the seed `src/web` now *exercises* `src/lib/main.js` (`renderDemo` invokes the API; the page shows mission + delivered API + live output), enforced by an agent-runnable jsdom `web.test.js`; the deliver-intent prompt asks each delivery to wire a `demo()`. Applied to the 4 showcased repos → screenshots now **distinct** (36.7K/41.0K/41.9K/50.2K, was identical 30.4K) and render live. | ✅ done |
 
 ---
 
