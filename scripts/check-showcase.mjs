@@ -27,8 +27,7 @@ const REPOS = process.argv.slice(2).length
       "2-kyu-create-markdown-compiler",
     ];
 
-const shotUrl = (r) =>
-  `https://raw.githubusercontent.com/${OWNER}/${r}/agentic-lib-logs/SCREENSHOT_INDEX.png`;
+const shotUrl = (r) => `https://raw.githubusercontent.com/${OWNER}/${r}/agentic-lib-logs/SCREENSHOT_INDEX.png`;
 
 let failures = 0;
 const sizes = {};
@@ -107,5 +106,6 @@ if (chromium) {
   }
 }
 
-console.log(`\n${failures === 0 ? "✅ showcase screenshots OK" : `❌ ${failures} screenshot failure(s)`}`);
+const summary = failures === 0 ? "✅ showcase screenshots OK" : `❌ ${failures} screenshot failure(s)`;
+console.log(`\n${summary}`);
 process.exit(failures === 0 ? 0 : 1);
