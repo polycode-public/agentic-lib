@@ -18,7 +18,7 @@
   "author": "https://github.com/polycode-public",
   "license": "(AGPL-3.0-only OR MIT)",
   "devDependencies": {
-    "eslint": "^9.39.4",
+    "eslint": "^10.5.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
